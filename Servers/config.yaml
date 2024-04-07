@@ -1,7 +1,0 @@
-home_key_map:
-    '1296971': ep6
-equipment_key_name_pair:
-  '1296971':
-    0015BC001E011FBB : Microwave
-    0015BC001E00CB7A : Fridge
-    virtual-microwave : Microwave
