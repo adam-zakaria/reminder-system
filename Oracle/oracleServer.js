@@ -30,7 +30,7 @@ function sendDummyUpdate() {
                             "components": [
                                 {
                                     "component_name": "Door",
-                                    "status": "Open"
+                                    "status": "Closed"
                                 }
                                 // Additional components can be added as needed
                             ]

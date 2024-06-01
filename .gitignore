@@ -1,0 +1,59 @@
+# Node modules
+node_modules/
+
+# Logs and temp files
+*.log
+*.tmp
+
+# MacOS system files
+.DS_Store
+
+# Environment variables
+.env
+
+# Build directories
+build/
+dist/
+
+# Compiled binaries
+*.o
+*.out
+*.exe
+
+# iOS specific files
+*.xcuserdatad
+*.xcuserdata
+*.xcworkspace
+Pods/
+DerivedData/
+*.pbxuser
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+
+# IDE/editor specific files
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+*.iml
+
+# Dependency directories and files
+/Server_node/node_modules
+/Webapp/ai-caring-interface/node_modules
+/package-lock.json
+
+# Server-specific files
+/Servers/node_modules
+/Servers/logs
+/Servers/tmp
+
+# Miscellaneous
+*.bak
+*.orig
+
+# Documentation outputs
+*.pdf
