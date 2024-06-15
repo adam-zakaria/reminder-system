@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import api from './utils/api';
 
 export const AuthContext = createContext();
 
@@ -50,8 +51,22 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const refreshToken = async () => {
+    try {
+      const response = await api.post('/refresh-token', { token });
+      if (response.status === 200) {
+        const newToken = response.data.token;
+        await saveAuthData(newToken, userId);
+      } else {
+        console.error('Failed to refresh token');
+      }
+    } catch (error) {
+      console.error('Error refreshing token:', error);
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ token, userId, isAuthenticated, setToken: saveAuthData, setUserId, setIsAuthenticated, clearAuthData }}>
+    <AuthContext.Provider value={{ token, userId, isAuthenticated, setToken: saveAuthData, setUserId, setIsAuthenticated, clearAuthData, refreshToken }}>
       {children}
     </AuthContext.Provider>
   );

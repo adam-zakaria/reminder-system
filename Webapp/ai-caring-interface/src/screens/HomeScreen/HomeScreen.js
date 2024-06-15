@@ -19,8 +19,13 @@ function HomeScreen() {
     display: '',
     delay: '',
     disappearOnCondition: 'false',
+    activity: '',
+    triggerTime: null,
+    triggerType: '',
   });
   const [loadingReminder, setLoadingReminder] = useState(false);
+  const [invalidFields, setInvalidFields] = useState([]);
+  const [submitted, setSubmitted] = useState(false);
   const navigate = useNavigate();
   const { token } = useContext(AuthContext);
 
@@ -37,26 +42,35 @@ function HomeScreen() {
   };
 
   const formInvalid = () => {
-    if (reminder.userId && reminder.message && reminder.interval && reminder.display) {
-      const nondependent = (reminder.time === null || reminder.time === '') ? (reminder.utility_name !== null && reminder.utility_name !== '') ? (reminder.component_name !== null && reminder.component_name !== '') ? (reminder.condition !== null && reminder.condition !== '') ? true : false : false : false : false;
-      const dependent = (reminder.time !== null && reminder.time !== '') ? (reminder.utility_name === null || reminder.utility_name === '') ? (reminder.component_name === null || reminder.component_name === '') ? (reminder.condition === null || reminder.condition === '') ? true : false : false : false : false;
-      console.log(reminder.time, "reminder.time", reminder.utility_name, "reminder.utility_name", reminder.component_name, "reminder.component_name", reminder.condition, "reminder.condition" )
+    let invalid = [];
+    if (!reminder.userId) invalid.push('userId');
+    if (!reminder.message) invalid.push('message');
+    if (!reminder.interval) invalid.push('interval');
+    if (!reminder.display) invalid.push('display');
 
-      console.log(nondependent, dependent, "prev to if");
-      if (nondependent || dependent) {
-        console.log(nondependent, dependent,"inside if");
-        return false;
-      } else {
-        console.log("else of non dep and dep");
-        return true;
-      }
-    } else {
-      console.log("when basic details are not there", `${reminder.userId} && ${reminder.message} && ${reminder.interval} && ${reminder.display}`);
-      return true;
+    const nondependent = !reminder.time && reminder.utility_name && reminder.component_name && reminder.condition;
+    const dependent = reminder.time && (!reminder.utility_name || !reminder.component_name || !reminder.condition);
+    const activityBased = !reminder.time && !reminder.utility_name && !reminder.component_name && !reminder.condition && reminder.activity && reminder.triggerType ;
+
+    if (!nondependent && !dependent && !activityBased) {
+      if (!reminder.time) invalid.push('time');
+      if (!reminder.utility_name) invalid.push('utility_name');
+      if (!reminder.component_name) invalid.push('component_name');
+      if (!reminder.condition) invalid.push('condition');
+      if (!reminder.activity) invalid.push('activity');
+      if (!reminder.triggerType) invalid.push('triggerType');
     }
+
+    setInvalidFields(invalid);
+    return invalid.length > 0;
   };
 
   const handleSubmit = async () => {
+    setSubmitted(true);
+    if (formInvalid()) {
+      return;
+    }
+
     setLoadingReminder(true);
     try {
       const response = await api.post('/reminders', reminder);
@@ -75,31 +89,35 @@ function HomeScreen() {
         ...prevReminder,
         message: response.response.message || prevReminder.message,
         display: response.response.display || prevReminder.display,
-        interval: response.response.interval || prevReminder.interval,
+        interval: response.response.interval?.toLowerCase() || prevReminder.interval,
         time: response.response.time || prevReminder.time,
         utility_name: response.response.utility_name || prevReminder.utility_name,
         component_name: response.response.component_name || prevReminder.component_name,
         condition: response.response.condition || prevReminder.condition,
         delay: response.response.delay || prevReminder.delay,
+        activity: response.response.activity || prevReminder.activity,
+        triggerTime: response.response.triggerTime || prevReminder.triggerTime,
+        triggerType: response.response.triggerType || prevReminder.triggerType,
       }));
     }
   };
 
   useEffect(() => {
-    console.log('Reminder state updated:', reminder);
+    formInvalid(); // Update invalid fields on state change
   }, [reminder]);
 
   return (
     <View style={styles.container}>
       <View style={styles.leftContainer}>
         <ScrollView contentContainerStyle={styles.scrollContainer}>
-          {console.log(formInvalid, "forminvalid")}
           <ReminderForm
             reminder={reminder}
             handleChange={handleChange}
             handleSubmit={handleSubmit}
             loadingReminder={loadingReminder}
-            formInvalid={formInvalid}
+            invalidFields={invalidFields}
+            isEditing={false}
+            submitted={submitted}
           />
           {loadingReminder && <ActivityIndicator size="large" color="#0000ff" />}
         </ScrollView>
@@ -107,12 +125,6 @@ function HomeScreen() {
       <View style={styles.rightContainer}>
         <ChatBox onChatResponse={handleChatResponse} />
       </View>
-      <TouchableOpacity
-        style={styles.reminderButton}
-        onPress={() => navigate('/reminders')}
-      >
-        <Text style={styles.reminderButtonText}>Go to Reminders</Text>
-      </TouchableOpacity>
     </View>
   );
 }

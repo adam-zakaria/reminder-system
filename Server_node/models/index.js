@@ -16,7 +16,8 @@ db.userClientMap = require('./userClientMap.model.js')(sequelize, Sequelize);
 db.delayTable = require('./delayTable.model.js')(sequelize, Sequelize);
 db.sentReminders = require('./sentReminder.model.js')(sequelize, Sequelize);
 db.users = require('./user.model.js')(sequelize, Sequelize);
-
+db.chatMessages = require('./chatMessage.model.js')(sequelize, Sequelize); // Add this line
+db.chatThreads = require('./chatThread.model.js')(sequelize, Sequelize); // Add this line
 
 // Define associations
 db.users.hasMany(db.userClientMap, { foreignKey: 'userId' });
@@ -25,35 +26,21 @@ db.userClientMap.belongsTo(db.users, { foreignKey: 'userId' });
 db.users.hasMany(db.reminders, { foreignKey: 'userId' });
 db.reminders.belongsTo(db.users, { foreignKey: 'userId' });
 
-// Sync all models and insert default record
-sequelize.sync({ force: false })
-  .then(() => {
-    console.log('Database synchronized successfully!');
-    if (db.userClientMap && typeof db.userClientMap.insertDefaultRecord === 'function') {
-      return db.userClientMap.insertDefaultRecord();
-    } else {
-      console.error('insertDefaultRecord function not found in userClientMap model.');
-    }
-  })
-  .catch(error => {
-    console.error('Error synchronizing database:', error);
-  });
+db.users.hasMany(db.chatThreads, { foreignKey: 'userId' }); // Add this line
+db.chatThreads.belongsTo(db.users, { foreignKey: 'userId' }); // Add this line
 
-module.exports = {
-  db
-};
-
+db.chatThreads.hasMany(db.chatMessages, { foreignKey: 'threadId' }); // Add this line
+db.chatMessages.belongsTo(db.chatThreads, { foreignKey: 'threadId' }); // Add this line
 
 // Sync all models and insert default record
-sequelize.sync({ force: false })
+sequelize.sync({ force: false, alter: true})
   .then(() => {
     console.log('Database synchronized successfully!');
-    // Check if the insertDefaultRecord function exists and call it if it does
-    if (db.userClientMap && typeof db.userClientMap.insertDefaultRecord === 'function') {
-      //return db.userClientMap.insertDefaultRecord();
-    } else {
-      console.error('insertDefaultRecord function not found in userClientMap model.');
-    }
+    // if (db.userClientMap && typeof db.userClientMap.insertDefaultRecord === 'function') {
+    //   return db.userClientMap.insertDefaultRecord();
+    // } else {
+    //   console.error('insertDefaultRecord function not found in userClientMap model.');
+    // }
   })
   .catch(error => {
     console.error('Error synchronizing database:', error);

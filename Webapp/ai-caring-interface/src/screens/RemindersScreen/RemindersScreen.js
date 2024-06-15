@@ -3,7 +3,7 @@ import { View, Text, FlatList, StyleSheet, ActivityIndicator, TouchableOpacity }
 import { useNavigate } from 'react-router-dom';
 import api from '../../utils/api';
 import { AuthContext } from '../../Authcontext';
-import { FaChevronRight } from 'react-icons/fa';
+import { FaTrashAlt, FaEdit } from 'react-icons/fa';
 
 const RemindersScreen = () => {
   const [reminders, setReminders] = useState([]);
@@ -43,16 +43,44 @@ const RemindersScreen = () => {
     }
   }, [token]);
 
+  const handleDeleteReminder = async (id) => {
+    try {
+      await api.delete(`/reminders/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setReminders(reminders.filter((reminder) => reminder.id !== id));
+    } catch (error) {
+      console.error('Error deleting reminder:', error);
+      setError('An error occurred while deleting the reminder');
+    }
+  };
+
+  const handleEditReminder = (reminder) => {
+    navigate(`/edit-reminder/${reminder.id}`); // Navigate with reminderId
+  };
+
   const renderItem = ({ item }) => (
     <TouchableOpacity style={styles.reminderItem} activeOpacity={0.7}>
-      <View style={styles.reminderTextContainer}>
-        <Text style={styles.reminderText}>{item.message}</Text>
+      <View style={styles.reminderContent}>
+        <View style={styles.reminderTextContainer}>
+          <Text style={styles.reminderText}>{item.message}</Text>
+        </View>
+        <View style={styles.reminderDetailsContainer}>
+          <Text style={styles.reminderDetails}>Interval: {item.interval}</Text>
+          <Text style={styles.reminderDetails}>Time: {item.time}</Text>
+        </View>
+        <View style={styles.reminderActionsContainer}>
+          <TouchableOpacity onPress={() => handleDeleteReminder(item.id)}>
+            <FaTrashAlt size={24} color="#dc3545" />
+          </TouchableOpacity>
+          <View style={styles.actionButtonSeparator} />
+          <TouchableOpacity onPress={() => handleEditReminder(item)}>
+            <FaEdit size={24} color="#007bff" />
+          </TouchableOpacity>
+        </View>
       </View>
-      <View style={styles.reminderDetailsContainer}>
-        <Text style={styles.reminderDetails}>Interval: {item.interval}</Text>
-        <Text style={styles.reminderDetails}>Time: {item.time}</Text>
-      </View>
-      <FaChevronRight size={24} color="#666" />
     </TouchableOpacity>
   );
 
@@ -79,8 +107,9 @@ const RemindersScreen = () => {
         keyExtractor={(item) => item.id.toString()}
         ListHeaderComponent={
           <View style={styles.headerContainer}>
-            <Text style={styles.headerText}>Message</Text>
-            <Text style={styles.headerText}>Details</Text>
+            <Text style={styles.headerMessageText}>Message</Text>
+            <Text style={styles.headerDetailsText}>Details</Text>
+            <Text style={styles.headerActionsText}>Actions</Text>
           </View>
         }
         ItemSeparatorComponent={() => <View style={styles.separator} />}
@@ -124,8 +153,13 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 2,
   },
-  reminderTextContainer: {
+  reminderContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
     flex: 1,
+  },
+  reminderTextContainer: {
+    flex: 2,
     marginRight: 16,
   },
   reminderText: {
@@ -134,11 +168,19 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   reminderDetailsContainer: {
-    flex: 1,
+    flex: 1.5,
   },
   reminderDetails: {
     fontSize: 16,
     color: '#666',
+  },
+  reminderActionsContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 0.5,
+  },
+  actionButtonSeparator: {
+    width: 16,
   },
   errorText: {
     fontSize: 18,
@@ -153,8 +195,20 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginBottom: 8,
   },
-  headerText: {
-    flex: 1,
+  headerMessageText: {
+    flex: 2,
+    fontWeight: 'normal',
+    fontSize: 18,
+    color: '#495057',
+  },
+  headerDetailsText: {
+    flex: 1.5,
+    fontWeight: 'normal',
+    fontSize: 18,
+    color: '#495057',
+  },
+  headerActionsText: {
+    flex: 0.5,
     fontWeight: 'normal',
     fontSize: 18,
     color: '#495057',

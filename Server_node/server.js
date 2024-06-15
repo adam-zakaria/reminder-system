@@ -149,8 +149,10 @@ const authenticate = async (req, res, next) => {
   }
 };
 
-function determineReminderType(utilityName, componentName, time) {
-  if (utilityName && componentName && (!time || time.trim() === '')) {
+function determineReminderType(utilityName, componentName, time, activity) {
+  if (activity && activity.trim() !== '') {
+    return 'activity-based';
+  } else if (utilityName && componentName && (!time || time.trim() === '')) {
     return 'dependent';
   } else if ((!utilityName || utilityName.trim() === '') && (!componentName || componentName.trim() === '') && (time && time.trim() !== '')) {
     return 'non-dependent';
@@ -160,7 +162,6 @@ function determineReminderType(utilityName, componentName, time) {
     return 'unknown'; // Default value if none of the conditions match
   }
 }
-
 
 // WebSocket server
 const wss = new WebSocket.Server({ noServer: true });
@@ -256,15 +257,13 @@ function broadcastMessage(message) {
   });
 }
 app.post('/reminders', async (req, res) => {
-  const { userId, message, interval, time, utility_name, component_name, condition, display, delay, disappearOnCondition } = req.body;
+  const { userId, message, interval, time, utility_name, component_name, condition, display, delay, disappearOnCondition, activity, triggerTime, triggerType } = req.body;
 
   // Determine the type of the reminder
-  const type = determineReminderType(utility_name, component_name, time);
-
+  const type = determineReminderType(utility_name, component_name, time, activity);
 
   // Format the time
-  console.log(time,"time")
- let formattedTime = null;
+  let formattedTime = null;
   if (time) {
     const timeDateObject = new Date(time);
     formattedTime = timeDateObject.toISOString().slice(0, 19).replace('T', ' ');
@@ -283,50 +282,61 @@ app.post('/reminders', async (req, res) => {
     display,
     delay: delay || dataStore.delayTable[utility_name],
     sent: false,
-    disappearOnCondition: disappearOnCondition
+    disappearOnCondition,
+    activity,
+    triggerTime,
+    triggerType
   };
 
-  // Save the new reminder to the database
-  const savedReminder = await db.reminders.create(newReminder);
+  try {
+    // Save the new reminder to the database
+    const savedReminder = await db.reminders.create(newReminder);
 
-  // Fetch the latest reminder for the specified userId from the database
-  console.log(userId,"userid")
-  const userClientMap = await db.userClientMap.findOne({ where: { userId: userId } });
-  console.log(userClientMap,"userClientmap")
-  const targetClientId = userClientMap.targetClientId;
+    // Fetch the latest user-client mapping for the specified userId
+    const userClientMap = await db.userClientMap.findOne({ where: { userId: userId } });
+    if (!userClientMap) {
+      return res.status(404).send({ status: 'User not found' });
+    }
 
-  // If the reminder is non-dependent, schedule it to be sent at the specified time
-  if (type === 'non-dependent') {
-    const cronExpression = `${timeDateObject.getUTCMinutes()} ${timeDateObject.getUTCHours()} * * *`;
-    cron.schedule(cronExpression, () => {
-      const stickyNoteUpdate = {
-        action: "add",
-        id: savedReminder.id.toString() + "00",
-        stickyNote: {
-          title: "Reminder",
-          content: newReminder.display,
-          notificationSoundID: 1,
-          instructions: []
-        }
-      };
+    const targetClientId = userClientMap.targetClientId;
 
-      sendMessageToClient(targetClientId, stickyNoteUpdate.action, stickyNoteUpdate.stickyNote, stickyNoteUpdate.id);
-    });
+    // If the reminder is non-dependent, schedule it to be sent at the specified time
+    if (type === 'non-dependent') {
+      const timeDateObject = new Date(time);
+      const cronExpression = `${timeDateObject.getUTCMinutes()} ${timeDateObject.getUTCHours()} * * *`;
+      cron.schedule(cronExpression, () => {
+        const stickyNoteUpdate = {
+          action: "add",
+          id: savedReminder.id.toString() + "00",
+          stickyNote: {
+            title: "Reminder",
+            content: newReminder.display,
+            notificationSoundID: 1,
+            instructions: []
+          }
+        };
+
+        sendMessageToClient(targetClientId, stickyNoteUpdate.action, stickyNoteUpdate.stickyNote, stickyNoteUpdate.id);
+      });
+    }
+
+    // Log the creation of the reminder
+    console.log('Reminder created:', savedReminder.id);
+
+    // Send the response with the details of the newly created reminder
+    res.status(201).json(savedReminder);
+  } catch (error) {
+    console.error('Error creating reminder:', error);
+    res.status(500).send({ status: 'Error creating reminder', error: error.message });
   }
-
-  // Log the creation of the reminder
-  console.log('Reminder created:', savedReminder.id);
-
-  // Send the response with the details of the newly created reminder
-  res.status(201).json(savedReminder);
 });
 
 
 
 
 app.post('/oracle-updates', async (req, res) => {
-  const { update } = req.body;
-
+  const update  = req.body;
+  //console.log(req.body,"body")
   if (!update) {
     return res.status(400).send({ status: 'Missing update' });
   }
@@ -334,7 +344,7 @@ app.post('/oracle-updates', async (req, res) => {
   console.log(`Update from Oracle for client`, update);
 
   // Hardcoded userId for demonstration purposes
-  const userId = 12345; // Replace "123" with the actual userId you want to use
+  const userId = "137ce759-00af-42d8-9210-c3f784afbb80";
 
   // Fetch the latest reminder for the specified userId from the database
   const userClientMap = await db.userClientMap.findOne({ where: { userId: userId } });
@@ -347,9 +357,12 @@ app.post('/oracle-updates', async (req, res) => {
   // Send the response immediately
   res.status(200).send({ status: 'Update received' });
 
-  // Emit an event indicating that a new update has been received
-  updateEvent.emit('newUpdate', update, targetClientId);
-
+  // Emit events to handle the update
+  if (update.activity) {
+  updateEvent.emit('handleActivityReminders', update, targetClientId);
+  }else if (update.update) {
+    updateEvent.emit('newUpdate', update, targetClientId);
+  }
 });
 
 
@@ -470,7 +483,7 @@ updateEvent.on('newUpdate', async (update, targetClientId) => {
         }
         return false;
       });
-    });
+    })
 
     // If the reminder's condition is not met, remove it from the client device
     if (!isMatch && reminder.disappearOnCondition) {
@@ -496,6 +509,79 @@ updateEvent.on('newUpdate', async (update, targetClientId) => {
   });
 });
 
+updateEvent.on('handleActivityReminders', async (update, targetClientId) => {
+  const reminders = await db.reminders.findAll({
+    where: {
+      type: 'activity-based',
+      sent: false
+    }
+  });
+
+  console.log(reminders, "activity-based reminders");
+
+  const matchingReminders = reminders.filter(reminder => {
+    console.log(reminder.dataValues, "reminder", reminder.dataValues.activity, update.activity );
+    return update.activity && update.activity === reminder.dataValues.activity;
+  });
+
+  console.log(matchingReminders, "matching reminders");
+
+  if (matchingReminders.length > 0) {
+    for (const reminder of matchingReminders) {
+      if (update.activity_status === 'begin') {
+        if (reminder.dataValues.triggerType === 'begin') {
+          sendReminderToClient(reminder.dataValues, targetClientId);
+        } else if (reminder.dataValues.triggerType === 'after') {
+          if (reminder.dataValues.triggerTime) {
+            const cronTime = new Date(new Date(update.timestamp).getTime() + reminder.dataValues.triggerTime);
+            scheduleReminder(cronTime, reminder.dataValues, targetClientId);
+          } else {
+            sendReminderToClient(reminder.dataValues, targetClientId);
+          }
+        }
+      } else if (update.activity_status === 'end') {
+        if (reminder.dataValues.triggerType === 'begin') {
+          sendReminderToClient(reminder.dataValues, targetClientId);
+        } else if (reminder.dataValues.triggerType === 'after') {
+          if (reminder.dataValues.triggerTime) {
+            const cronTime = new Date(new Date(update.timestamp).getTime() + reminder.dataValues.triggerTime);
+            scheduleReminder(cronTime, reminder.dataValues, targetClientId);
+          } else {
+            sendReminderToClient(reminder.dataValues, targetClientId);
+          }
+        }
+      }
+    }
+  }
+
+  const sentReminders = await db.sentReminders.findAll();
+
+  for (const sentReminder of sentReminders) {
+    const reminder = await db.reminders.findOne({ where: { id: sentReminder.reminderId } });
+    if (!reminder) continue;
+
+    const isMatch = update.activity && update.activity === reminder.dataValues.activity;
+
+    if (!isMatch && reminder.dataValues.disappearOnCondition) {
+      const stickyNoteUpdate = {
+        action: "remove",
+        id: `${reminder.dataValues.id}00`,
+        stickyNote: {
+          title: "Reminder",
+          content: reminder.dataValues.display,
+          notificationSoundID: 1,
+          instructions: []
+        }
+      };
+
+      sendMessageToClient(sentReminder.clientId, stickyNoteUpdate.action, stickyNoteUpdate.stickyNote, stickyNoteUpdate.id);
+      reminder.dataValues.sent = false;
+
+      await db.reminders.update({ sent: false }, { where: { id: reminder.dataValues.id } });
+      await db.sentReminders.destroy({ where: { reminderId: reminder.dataValues.id } });
+    }
+  }
+});
 updateEvent.on('delayElapsed', async (targetClientId) => {
   console.log("inside delay elapsed")
   updateEvent.once('newUpdate', async (update) => {
@@ -512,6 +598,7 @@ updateEvent.on('delayElapsed', async (targetClientId) => {
     }
   });
 });
+
 
 
 async function sendReminderToClient(matchingReminder, targetClientId) {
@@ -540,6 +627,16 @@ async function delayExecution(millisecs) {
   console.log("inside delay execution");
 }
 
+function scheduleReminder(cronTime, reminder, targetClientId) {
+  const cronExpression = `${cronTime.getSeconds()} ${cronTime.getMinutes()} ${cronTime.getHours()} ${cronTime.getDate()} ${cronTime.getMonth() + 1} *`;
+  
+  cron.schedule(cronExpression, () => {
+    sendReminderToClient(reminder, targetClientId);
+  }, {
+    scheduled: true,
+    timezone: "America/New_York"
+  });
+}
 
 async function findMatchingReminders(update) {
   const reminders = await db.reminders.findAll({
@@ -552,111 +649,135 @@ async function findMatchingReminders(update) {
   console.log(reminders, "reminders")
 
   return reminders.filter(reminder => {
-    //if (reminder.type === 'dependent'&& !reminder.sent) {
-    const isMatch = update.home_utilities.some(home => {
+    const utilityMatch = update.home_utilities?.some(home => {
       return home.utilities.some(utility => {
-        if (utility.utility_name === reminder.dataValues.utility_name) {
+        if (utility.utility_name === reminder.utility_name) {
           return utility.components.some(component => {
-            if (component.component_name === reminder.dataValues.component_name && component.status === reminder.dataValues.condition) {
-              return true;
-            }
-            return false;
+            return component.component_name === reminder.component_name && component.status === reminder.condition;
           });
         }
-        return false;
       });
     });
-    if (isMatch) {
-      return true;
-    }
-    //}
-    return false;
+
+    const activityMatch = update.activity && update.activity === reminder.activity;
+
+    return utilityMatch || activityMatch;
   });
 }
 
 app.post('/chat', async (req, res) => {
-  const { message, sessionId } = req.body;
-
+  const { message, sessionId, userId } = req.body;
   if (!message) {
     return res.status(400).json({ error: 'Message is required' });
   }
 
   const currentSessionId = sessionId || uuidv4();
 
-  // Initialize session if it doesn't exist
-  if (!sessions[currentSessionId]) {
-    sessions[currentSessionId] = { messages: [] };
-  }
-
-  // Add user message to the session history
-  sessions[currentSessionId].messages.push({ role: 'user', content: message });
-
-  // Define a custom prompt
-  const prompt = {
-    role: 'system',
-    content : _reminderPrompt
-    // content: `You are a helpful assistant who understands how to extract information from natural language to create reminders in json format. 
-    // Ensure the structure includes the necessary fields to represent the information provided. 
-    // Edge cases/Instructions:
-    // The time field can be null if the user has not provided it, only if there is a utility and component present.
-    // Time should be given as a timestamp, for example in this format: YYYY-MM-DDTHH:MM:SS.SSSZ
-    // The delay field specifies the seconds, it can be null, for example: 3000
-    // Prompt the user asking for the specific missing information in a user-friendly way.
-    // Utility, component, delay, and condition fields can be null if the user has provided time.
-    // Prompt the user with a user-friendly message saying you cannot do it, or you didn't understand when asked for anything other than a reminder.
-    // Add relevant time as in if it's tomorrow, input it for tomorrow's date with reference to the current date.
-
-    // Sample example:
-    // User Input: Every time if the Microwave door is open for more than 3 seconds show close the Microwave Door
-    // System response: {
-    //     "userId": 12345,
-    //     "message": "EVERYTIME IF Microwave door is open for more than 3 seconds SHOW Close the Microwave Door",
-    //     "display": "Close the Microwave Door",
-    //     "interval": "Everytime",
-    //     "time": null,
-    //     "delay": 3000,
-    //     "utility_name": "Microwave",
-    //     "component_name": "Door",
-    //     "condition": "Open"
-    // },
-    // User input: Next time 7pm on Wednesday show Happy Birthday Sujendra
-    // System response: {
-    //     "userId": 12345,
-    //     "message": "NEXT TIME 7pm on Wednesday SHOW Happy Birthday Sujendra",
-    //     "display": "Happy Birthday Sujendra",
-    //     "interval": "Next Time",
-    //     "time": "2024-03-30T19:00:00.000Z",
-    //     "delay": null,
-    //     "utility_name": null,
-    //     "component_name": null,
-    //     "condition": null
-    // }`
-  };
-
-  // Prepare messages for OpenAI, including the prompt at the beginning
-  const messagesForAI = [prompt, ...sessions[currentSessionId].messages];
-  console.log(messagesForAI,"messages for ai")
   try {
-    const completion = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
-      messages: messagesForAI,
-      response_format: {
-         type: "json_object"
-         }
-    });
+    // Step 1: Find or create a chat thread for the current session
+    let thread = await db.chatThreads.findOne({ where: { id: currentSessionId } });
+    if (!thread) {
+      const newThread = {
+        id: currentSessionId,
+        userId,
+        messages: [],
+        timestamp: new Date().toISOString(),
+        sessionId: currentSessionId,
+      };
+      thread = await db.chatThreads.create(newThread);
+    }
 
-    console.log(completion, "completion")
+    // Step 2: Save the user's message to the database
+    const newMessage = {
+      id: uuidv4(),
+      role: 'user',
+      content: message,
+      sessionId: currentSessionId,
+      threadId: currentSessionId,
+      userId,
+      timestamp: new Date().toISOString(),
+    };
+    const savedMessage = await db.chatMessages.create(newMessage);
+
+    // Step 3: Update the thread with the new message
+    thread.messages.push(savedMessage);
+    await thread.save();
+
+    // Step 4: Generate the assistant's response using OpenAI
+    const prompt = _reminderPrompt;
+    const messagesForAI = [...prompt, ...thread.messages];
+    console.log(messagesForAI,"Message for ai")
+    const completion = await openai.chat.completions.create({
+      model: "gpt-4o",
+      messages: messagesForAI,
+      response_format: { type: "json_object" },
+      temperature: 0.59,
+      max_tokens: 256,
+      top_p: 1,
+      frequency_penalty: 0,
+      presence_penalty: 0,
+    });
     const responseMessage = completion.choices[0].message.content;
 
-    // Add assistant's response to the session history
-    sessions[currentSessionId].messages.push({ role: 'assistant', content: responseMessage });
+    // Step 5: Save the assistant's response to the database
+    const assistantMessage = {
+      id: uuidv4(),
+      role: 'assistant',
+      content: responseMessage,
+      sessionId: currentSessionId,
+      threadId: currentSessionId,
+      userId,
+      timestamp: new Date().toISOString(),
+    };
+    await db.chatMessages.create(assistantMessage);
 
-    res.json({ sessionId: currentSessionId, response: JSON.parse(responseMessage) });
+    // Step 6: Update the thread with the assistant's message
+    thread.messages.push(assistantMessage);
+    await thread.save();
+
+    res.status(200).json({ sessionId: currentSessionId, response: JSON.parse(responseMessage) });
   } catch (error) {
     console.error('Error with OpenAI API:', error);
     res.status(500).json({ error: 'Failed to generate response from OpenAI' });
   }
 });
+
+app.get('/chat/:threadId', async (req, res) => {
+  const { threadId } = req.params;
+
+  try {
+    // Find the thread by its ID
+    const thread = await db.chatThreads.findOne({
+      where: { id: threadId },
+      include: [
+        {
+          model: db.chatMessages,
+          attributes: ['id', 'role', 'content', 'timestamp'],
+          order: [['timestamp', 'ASC']], // Order messages by timestamp
+        },
+      ],
+    });
+
+    if (!thread) {
+      return res.status(404).json({ error: 'Thread not found' });
+    }
+
+    // Extract the messages from the thread
+    const messages = thread.chatMessages.map(message => ({
+      id: message.id,
+      role: message.role,
+      content: message.content,
+      timestamp: message.timestamp,
+    }));
+
+    res.json({ messages });
+  } catch (error) {
+    console.error('Error fetching thread:', error);
+    res.status(500).json({ error: 'Failed to fetch thread' });
+  }
+});
+
+
 const ASSISTANT_ID = "asst_2wGBPPxKjK0Nn0RsGqCDzNlF";
 
 app.post('/ask-assistant', async (req, res) => {
@@ -805,14 +926,38 @@ app.get('/reminders', authenticate, async (req, res) => {
   }
 });
 
-app.put('/reminders/:id', async (req, res) => {
+// API endpoint to get a reminder by its ID
+app.get('/reminders/:id', authenticate, async (req, res) => {
   const { id } = req.params;
-  const { userId, message, interval, time, utility_name, component_name, condition, display, delay, sent, disappearOnCondition } = req.body;
 
   try {
-    const reminder = await db.reminders.findByPk(id);
+    const reminder = await db.reminders.findOne({ where: { id, userId: req.user.id } });
+
     if (!reminder) {
       return res.status(404).json({ error: 'Reminder not found' });
+    }
+
+    res.json(reminder);
+  } catch (error) {
+    console.error('Error fetching reminder:', error);
+    res.status(500).json({ error: 'Failed to fetch reminder' });
+  }
+});
+
+app.put('/reminders/:id', authenticate, async (req, res) => {
+  const { id } = req.params;
+  const { userId, message, interval, time, utility_name, component_name, condition, display, delay, disappearOnCondition } = req.body;
+
+  try {
+    const { user } = req;
+    const reminder = await db.reminders.findOne({ where: { id, userId: user.id } });
+
+    if (!reminder) {
+      return res.status(404).json({ error: 'Reminder not found' });
+    }
+
+    if (user.role === 'user' && reminder.userId !== user.id) {
+      return res.status(403).json({ error: 'You are not authorized to edit this reminder' });
     }
 
     reminder.userId = userId || reminder.userId;
@@ -824,7 +969,6 @@ app.put('/reminders/:id', async (req, res) => {
     reminder.condition = condition || reminder.condition;
     reminder.display = display || reminder.display;
     reminder.delay = delay || reminder.delay;
-    reminder.sent = sent !== undefined ? sent : reminder.sent;
     reminder.disappearOnCondition = disappearOnCondition !== undefined ? disappearOnCondition : reminder.disappearOnCondition;
 
     await reminder.save();
@@ -835,13 +979,19 @@ app.put('/reminders/:id', async (req, res) => {
   }
 });
 
-app.delete('/reminders/:id', async (req, res) => {
+app.delete('/reminders/:id', authenticate, async (req, res) => {
   const { id } = req.params;
 
   try {
-    const reminder = await db.reminders.findByPk(id);
+    const { user } = req;
+    const reminder = await db.reminders.findOne({ where: { id, userId: user.id } });
+
     if (!reminder) {
       return res.status(404).json({ error: 'Reminder not found' });
+    }
+
+    if (user.role === 'user' && reminder.userId !== user.id) {
+      return res.status(403).json({ error: 'You are not authorized to delete this reminder' });
     }
 
     await reminder.destroy();

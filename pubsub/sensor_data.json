@@ -1,0 +1,45 @@
+{
+    "update": { 
+        "home_utilities": [
+            {
+                "home_id": "home123",       
+                "utilities": [
+                    {
+                        "utility_id": "utility456",
+                        "utility_name": "Microwave",
+                        "status": "On", 
+                        "components": [
+                            {
+                                "component_name": "Door", 
+                                "status": "Closed"          
+                            }
+                          
+                        ]
+                    },
+                    {
+                        "utility_id": "utility789",
+                        "utility_name": "Fridge",
+                        "status": "On",
+                        "components": [
+                            {
+                                "component_name": "Door",
+                                "status": "Closed"
+                            }
+                           
+                        ]
+                    }
+                    
+                ],
+                "activities": [
+                    {
+                        "activity_id": "activity789",
+                        "activity_type": "Cooking",
+                        "status": "Started"
+                    }
+             
+                ]
+            }
+            
+        ]
+    }
+}

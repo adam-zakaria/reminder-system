@@ -46,6 +46,18 @@ module.exports = (sequelize, Sequelize) => {
     disappearOnCondition: {
       type: Sequelize.BOOLEAN,
     },
+    activity: {
+      type: Sequelize.STRING,
+      allowNull: true,
+    },
+    triggerTime: { // New field for specifying time before or after the activity
+      type: Sequelize.INTEGER,
+      allowNull: true,
+    },
+    triggerType: { // New field for specifying before or after the activity
+      type: Sequelize.ENUM('begin', 'after'),
+      allowNull: true,
+    },
   });
 
   return Reminder;
