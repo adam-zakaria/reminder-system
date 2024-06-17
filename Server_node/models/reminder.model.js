@@ -55,7 +55,7 @@ module.exports = (sequelize, Sequelize) => {
       allowNull: true,
     },
     triggerType: { // New field for specifying before or after the activity
-      type: Sequelize.ENUM('begin', 'after'),
+      type: Sequelize.ENUM('begin', 'end'),
       allowNull: true,
     },
   });

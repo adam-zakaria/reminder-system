@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, ScrollView, ActivityIndicator, StyleSheet, TouchableOpacity, Text } from 'react-native';
+import { View, ScrollView, ActivityIndicator, StyleSheet, Text } from 'react-native';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
 import ReminderForm from '../../components/ReminderForm/ReminderForm';
 import ChatBox from '../../components/ChatBox/ChatBox';
@@ -17,11 +19,11 @@ function HomeScreen() {
     component_name: '',
     condition: '',
     display: '',
-    delay: '',
+    delay: null,
     disappearOnCondition: 'false',
-    activity: '',
+    activity: null,
     triggerTime: null,
-    triggerType: '',
+    triggerType: null,
   });
   const [loadingReminder, setLoadingReminder] = useState(false);
   const [invalidFields, setInvalidFields] = useState([]);
@@ -42,23 +44,36 @@ function HomeScreen() {
   };
 
   const formInvalid = () => {
-    let invalid = [];
-    if (!reminder.userId) invalid.push('userId');
-    if (!reminder.message) invalid.push('message');
-    if (!reminder.interval) invalid.push('interval');
-    if (!reminder.display) invalid.push('display');
+    const invalid = [];
+    const { userId, message, interval, display, time, utility_name, component_name, condition, delay, activity, triggerTime, triggerType } = reminder;
 
-    const nondependent = !reminder.time && reminder.utility_name && reminder.component_name && reminder.condition;
-    const dependent = reminder.time && (!reminder.utility_name || !reminder.component_name || !reminder.condition);
-    const activityBased = !reminder.time && !reminder.utility_name && !reminder.component_name && !reminder.condition && reminder.activity && reminder.triggerType ;
+    // Validate required fields for all reminder types
+    if (!userId) invalid.push('userId');
+    if (!message) invalid.push('message');
+    if (!interval) invalid.push('interval');
+    if (!display) invalid.push('display');
 
-    if (!nondependent && !dependent && !activityBased) {
-      if (!reminder.time) invalid.push('time');
-      if (!reminder.utility_name) invalid.push('utility_name');
-      if (!reminder.component_name) invalid.push('component_name');
-      if (!reminder.condition) invalid.push('condition');
-      if (!reminder.activity) invalid.push('activity');
-      if (!reminder.triggerType) invalid.push('triggerType');
+    // Non-dependent reminder
+    if (time) {
+      if (utility_name || component_name || condition || delay || activity || triggerTime || triggerType) {
+        invalid.push('utility_name', 'component_name', 'condition', 'delay', 'activity', 'triggerTime', 'triggerType');
+      }
+    }
+    // Dependent reminder
+    else if (utility_name && component_name && condition) {
+      if (time || activity || triggerTime || triggerType) {
+        invalid.push('time', 'activity', 'triggerTime', 'triggerType');
+      }
+    }
+    // Activity-based reminder
+    else if (activity && triggerTime && triggerType) {
+      if (time || utility_name || component_name || condition || delay) {
+        invalid.push('time', 'utility_name', 'component_name', 'condition', 'delay');
+      }
+    }
+    // Generic reminder (none of the specific types)
+    else {
+      // Add validation for any other required fields here
     }
 
     setInvalidFields(invalid);
@@ -67,7 +82,10 @@ function HomeScreen() {
 
   const handleSubmit = async () => {
     setSubmitted(true);
-    if (formInvalid()) {
+    const isInvalid = formInvalid();
+    if (isInvalid) {
+      const invalidFieldNames = invalidFields.join(', ');
+      toast.error(`Please fill in the following fields correctly: ${invalidFieldNames}`);
       return;
     }
 
@@ -75,10 +93,11 @@ function HomeScreen() {
     try {
       const response = await api.post('/reminders', reminder);
       console.log(response.data);
-      alert('Reminder Created Successfully!');
+      toast.success('Reminder Created Successfully!');
       navigate('/reminders');
     } catch (error) {
       console.error(error);
+      toast.error(`An error occurred: ${error.message}`);
     }
     setLoadingReminder(false);
   };

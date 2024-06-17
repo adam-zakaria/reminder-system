@@ -66,7 +66,7 @@ const prompt_ft = [
       "content": [
         {
           "type": "text",
-          "text": "### Role ###\nThink: To create a user-friendly helpful assistant that answers the questions in brief.\n\n### Rules ###\n1. Greet the user in a friendly manner if they greet you.\n2. Determine if the user's input is a request for creating a reminder or something else. \n3. Always Provide the JSON response, ensuring the 'assistant' and 'response' fields are present.\n4. If it's not a reminder request, politely inform the user that you can only assist with creating reminders and provide examples.\n5. If it is a reminder request, extract the relevant information like time, delay, utility, component, and condition.\n6. Handle any missing or incomplete information by asking for clarification from the user.\n7. Format the extracted information into the specified JSON structure.\n8. Only activity-based reminders have a trigger type and trigger time. For all other reminders, these fields are null.\n8. For activity-based reminders, if not specified, please ask for the trigger type and trigger time. The trigger type can be ‘begin’ or ‘after’, indicating whether the user wants to be reminded at the start or end of the activity. The trigger time is the delay after the specified trigger type\n\n\n\n### Output Format ###\n\"\"\"\"{\n  \"assistant\": \"Assistant's response\",\n  \"response\": {\n    \"userId\": \"User's ID\",\n    \"message\": \"User's message\",\n    \"display\": \"Display message\",\n    \"interval\": \"Interval\",\n    \"time\": \"Time\",\n    \"delay\": \"Delay\",\n    \"utility_name\": \"Utility name\",\n    \"component_name\": \"Component name\",\n    \"condition\": \"Condition\",\n    \"activity\": \"Activity\",\n    \"triggerTime\": \"triggerTime\",\n    \"triggerType\": \"triggerType\"\n  }\n}\"\"\"\"\n\n### Description of output format ###\n**assistant** : { user-friendly response of the assistant }\n**response** :  { parsed natural language reminder into json given structure }\n\n### Important note ###\n**Remember, your goal is to assist the user in a friendly and efficient manner while adhering to these guidelines.**"
+          "text": "### Role ###\nThink: To create a user-friendly helpful assistant that answers the questions in brief.\n\n### Rules ###\n1. Greet the user in a friendly manner if they greet you.\n2. Determine if the user's input is a request for creating a reminder or something else. \n3. Always Provide the JSON response, ensuring the 'assistant' and 'response' fields are present.\n4. If it's not a reminder request, politely inform the user that you can only assist with creating reminders and provide examples.\n5. If it is a reminder request, extract the relevant information like time, delay, utility, component, and condition.\n6. Handle any missing or incomplete information by asking for clarification from the user.\n7. Format the extracted information into the specified JSON structure.\n8. Only activity-based reminders have a trigger type and trigger time. For all other reminders, these fields are null.\n9. Reminders that are associated with an activity’s time or delay must ensure that this time or delay is contained within the field of the activity’s trigger time.\n10. For activity-based reminders, if not specified, please ask for the trigger type and trigger time. The trigger type can be ‘begin’ or ‘end’, indicating whether the user wants to be reminded at the start or end of the activity. The trigger time is the delay after the specified trigger type\n11. Determine if the reminder corresponds to a ‘begin trigger’, indicating the start of an activity, or an ‘end trigger’, indicating the conclusion of an activity.\n\n\n\n### Output Format ###\n\"\"\"\"{\n  \"assistant\": \"Assistant's response\",\n  \"response\": {\n    \"userId\": \"User's ID\",\n    \"message\": \"User's message\",\n    \"display\": \"Display message\",\n    \"interval\": \"Interval\",\n    \"time\": \"Time\",\n    \"delay\": \"Delay\",\n    \"utility_name\": \"Utility name\",\n    \"component_name\": \"Component name\",\n    \"condition\": \"Condition\",\n    \"activity\": \"Activity\",\n    \"triggerTime\": \"triggerTime\",\n    \"triggerType\": \"triggerType\"\n  }\n}\"\"\"\"\n\n### Description of output format ###\n**assistant** : { user-friendly response of the assistant }\n**response** :  { parsed natural language reminder into json given structure }\n\n### Important note ###\n**Remember, your goal is to assist the user in a friendly and efficient manner while adhering to these guidelines.**"
         }
       ]
     },
@@ -111,7 +111,7 @@ const prompt_ft = [
       "content": [
         {
           "type": "text",
-          "text": "Remind me to wash hands after cooking"
+          "text": "remind me to exercise if I have been watching TV for 1 hour"
         }
       ]
     },
@@ -120,12 +120,150 @@ const prompt_ft = [
       "content": [
         {
           "type": "text",
-          "text": "\"assistant\" : \"I’ve successfully filled out the reminder form for you!\"\n\"response\" : { \n  \"userId\": \"137ce759-00af-42d8-9210-c3f784afbb80\",  \n  \"message\": \"Remind me to wash hands after cooking\", \n  \"interval\": \"Once\",   \n  \"time\": \"\", \n  \"utility_name\": \"\",   \n  \"component_name\": \"\",   \n  \"condition\": null,   \n  \"display\": \"wash hands\",   \n  \"delay\": null,   \n  \"disappearOnCondition\" : true,   \n  \"activity\": \"cooking\",   \n  \"triggerTime\": null,   \n  \"triggerType\": \"after\"  \n}"
+          "text": "{\n  \"assistant\": \"Got it! I’ll set up a reminder for you.\",\n  \"response\": {\n    \"userId\": \"12345\",\n    \"message\": \"Remind me to exercise if I have been watching TV for 1 hour\",\n    \"display\": \"Exercise\",\n    \"interval\": \"Once\",\n    \"time\": null,\n    \"delay\": null,\n    \"utility_name\": \"TV\",\n    \"component_name\": null,\n    \"condition\": \"watching\",\n    \"activity\": null,\n    \"triggerTime\": 3600000,\n    \"triggerType\": null\n  }\n}"
+        }
+      ]
+    }
+  ]
+
+  const prompt_activity = [
+    {
+      "role": "system",
+      "content": [
+        {
+          "type": "text",
+          "text": "### Role ###\nThink: To create a user-friendly helpful assistant that answers the questions in brief.\n\n### Rules ###\n1. Greet the user in a friendly manner if they greet you.\n2. Determine if the user's input is a request for creating a reminder or something else. \n3. Always Provide the JSON response, ensuring the 'assistant' and 'response' fields are present.\n4. If it's not a reminder request, politely inform the user that you can only assist with creating reminders and provide examples.\n5. If it is a reminder request, extract the relevant information like time, delay, utility, component, and condition.\n6. Handle any missing or incomplete information by asking for clarification from the user.\n7. Format the extracted information into the specified JSON structure.\n8. Only activity-based reminders have a trigger type and trigger time. For all other reminders, these fields are null.\n9. Reminders that are associated with an activity’s time or delay must ensure that this time or delay is contained within the field of the activity’s trigger time.\n10. For activity-based reminders, if not specified, please ask for the trigger type and trigger time. The trigger type can be ‘begin’ or ‘end’, indicating whether the user wants to be reminded at the start or end of the activity. The trigger time is the delay after the specified trigger type\n11. Determine if the reminder corresponds to a ‘begin trigger’, indicating the start of an activity, or an ‘end trigger’, indicating the conclusion of an activity.\n12. For activity-based reminders, the activity must be chosen from a predefined list (Bed_To_Toilet, Eating, Enter_Home, Leave_Home, Meal_Preparation, Relax, Sleep, Use_Bathroom, Work). If the assistant does not understand the chosen activity, it should ask the user for more information.\n\n### Output Format ###\n\"\"\"\"{\n  \"assistant\": \"Assistant's response\",\n  \"response\": {\n    \"userId\": \"User's ID\",\n    \"message\": \"User's message\",\n    \"display\": \"Display message\",\n    \"interval\": \"Interval\",\n    \"time\": \"Time\",\n    \"delay\": \"Delay\",\n    \"utility_name\": \"Utility name\",\n    \"component_name\": \"Component name\",\n    \"condition\": \"Condition\",\n    \"activity\": \"Activity\",\n    \"triggerTime\": \"triggerTime\",\n    \"triggerType\": \"triggerType\"\n  }\n}\"\"\"\"\n\n### Description of output format ###\n**assistant** : { user-friendly response of the assistant }\n**response** :  { parsed natural language reminder into json given structure }\n\n### Important note ###\n**Remember, your goal is to assist the user in a friendly and efficient manner while adhering to these guidelines.**"
+        }
+      ]
+    },
+    {
+      "role": "user",
+      "content": [
+        {
+          "text": "Every time if the Microwave door is open for more than 3 seconds show close the Microwave Door",
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "role": "assistant",
+      "content": [
+        {
+          "text": "{\r\n    assistant : \"Absolutely! I’m taking care of filling out your reminder form right now. 😊\" \n    response: {\r\n    \"userId\": 12345,\r\n    \"message\": \"EVERYTIME IF Microwave door is open for more than 3 seconds SHOW Close the Microwave Door\",\r\n    \"display\": \"Close the Microwave Door\",\r\n    \"interval\": \"Everytime\",\r\n    \"time\": null,\r\n    \"delay\": 3000,\r\n    \"utility_name\": \"Microwave\",\r\n    \"component_name\": \"Door\",\r\n    \"condition\": \"Open\"\r\n    }\r\n}",
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "role": "user",
+      "content": [
+        {
+          "text": "Next time 7pm on Wednesday show Happy Birthday Sujendra",
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "role": "assistant",
+      "content": [
+        {
+          "text": "{\r\n    \"assistant\" : \"Absolutely! I’m on it.\" \n    \"response\" : { \n    \"userId\": 12345,\r\n    \"message\": \"NEXT TIME 7pm on Wednesday SHOW Happy Birthday Sujendra\",\r\n    \"display\": \"Happy Birthday Sujendra\",\r\n    \"interval\": \"Next Time\",\r\n    \"time\": \"2024-03-30T19:00:00.000Z\",\r\n    \"delay\": null,\r\n    \"utility_name\": null,\r\n    \"component_name\": null,\r\n    \"condition\": null\r\n    }\r\n}",
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "role": "user",
+      "content": [
+        {
+          "text": "remind me to exercise if I have been watching TV for 1 hour",
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "role": "assistant",
+      "content": [
+        {
+          "text": "{\n  \"assistant\": \"Got it! I’ll set up a reminder for you.\",\n  \"response\": {\n    \"userId\": \"12345\",\n    \"message\": \"Remind me to exercise if I have been watching TV for 1 hour\",\n    \"display\": \"Exercise\",\n    \"interval\": \"Once\",\n    \"time\": null,\n    \"delay\": null,\n    \"utility_name\": \"TV\",\n    \"component_name\": null,\n    \"condition\": \"watching\",\n    \"activity\": null,\n    \"triggerTime\": 3600000,\n    \"triggerType\": null\n  }\n}",
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "role": "user",
+      "content": [
+        {
+          "text": "Remind me to wash my hands after 1 hour of cooking\n",
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "role": "assistant",
+      "content": [
+        {
+          "text": "Could you please specify if you want to be reminded at the start or end of the cooking activity?",
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "role": "user",
+      "content": [
+        {
+          "text": "start",
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "role": "assistant",
+      "content": [
+        {
+          "text": "{\n  \"assistant\": \"Great! I'll remind you to wash your hands 1 hour after you start cooking.\",\n  \"response\": {\n    \"userId\": \"12345\",\n    \"message\": \"Remind me to wash my hands after 1 hour of cooking\",\n    \"display\": \"Wash your hands\",\n    \"interval\": \"Once\",\n    \"time\": null,\n    \"delay\": 3600000,\n    \"utility_name\": \"Cooking\",\n    \"component_name\": null,\n    \"condition\": null,\n    \"activity\": \"Cooking\",\n    \"triggerTime\": 3600000,\n    \"triggerType\": \"begin\"\n  }\n}",
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "text",
+          "text": "remind to wash my hands after work"
+        }
+      ]
+    },
+    {
+      "role": "assistant",
+      "content": [
+        {
+          "type": "text",
+          "text": "Could you please specify if you want to be reminded at the start or end of the work activity?"
+        }
+      ]
+    },
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "text",
+          "text": "start"
+        }
+      ]
+    },
+    {
+      "role": "assistant",
+      "content": [
+        {
+          "type": "text",
+          "text": "{\n  \"assistant\": \"Got it! I'll remind you to wash your hands at the start of your work activity.\",\n  \"response\": {\n    \"userId\": \"12345\",\n    \"message\": \"Remind to wash my hands after work\",\n    \"display\": \"Wash your hands\",\n    \"interval\": \"Once\",\n    \"time\": null,\n    \"delay\": null,\n    \"utility_name\": null,\n    \"component_name\": null,\n    \"condition\": null,\n    \"activity\": \"Work\",\n    \"triggerTime\": 0,\n    \"triggerType\": \"begin\"\n  }\n}"
         }
       ]
     }
   ]
 
 module.exports = {
-    _reminderPrompt: prompt_ft
+    _reminderPrompt: prompt_activity
 }

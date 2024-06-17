@@ -1,7 +1,8 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { View, TextInput, Button, StyleSheet, Text } from 'react-native';
 import { AuthContext } from '../../Authcontext';
 import DropdownSelect from 'react-dropdown-select';
+import api from '../../utils/api';
 
 function ReminderForm({ reminder, handleChange, handleSubmit, loadingReminder, invalidFields, isEditing, submitted }) {
   const { userId } = useContext(AuthContext);
@@ -14,14 +15,30 @@ function ReminderForm({ reminder, handleChange, handleSubmit, loadingReminder, i
     { value: 'false', label: 'Do Not Disappear' },
   ];
   const triggerTypeOptions = [
-    { value: 'immediate', label: 'Immediate' },
-    { value: 'after', label: 'After' },
+    { value: 'begin', label: 'Begin' },
+    { value: 'end', label: 'End' },
   ];
+
+  const [activityTypes, setActivityTypes] = useState([]);
 
   useEffect(() => {
     if (userId) {
       handleChange('userId', userId);
     }
+
+    // Fetch activity types from the API
+    api
+      .get('/activities')
+      .then(response => {
+        const activities = response.data.map(activity => ({
+          value: activity.name,
+          label: activity.name,
+        }));
+        setActivityTypes(activities);
+      })
+      .catch(error => {
+        console.error('Error fetching activity types:', error);
+      });
   }, [userId]);
 
   const getSelectedOption = (options, value) => {
@@ -33,8 +50,32 @@ function ReminderForm({ reminder, handleChange, handleSubmit, loadingReminder, i
   const selectedIntervalOption = getSelectedOption(intervalOptions, reminder.interval);
   const selectedDisappearOption = getSelectedOption(disappearOptions, reminder.disappearOnCondition);
   const selectedTriggerTypeOption = getSelectedOption(triggerTypeOptions, reminder.triggerType);
+  const selectedActivityOption = activityTypes.find(
+    (option) => option.value.toLowerCase() === (reminder.activity || '').toLowerCase()
+  );
 
   const getStyle = (field) => (submitted && invalidFields.includes(field) ? styles.inputInvalid : styles.input);
+
+  const getHintText = (field) => {
+    switch (field) {
+      case 'time':
+        return reminder.time ? '' : 'Time is required for a non-dependent reminder.';
+      case 'utility_name':
+        return reminder.utility_name ? '' : 'Utility Name is required for a dependent reminder.';
+      case 'component_name':
+        return reminder.component_name ? '' : 'Component Name is required for a dependent reminder.';
+      case 'condition':
+        return reminder.condition ? '' : 'Condition is required for a dependent reminder.';
+      case 'activity':
+        return reminder.activity ? '' : 'Activity is required for an activity-based reminder.';
+      case 'triggerTime':
+        return reminder.triggerTime ? '' : 'Trigger Time is required for an activity-based reminder.';
+      case 'triggerType':
+        return reminder.triggerType ? '' : 'Trigger Type is required for an activity-based reminder.';
+      default:
+        return '';
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -56,28 +97,28 @@ function ReminderForm({ reminder, handleChange, handleSubmit, loadingReminder, i
         placeholder={selectedIntervalOption?.label || "Select an interval"}
         style={styles.dropdown}
       />
-      <Text style={styles.hint}>Time: Enter the date and time in this format: 2024-03-27T07:00:00.000Z.</Text>
+      <Text style={styles.hint}>{getHintText('time')}</Text>
       <TextInput
         style={getStyle('time')}
         onChangeText={(value) => handleChange('time', value)}
         value={reminder.time}
         placeholder="Time"
       />
-      <Text style={styles.hint}>Utility Name: Enter the name of the utility (e.g., fridge, microwave).</Text>
+      <Text style={styles.hint}>{getHintText('utility_name')}</Text>
       <TextInput
         style={getStyle('utility_name')}
         onChangeText={(value) => handleChange('utility_name', value)}
         value={reminder.utility_name}
         placeholder="Utility Name"
       />
-      <Text style={styles.hint}>Component Name: Enter the component of the utility (e.g., door, power).</Text>
+      <Text style={styles.hint}>{getHintText('component_name')}</Text>
       <TextInput
         style={getStyle('component_name')}
         onChangeText={(value) => handleChange('component_name', value)}
         value={reminder.component_name}
         placeholder="Component Name"
       />
-      <Text style={styles.hint}>Condition: Enter the condition for the reminder (e.g., door open, door close).</Text>
+      <Text style={styles.hint}>{getHintText('condition')}</Text>
       <TextInput
         style={getStyle('condition')}
         onChangeText={(value) => handleChange('condition', value)}
@@ -105,21 +146,22 @@ function ReminderForm({ reminder, handleChange, handleSubmit, loadingReminder, i
         placeholder={selectedDisappearOption?.label || "Select an option"}
         style={styles.dropdown}
       />
-      <Text style={styles.hint}>Activity: Enter the type of activity (e.g., cooking, sleeping).</Text>
-      <TextInput
-        style={getStyle('activity')}
-        onChangeText={(value) => handleChange('activity', value)}
-        value={reminder.activity}
-        placeholder="Activity"
+      <Text style={styles.hint}>{getHintText('activity')}</Text>
+      <DropdownSelect
+        options={activityTypes}
+        onChange={(value) => handleChange('activity', value[0].value)}
+        value={selectedActivityOption ? [selectedActivityOption] : []}
+        placeholder={selectedActivityOption ? selectedActivityOption.label : 'Select an activity'}
+        style={styles.dropdown}
       />
-      <Text style={styles.hint}>Trigger Time: Enter the time in seconds after the activity.</Text>
+      <Text style={styles.hint}>{getHintText('triggerTime')}</Text>
       <TextInput
         style={getStyle('triggerTime')}
         onChangeText={(value) => handleChange('triggerTime', value)}
         value={reminder.triggerTime}
         placeholder="Trigger Time (seconds)"
       />
-      <Text style={styles.hint}>Trigger Type: Select whether the reminder is immediate or after the trigger time.</Text>
+      <Text style={styles.hint}>{getHintText('triggerType')}</Text>
       <DropdownSelect
         options={triggerTypeOptions}
         onChange={(value) => handleChange('triggerType', value[0].value)}
@@ -174,5 +216,4 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 });
-
 export default ReminderForm;

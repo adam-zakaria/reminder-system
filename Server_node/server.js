@@ -9,7 +9,7 @@ require('dotenv').config();
 const OpenAI = require('openai');
 const { db } = require('./models');
 const { v4: uuidv4 } = require('uuid');
-const { _reminderPrompt } = require('../Server_node/prompt');
+const { _reminderPrompt } = require('./prompt');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
@@ -335,7 +335,7 @@ app.post('/reminders', async (req, res) => {
 
 
 app.post('/oracle-updates', async (req, res) => {
-  const update  = req.body;
+  const update = req.body;
   //console.log(req.body,"body")
   if (!update) {
     return res.status(400).send({ status: 'Missing update' });
@@ -359,8 +359,8 @@ app.post('/oracle-updates', async (req, res) => {
 
   // Emit events to handle the update
   if (update.activity) {
-  updateEvent.emit('handleActivityReminders', update, targetClientId);
-  }else if (update.update) {
+    updateEvent.emit('handleActivityReminders', update, targetClientId);
+  } else if (update.update) {
     updateEvent.emit('newUpdate', update, targetClientId);
   }
 });
@@ -520,36 +520,33 @@ updateEvent.on('handleActivityReminders', async (update, targetClientId) => {
   console.log(reminders, "activity-based reminders");
 
   const matchingReminders = reminders.filter(reminder => {
-    console.log(reminder.dataValues, "reminder", reminder.dataValues.activity, update.activity );
+    console.log(reminder.dataValues, "reminder", reminder.dataValues.activity, update.activity);
     return update.activity && update.activity === reminder.dataValues.activity;
   });
 
   console.log(matchingReminders, "matching reminders");
 
+  const processReminder = (reminder, updateTimestamp) => {
+    const cronTime = reminder.triggerTime
+      ? new Date(new Date(updateTimestamp).getTime() + reminder.triggerTime * 1000)
+      : null;
+
+    if (cronTime) {
+      scheduleReminder(cronTime, reminder, targetClientId);
+    } else {
+      sendReminderToClient(reminder, targetClientId);
+    }
+  };
+
   if (matchingReminders.length > 0) {
     for (const reminder of matchingReminders) {
-      if (update.activity_status === 'begin') {
-        if (reminder.dataValues.triggerType === 'begin') {
-          sendReminderToClient(reminder.dataValues, targetClientId);
-        } else if (reminder.dataValues.triggerType === 'after') {
-          if (reminder.dataValues.triggerTime) {
-            const cronTime = new Date(new Date(update.timestamp).getTime() + reminder.dataValues.triggerTime);
-            scheduleReminder(cronTime, reminder.dataValues, targetClientId);
-          } else {
-            sendReminderToClient(reminder.dataValues, targetClientId);
-          }
-        }
-      } else if (update.activity_status === 'end') {
-        if (reminder.dataValues.triggerType === 'begin') {
-          sendReminderToClient(reminder.dataValues, targetClientId);
-        } else if (reminder.dataValues.triggerType === 'after') {
-          if (reminder.dataValues.triggerTime) {
-            const cronTime = new Date(new Date(update.timestamp).getTime() + reminder.dataValues.triggerTime);
-            scheduleReminder(cronTime, reminder.dataValues, targetClientId);
-          } else {
-            sendReminderToClient(reminder.dataValues, targetClientId);
-          }
-        }
+      const { triggerType } = reminder.dataValues;
+      const updateTimestamp = update.timestamp;
+
+      if (update.activity_status === 'begin' && triggerType === 'begin') {
+        processReminder(reminder.dataValues, updateTimestamp);
+      } else if (update.activity_status === 'end' && triggerType === 'end') {
+        processReminder(reminder.dataValues, updateTimestamp);
       }
     }
   }
@@ -629,7 +626,7 @@ async function delayExecution(millisecs) {
 
 function scheduleReminder(cronTime, reminder, targetClientId) {
   const cronExpression = `${cronTime.getSeconds()} ${cronTime.getMinutes()} ${cronTime.getHours()} ${cronTime.getDate()} ${cronTime.getMonth() + 1} *`;
-  
+
   cron.schedule(cronExpression, () => {
     sendReminderToClient(reminder, targetClientId);
   }, {
@@ -706,24 +703,33 @@ app.post('/chat', async (req, res) => {
     // Step 4: Generate the assistant's response using OpenAI
     const prompt = _reminderPrompt;
     const messagesForAI = [...prompt, ...thread.messages];
-    console.log(messagesForAI,"Message for ai")
+    console.log(messagesForAI, "Message for ai");
     const completion = await openai.chat.completions.create({
       model: "gpt-4o",
       messages: messagesForAI,
       response_format: { type: "json_object" },
       temperature: 0.59,
-      max_tokens: 256,
+      max_tokens: 2600,
       top_p: 1,
       frequency_penalty: 0,
       presence_penalty: 0,
     });
-    const responseMessage = completion.choices[0].message.content;
+    let responseMessage = completion.choices[0].message.content;
 
-    // Step 5: Save the assistant's response to the database
+    // Step 5: Ensure the response contains 'assistant' and 'response' keys
+    let jsonResponse = JSON.parse(responseMessage);
+    if (!jsonResponse.hasOwnProperty('assistant')) {
+      jsonResponse['assistant'] = 'There has been an issue on our side, please try again later.';;
+    }
+    if (!jsonResponse.hasOwnProperty('response')) {
+      jsonResponse['response'] = {};
+    }
+
+    // Step 6: Save the assistant's response to the database
     const assistantMessage = {
       id: uuidv4(),
       role: 'assistant',
-      content: responseMessage,
+      content: JSON.stringify(jsonResponse),
       sessionId: currentSessionId,
       threadId: currentSessionId,
       userId,
@@ -731,16 +737,17 @@ app.post('/chat', async (req, res) => {
     };
     await db.chatMessages.create(assistantMessage);
 
-    // Step 6: Update the thread with the assistant's message
+    // Step 7: Update the thread with the assistant's message
     thread.messages.push(assistantMessage);
     await thread.save();
 
-    res.status(200).json({ sessionId: currentSessionId, response: JSON.parse(responseMessage) });
+    res.status(200).json({ sessionId: currentSessionId, response: jsonResponse });
   } catch (error) {
     console.error('Error with OpenAI API:', error);
     res.status(500).json({ error: 'Failed to generate response from OpenAI' });
   }
 });
+
 
 app.get('/chat/:threadId', async (req, res) => {
   const { threadId } = req.params;
@@ -1002,6 +1009,52 @@ app.delete('/reminders/:id', authenticate, async (req, res) => {
   }
 });
 
+app.get('/activities', async (req, res) => {
+  try {
+    const ActivityTypes = db.activityType.ActivityTypes;
+    const activities = await ActivityTypes.findAll();
+    res.json(activities);
+  } catch (error) {
+    console.log(error, "error");
+    res.status(500).json({ error: 'Failed to fetch activities' });
+  }
+});
+
+
+app.get('/api/users', async (req, res) => {
+  try {
+    const users = await db.users.findAll();
+    res.json(users);
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    res.status(500).json({ error: 'Failed to fetch users' });
+  }
+});
+
+app.post('/api/userClientMappings', async (req, res) => {
+  const { userId, targetClientId } = req.body;
+
+  try {
+    // Check if the userId and targetClientId are provided
+    if (!userId || !targetClientId) {
+      return res.status(400).json({ error: 'userId and targetClientId are required' });
+    }
+
+    // Check if the user exists
+    const user = await db.users.findByPk(userId);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Create the user-client mapping
+    const mapping = await db.userClientMap.create({ userId, targetClientId });
+
+    res.status(201).json(mapping);
+  } catch (error) {
+    console.error('Error creating user-client mapping:', error);
+    res.status(500).json({ error: 'Failed to create user-client mapping' });
+  }
+});
 
 // (async () => {
 //   try {

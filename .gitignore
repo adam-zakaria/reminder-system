@@ -57,3 +57,6 @@ DerivedData/
 
 # Documentation outputs
 *.pdf
+
+# Ignore the deployments folder
+Deployments/
