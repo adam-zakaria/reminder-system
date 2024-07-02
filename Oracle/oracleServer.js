@@ -10,7 +10,6 @@ const activity_json = {
     "activity_status": "begin",
     "sensor_type": "motionStatus",
     "sensor_status": 1,
-    "spec_location":"",
     "location": "loc-entry_hall_1",
     "activity": "cooking"
   }

@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { View, Text, FlatList, StyleSheet, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { useNavigate } from 'react-router-dom';
-import api from '../../utils/api';
+import {api} from '../../utils/api';
 import { AuthContext } from '../../Authcontext';
 import { FaTrashAlt, FaEdit } from 'react-icons/fa';
 

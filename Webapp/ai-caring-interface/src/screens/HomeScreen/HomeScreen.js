@@ -5,7 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
 import ReminderForm from '../../components/ReminderForm/ReminderForm';
 import ChatBox from '../../components/ChatBox/ChatBox';
-import api from '../../utils/api';
+import { api } from '../../utils/api';
 import { AuthContext } from '../../Authcontext';
 import { jwtDecode } from 'jwt-decode';
 
@@ -24,6 +24,7 @@ function HomeScreen() {
     activity: null,
     triggerTime: null,
     triggerType: null,
+    lightCategoryId: null
   });
   const [loadingReminder, setLoadingReminder] = useState(false);
   const [invalidFields, setInvalidFields] = useState([]);
@@ -45,14 +46,15 @@ function HomeScreen() {
 
   const formInvalid = () => {
     const invalid = [];
-    const { userId, message, interval, display, time, utility_name, component_name, condition, delay, activity, triggerTime, triggerType } = reminder;
+    const { userId, message, interval, display, time, utility_name, component_name, condition, delay, activity, triggerTime, triggerType, lightCategoryId } = reminder;
 
     // Validate required fields for all reminder types
     if (!userId) invalid.push('userId');
     if (!message) invalid.push('message');
     if (!interval) invalid.push('interval');
     if (!display) invalid.push('display');
-
+    if (!lightCategoryId) invalid.push('lightCategoryId');
+      
     // Non-dependent reminder
     if (time) {
       if (utility_name || component_name || condition || delay || activity || triggerTime || triggerType) {
@@ -91,7 +93,11 @@ function HomeScreen() {
 
     setLoadingReminder(true);
     try {
-      const response = await api.post('/reminders', reminder);
+      const response = await api.post('/reminders', reminder, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       console.log(response.data);
       toast.success('Reminder Created Successfully!');
       navigate('/reminders');
@@ -117,6 +123,7 @@ function HomeScreen() {
         activity: response.response.activity || prevReminder.activity,
         triggerTime: response.response.triggerTime || prevReminder.triggerTime,
         triggerType: response.response.triggerType || prevReminder.triggerType,
+        lightCategoryId: response.response.lightCategoryId || prevReminder.lightCategoryId
       }));
     }
   };
@@ -156,10 +163,16 @@ const styles = StyleSheet.create({
   leftContainer: {
     flex: 1,
     padding: 16,
+    height: '100vh',
   },
   rightContainer: {
     flex: 1,
-    backgroundColor: '#fff',
+    padding: 16,
+    height: '100vh',
+    maxHeight: '90vh', // Adjusted height to make ChatBox shorter
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
   },
   scrollContainer: {
     flexGrow: 1,

@@ -1,0 +1,47 @@
+.sidebar {
+  width: 240px;
+  flex-shrink: 0;
+  background-color: #343a40 !important; /* Ensuring the background color is applied */
+  color: #ecf0f1 !important; /* Ensuring the text color is applied */
+}
+
+.sidebar.collapsed {
+  width: 60px;
+}
+
+.MuiDrawer-paper {
+  width: inherit;
+  box-sizing: border-box;
+  background-color: inherit !important; /* Ensure it inherits the sidebar background color */
+  color: inherit !important; /* Ensure it inherits the sidebar text color */
+}
+
+.toggleButton {
+  margin: 10px;
+  color: inherit; /* Ensure toggle button inherits text color */
+}
+
+.menu {
+  padding-top: 20px;
+}
+
+.menuItemText {
+  padding-left: 10px;
+}
+
+.dropdownToggle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  color: inherit; /* Ensure it inherits the sidebar text color */
+}
+
+.dropdownMenu {
+  padding-left: 20px;
+}
+
+.logout {
+  margin-top: auto;
+  padding-bottom: 20px;
+}

@@ -1,46 +1,63 @@
-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px;
-    background-color: #f8f9fa;
-    border-bottom: 1px solid #dee2e6;
-  }
-  
-  header .title {
-    font-size: 20px;
-    font-weight: bold;
-    color: #333;
-  }
-  
-  header .nav-buttons {
-    display: flex;
-  }
-  
-  button {
-    border: none;
-    padding: 10px 20px;
-    font-size: 16px;
-    cursor: pointer;
-    border-radius: 5px;
-    margin-left: 10px;
-  }
-  
-  button.reminders {
-    background-color: #007bff;
-    color: white;
-  }
-  
-  button.reminders:hover {
-    background-color: #0056b3;
-  }
-  
-  button.logout {
-    background-color: #dc3545;
-    color: white;
-  }
-  
-  button.logout:hover {
-    background-color: #c82333;
-  }
-  
+/* src/components/Header/Header.css */
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background-color: #343a40;
+  color: #fff;
+  transition: margin-left 0.3s;
+  margin-left: 240px; /* Default sidebar width */
+  width: calc(100% - 250px); /* Adjust width based on default sidebar width */
+}
+
+.header.collapsed {
+  margin-left: 60px; /* Collapsed sidebar width */
+  width: calc(100% - 60px); /* Adjust width based on collapsed sidebar width */
+}
+
+.header .title {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.header .nav-buttons {
+  display: flex;
+}
+
+button {
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-left: 10px;
+}
+
+button.reminders {
+  background-color: #007bff;
+  color: white;
+}
+
+button.reminders:hover {
+  background-color: #0056b3;
+}
+
+button.logout {
+  background-color: #dc3545;
+  color: white;
+}
+
+button.logout:hover {
+  background-color: #c82333;
+}
+
+button.admin {
+  background-color: green;
+  color: white;
+}
+
+button.admin:hover {
+  background-color: darkgreen;
+}

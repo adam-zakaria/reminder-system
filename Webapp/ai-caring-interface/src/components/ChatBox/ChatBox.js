@@ -1,110 +1,64 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { FlatList, View, TextInput, TouchableOpacity } from 'react-native';
-import Avatar from 'react-avatar';
-import { FaPaperPlane } from 'react-icons/fa';
-import styled from 'styled-components/native';
 import { AuthContext } from '../../Authcontext';
-import { jwtDecode } from 'jwt-decode';
-import api from '../../utils/api';
+import { api } from '../../utils/api';
+import {
+  Container,
+  TextField,
+  IconButton,
+  Grid,
+  Typography,
+  List,
+  ListItem,
+  ListItemAvatar,
+  ListItemText,
+  Avatar,
+  Box,
+  Card,
+  CardContent,
+  CardHeader,
+} from '@mui/material';
+import { Send as SendIcon, EmojiObjects as IdeaIcon, Alarm as AlarmIcon } from '@mui/icons-material';
 
-const Container = styled.View`
-  flex: 1;
-  background-color: #fff;
-`;
-
-const MessageContainer = styled.View`
-  flex-direction: row;
-  align-items: flex-start;
-  margin-vertical: 4px;
-  margin-horizontal: 16px;
-  max-width: 80%;
-  align-self: ${({ sender }) => (sender === 'You' ? 'flex-end' : 'flex-start')};
-`;
-
-const MessageBubble = styled.View`
-  padding: 12px;
-  border-radius: 8px;
-  background-color: ${({ sender }) => (sender === 'You' ? '#e6e6e6' : '#dcf8c6')};
-  margin-left: ${({ sender }) => (sender === 'You' ? 8 : 0)}px;
-  margin-right: ${({ sender }) => (sender === 'You' ? 0 : 8)}px;
-  flex-shrink: 1;
-`;
-
-const MessageText = styled.Text`
-  font-size: 16px;
-  flex-shrink: 1; 
-  flex-wrap: wrap;
-`;
-
-const InputContainer = styled.View`
-  flex-direction: row;
-  align-items: center;
-  padding: 8px;
-  border-top-width: 1px;
-  border-top-color: #ccc;
-`;
-
-const MessageInput = styled.TextInput`
-  flex: 1;
-  height: 40px;
-  border-width: 1px;
-  border-color: #ccc;
-  border-radius: 20px;
-  padding-horizontal: 12px;
-  margin-right: 8px;
-`;
-
-const SendButton = styled.TouchableOpacity`
-  padding: 8px;
-`;
-
-function ChatBox({ onChatResponse }) {
+const ChatBox = ({ onChatResponse }) => {
   const [messages, setMessages] = useState([
     { text: 'Hi there! Let me know what you\'d like me to remind you about.', sender: 'Assistant' },
   ]);
   const [newMessage, setNewMessage] = useState('');
   const [sessionId, setSessionId] = useState(null);
-  const [isTyping, setIsTyping] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [reminderLibrary, setReminderLibrary] = useState([]);
+  const [examplesVisible, setExamplesVisible] = useState(true);
   const { token } = useContext(AuthContext);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsTyping(false);
-    }, 2000);
-
-    return () => clearTimeout(timer);
-  }, [isTyping]);
-
-  useEffect(() => {
-    if (token) {
+    const fetchReminderLibrary = async () => {
       try {
-        const decodedToken = jwtDecode(token);
-        const userId = decodedToken.userId;
-        console.log(userId, "userId");
+        const response = await api.get('/api/reminderLibrary', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setReminderLibrary(response.data.slice(0, 5)); // Limit the number of examples to 5
       } catch (error) {
-        console.error("Error decoding token:", error);
+        console.error('Error fetching reminder library:', error);
       }
-    }
+    };
+    fetchReminderLibrary();
   }, [token]);
 
   const sendMessageToAPI = async (message) => {
     setIsLoading(true);
-    const decodedToken = token ? jwtDecode(token) : null;
-    const userId = decodedToken ? decodedToken.userId : null;
-
     try {
-      const _response = await api.post('/chat', { message, sessionId, userId });
-      const { sessionId: newSessionId, response } = _response.data;
+      const response = await api.post('/chat', { message, sessionId }, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const { sessionId: newSessionId, response: apiResponse } = response.data;
       setSessionId(newSessionId);
-      const assistantMessage = { text: response.assistant, sender: 'Assistant' };
+      const assistantMessage = { text: apiResponse.assistant, sender: 'Assistant' };
       setMessages((prevMessages) => {
         const updatedMessages = prevMessages.filter(msg => msg.text !== '...');
         return [...updatedMessages, assistantMessage];
       });
-
       if (onChatResponse) {
-        onChatResponse(response);
+        onChatResponse(apiResponse);
       }
     } catch (error) {
       console.error('Error sending message to API:', error);
@@ -119,54 +73,82 @@ function ChatBox({ onChatResponse }) {
       setMessages((prevMessages) => [...prevMessages, userMessage, { text: '...', sender: 'Assistant' }]);
       sendMessageToAPI(newMessage);
       setNewMessage('');
+      setExamplesVisible(false); // Hide examples after sending a message
     }
   };
 
-  const renderMessage = ({ item }) => (
-    <MessageContainer sender={item.sender}>
-      {item.sender !== 'You' && (
-        <Avatar
-          name="Assistant"
-          round={true}
-          size="40"
-          style={{ marginRight: 8 }}
-        />
-      )}
-      <MessageBubble sender={item.sender}>
-        <MessageText>{item.text}</MessageText>
-      </MessageBubble>
-      {item.sender === 'You' && (
-        <Avatar
-          name="You"
-          round={true}
-          size="40"
-          style={{ marginLeft: 8 }}
-        />
-      )}
-    </MessageContainer>
-  );
+  const handleTileClick = (reminderText) => {
+    const userMessage = { text: reminderText, sender: 'You' };
+    setMessages((prevMessages) => [...prevMessages, userMessage, { text: '...', sender: 'Assistant' }]);
+    sendMessageToAPI(reminderText);
+    setExamplesVisible(false); // Hide examples after clicking a tile
+  };
 
   return (
-    <Container>
-      <FlatList
-        data={messages}
-        renderItem={renderMessage}
-        keyExtractor={(item, index) => index.toString()}
-        contentContainerStyle={{ paddingVertical: 16 }}
-      />
-      <InputContainer>
-        <MessageInput
-          placeholder="Type a message..."
-          value={newMessage}
-          onChangeText={setNewMessage}
-          onSubmitEditing={sendMessage}
-        />
-        <SendButton onPress={sendMessage}>
-          <FaPaperPlane size={24} color="#333" />
-        </SendButton>
-      </InputContainer>
+    <Container maxWidth="sm" style={{ display: 'flex', flexDirection: 'column', height: '90vh' }}>
+      <Box style={{ flexGrow: 1, overflowY: 'auto' }}>
+        <List>
+          {messages.map((message, index) => (
+            <ListItem key={index} alignItems="flex-start">
+              <ListItemAvatar>
+                <Avatar>{message.sender === 'You' ? 'Y' : 'A'}</Avatar>
+              </ListItemAvatar>
+              <ListItemText primary={message.text} />
+            </ListItem>
+          ))}
+          {examplesVisible && (
+            <Box style={{ margin: '16px 0' }}>
+              <Typography variant="h6" gutterBottom>
+                Examples:
+              </Typography>
+              <Grid container spacing={2}>
+                {reminderLibrary.map((reminder, index) => (
+                  <Grid item xs={12} sm={6} key={reminder.id}>
+                    <Card onClick={() => handleTileClick(reminder.text)} style={{ cursor: 'pointer' }}>
+                      <CardHeader
+                        avatar={
+                          index % 2 === 0 ? <IdeaIcon color="primary" /> : <AlarmIcon color="secondary" />
+                        }
+                        title={reminder.text}
+                      />
+                      <CardContent>
+                        <Typography variant="body2" color="textSecondary">
+                          {reminder.text}
+                        </Typography>
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                ))}
+              </Grid>
+            </Box>
+          )}
+        </List>
+      </Box>
+      <Box style={{ borderTop: '1px solid #ccc', paddingTop: '8px', backgroundColor: '#fff' }}>
+        <Grid container spacing={2} alignItems="center">
+          <Grid item xs>
+            <TextField
+              fullWidth
+              variant="outlined"
+              placeholder="Type a message..."
+              value={newMessage}
+              onChange={(e) => setNewMessage(e.target.value)}
+              onKeyPress={(e) => {
+                if (e.key === 'Enter') {
+                  sendMessage();
+                }
+              }}
+            />
+          </Grid>
+          <Grid item>
+            <IconButton color="primary" onClick={sendMessage}>
+              <SendIcon />
+            </IconButton>
+          </Grid>
+        </Grid>
+      </Box>
     </Container>
   );
-}
+};
 
 export default ChatBox;

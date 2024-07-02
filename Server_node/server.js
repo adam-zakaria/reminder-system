@@ -12,6 +12,7 @@ const { v4: uuidv4 } = require('uuid');
 const { _reminderPrompt } = require('./prompt');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const { body, validationResult, check } = require('express-validator');
 
 
 const openai = new OpenAI(process.env.OPENAI_API_KEY);
@@ -37,6 +38,12 @@ const dataStore = {
   delayTable: { fridge: 60000, microwave: 60000 },
   sentReminders: []
 };
+
+const lightCategoriesOptions = [
+  { id: 1, value: 'urgent', label: 'Urgent - Requires immediate attention', color: '#FF0000' },
+  { id: 2, value: 'important', label: 'Important - Needs to be done soon', color: '#FFA500' },
+  { id: 3, value: 'routine', label: 'Routine - Regular task', color: '#008000' }
+];
 
 const sessions = {};
 
@@ -138,6 +145,7 @@ const authenticate = async (req, res, next) => {
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
     const user = await db.users.findByPk(decoded.userId);
+    console.log(user,"user")
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
@@ -145,6 +153,11 @@ const authenticate = async (req, res, next) => {
     next();
   } catch (error) {
     console.error('Error authenticating user:', error);
+    if (error.name === 'TokenExpiredError') {
+      return res.status(401).json({ error: 'Token expired' });
+    } else if (error.name === 'JsonWebTokenError') {
+      return res.status(401).json({ error: 'Invalid token' });
+    }
     res.status(500).json({ error: 'Failed to authenticate user' });
   }
 };
@@ -177,6 +190,7 @@ const checkSuperuser = (req, res, next) => {
   db.users.findByPk(decoded.userId)
     .then(user => {
       if (user.role !== 'superuser') {
+        console.log("=============",user)
         return res.status(403).json({ error: 'Access denied' });
       }
       next();
@@ -256,82 +270,75 @@ function broadcastMessage(message) {
     clientWs.send(JSON.stringify(message));
   });
 }
-app.post('/reminders', async (req, res) => {
-  const { userId, message, interval, time, utility_name, component_name, condition, display, delay, disappearOnCondition, activity, triggerTime, triggerType } = req.body;
-
-  // Determine the type of the reminder
-  const type = determineReminderType(utility_name, component_name, time, activity);
-
-  // Format the time
-  let formattedTime = null;
-  if (time) {
-    const timeDateObject = new Date(time);
-    formattedTime = timeDateObject.toISOString().slice(0, 19).replace('T', ' ');
-  }
-
-  // Create the reminder object without setting the id field
-  const newReminder = {
-    userId,
-    message,
-    interval,
-    time: formattedTime,
-    type,
-    utility_name,
-    component_name,
-    condition,
-    display,
-    delay: delay || dataStore.delayTable[utility_name],
-    sent: false,
-    disappearOnCondition,
-    activity,
-    triggerTime,
-    triggerType
-  };
-
+// GET /reminders
+app.get('/reminders', authenticate, async (req, res) => {
   try {
-    // Save the new reminder to the database
-    const savedReminder = await db.reminders.create(newReminder);
+    const { user } = req;
+    let reminders;
 
-    // Fetch the latest user-client mapping for the specified userId
-    const userClientMap = await db.userClientMap.findOne({ where: { userId: userId } });
-    if (!userClientMap) {
-      return res.status(404).send({ status: 'User not found' });
+    if (user.role === 'superuser') {
+      try {
+        reminders = await db.reminders.findAll({
+          include: [
+            {
+              model: db.users,
+              as: 'creator',
+              attributes: ['username', 'email']
+            },
+            {
+              model: db.users,
+              as: 'sharedWith',
+              attributes: ['id', 'username', 'email']
+            }
+          ]
+        });
+      } catch (error) {
+        console.error('Error fetching all reminders for superuser:', error);
+        return res.status(500).json({ error: 'Failed to fetch reminders' });
+      }
+    } else {
+      try {
+        const createdReminders = await db.reminders.findAll({
+          where: { createdBy: user.id },
+          include: [
+            {
+              model: db.users,
+              as: 'sharedWith',
+              attributes: ['id', 'username', 'email']
+            }
+          ]
+        });
+
+        const sharedReminders = await db.reminders.findAll({
+          where: { userId: user.id },
+          include: [
+            {
+              model: db.users,
+              as: 'creator',
+              attributes: ['id', 'username', 'email']
+            }
+          ]
+        });
+
+        console.log(sharedReminders,"shared reminders")
+
+        reminders = [...createdReminders, ...sharedReminders];
+      } catch (error) {
+        console.error('Error fetching created or shared reminders for user:', error);
+        return res.status(500).json({ error: 'Failed to fetch reminders' });
+      }
     }
 
-    const targetClientId = userClientMap.targetClientId;
-
-    // If the reminder is non-dependent, schedule it to be sent at the specified time
-    if (type === 'non-dependent') {
-      const timeDateObject = new Date(time);
-      const cronExpression = `${timeDateObject.getUTCMinutes()} ${timeDateObject.getUTCHours()} * * *`;
-      cron.schedule(cronExpression, () => {
-        const stickyNoteUpdate = {
-          action: "add",
-          id: savedReminder.id.toString() + "00",
-          stickyNote: {
-            title: "Reminder",
-            content: newReminder.display,
-            notificationSoundID: 1,
-            instructions: []
-          }
-        };
-
-        sendMessageToClient(targetClientId, stickyNoteUpdate.action, stickyNoteUpdate.stickyNote, stickyNoteUpdate.id);
-      });
+    if (!reminders || reminders.length === 0) {
+      return res.status(404).json({ error: 'No reminders found' });
     }
 
-    // Log the creation of the reminder
-    console.log('Reminder created:', savedReminder.id);
-
-    // Send the response with the details of the newly created reminder
-    res.status(201).json(savedReminder);
+    res.json(reminders);
   } catch (error) {
-    console.error('Error creating reminder:', error);
-    res.status(500).send({ status: 'Error creating reminder', error: error.message });
+    console.error('Error in /reminders route:', error);
+    res.status(500).json({ error: 'Failed to fetch reminders' });
   }
 });
-
-
 
 
 app.post('/oracle-updates', async (req, res) => {
@@ -662,8 +669,10 @@ async function findMatchingReminders(update) {
   });
 }
 
-app.post('/chat', async (req, res) => {
-  const { message, sessionId, userId } = req.body;
+app.post('/chat',authenticate, async (req, res) => {
+  const { message, sessionId } = req.body;
+  const userId = req.user.id; 
+
   if (!message) {
     return res.status(400).json({ error: 'Message is required' });
   }
@@ -715,6 +724,7 @@ app.post('/chat', async (req, res) => {
       presence_penalty: 0,
     });
     let responseMessage = completion.choices[0].message.content;
+    console.log(responseMessage,"response message")
 
     // Step 5: Ensure the response contains 'assistant' and 'response' keys
     let jsonResponse = JSON.parse(responseMessage);
@@ -856,24 +866,46 @@ app.post('/register', async (req, res) => {
   }
 
   try {
+    // Check if username already exists
+    const existingUsername = await db.users.findOne({ where: { username } });
+    if (existingUsername) {
+      return res.status(400).json({ error: 'Username already exists' });
+    }
+
+    // Check if email already exists
+    const existingEmail = await db.users.findOne({ where: { email } });
+    if (existingEmail) {
+      return res.status(400).json({ error: 'Email already exists' });
+    }
+
     // Only allow superusers to create other superusers
     if (role === 'superuser') {
-      const token = req.headers.authorization.split(' ')[1];
-      const decoded = jwt.verify(token, JWT_SECRET);
-      const requestingUser = await db.users.findByPk(decoded.userId);
+      const token = req.headers.authorization?.split(' ')[1];
+      if (!token) {
+        return res.status(401).json({ error: 'Authorization token is required to create a superuser' });
+      }
 
-      if (requestingUser.role !== 'superuser') {
-        return res.status(403).json({ error: 'Only superusers can create other superusers' });
+      try {
+        const decoded = jwt.verify(token, JWT_SECRET);
+        const requestingUser = await db.users.findByPk(decoded.userId);
+
+        if (!requestingUser || requestingUser.role !== 'superuser') {
+          return res.status(403).json({ error: 'Only superusers can create other superusers' });
+        }
+      } catch (error) {
+        return res.status(401).json({ error: 'Invalid authorization token' });
       }
     }
 
-    const user = await db.users.create({ username, email, password, role });
+    const user = await db.users.create({ username, email, password, role: role || 'user' });
     res.status(201).json({ message: 'User registered successfully', userId: user.id });
   } catch (error) {
     console.error('Error registering user:', error);
     res.status(500).json({ error: 'Failed to register user' });
   }
-});
+
+})
+
 
 // Login endpoint
 app.post('/login', async (req, res) => {
@@ -905,33 +937,119 @@ app.post('/login', async (req, res) => {
   }
 });
 
-app.get('/reminders', authenticate, async (req, res) => {
+app.post('/reminders', authenticate, async (req, res) => {
+  const { message, interval, time, utility_name, component_name, condition, display, delay, disappearOnCondition, activity, triggerTime, triggerType, lightCategoryId } = req.body;
+  const userId = req.user.id; 
+  // Determine the type of the reminder
+  const type = determineReminderType(utility_name, component_name, time, activity);
+
+  // Format the time
+  let formattedTime = null;
+  if (time) {
+    const timeDateObject = new Date(time);
+    formattedTime = timeDateObject.toISOString().slice(0, 19).replace('T', ' ');
+  }
+
+  // Create the reminder object without setting the id field
+  const newReminder = {
+    userId,
+    message,
+    interval,
+    time: formattedTime,
+    type,
+    utility_name,
+    component_name,
+    condition,
+    display,
+    delay: delay || dataStore.delayTable[utility_name],
+    sent: false,
+    disappearOnCondition,
+    activity,
+    triggerTime,
+    triggerType,
+    lightCategoryId
+  };
+
   try {
-    const { user } = req;
-    let reminders;
+    // Save the new reminder to the database
+    const savedReminder = await db.reminders.create(newReminder);
 
-    if (user.role === 'superuser') {
-      reminders = await db.reminders.findAll();
-    } else {
-      reminders = await db.reminders.findAll({ where: { userId: user.id } });
+    // Fetch the latest user-client mapping for the specified userId
+    const userClientMap = await db.userClientMap.findOne({ where: { userId: userId } });
+    if (!userClientMap) {
+      return res.status(404).send({ status: 'User target device not found' });
     }
 
-    if (!reminders || reminders.length === 0) {
-      return res.status(404).json({ error: 'No reminders found' });
+    const targetClientId = userClientMap.targetClientId;
+
+    // If the reminder is non-dependent, schedule it to be sent at the specified time
+    if (type === 'non-dependent') {
+      const timeDateObject = new Date(time);
+      const cronExpression = `${timeDateObject.getUTCMinutes()} ${timeDateObject.getUTCHours()} * * *`;
+      cron.schedule(cronExpression, () => {
+        const stickyNoteUpdate = {
+          action: "add",
+          id: savedReminder.id.toString() + "00",
+          stickyNote: {
+            title: "Reminder",
+            content: newReminder.display,
+            notificationSoundID: 1,
+            instructions: []
+          }
+        };
+
+        sendMessageToClient(targetClientId, stickyNoteUpdate.action, stickyNoteUpdate.stickyNote, stickyNoteUpdate.id);
+      });
     }
 
-    res.json(reminders);
+    // Log the creation of the reminder
+    console.log('Reminder created:', savedReminder.id);
+
+    // Send the response with the details of the newly created reminder
+    res.status(201).json(savedReminder);
   } catch (error) {
-    console.error('Error fetching reminders:', error);
-    if (error.name === 'SequelizeValidationError') {
-      return res.status(400).json({ error: 'Invalid input data' });
-    } else if (error.name === 'SequelizeDatabaseError') {
-      return res.status(500).json({ error: 'Database error' });
-    } else {
-      return res.status(500).json({ error: 'Failed to fetch reminders' });
-    }
+    console.error('Error creating reminder:', error);
+    res.status(500).send({ status: 'Error creating reminder', error: error.message });
   }
 });
+
+
+// app.get('/reminders', authenticate, checkSuperuser, async (req, res) => {
+//   try {
+//     const { user } = req;
+//     let reminders;
+
+//     if (user.role === 'superuser') {
+//       reminders = await db.reminders.findAll();
+//     } else {
+//       const ownReminders = await db.reminders.findAll({ where: { userId: user.id } });
+//       const sharedReminders = await db.reminderShare.findAll({
+//         where: { sharedWithUserId: user.id },
+//         include: [{ model: db.reminders }]
+//       });
+      
+//       reminders = [
+//         ...ownReminders,
+//         ...sharedReminders.map(share => share.reminder)
+//       ];
+//     }
+
+//     if (!reminders || reminders.length === 0) {
+//       return res.status(404).json({ error: 'No reminders found' });
+//     }
+
+//     res.json(reminders);
+//   } catch (error) {
+//     console.error('Error fetching reminders:', error);
+//     if (error.name === 'SequelizeValidationError') {
+//       return res.status(400).json({ error: 'Invalid input data' });
+//     } else if (error.name === 'SequelizeDatabaseError') {
+//       return res.status(500).json({ error: 'Database error' });
+//     } else {
+//       return res.status(500).json({ error: 'Failed to fetch reminders' });
+//     }
+//   }
+// });
 
 // API endpoint to get a reminder by its ID
 app.get('/reminders/:id', authenticate, async (req, res) => {
@@ -953,21 +1071,15 @@ app.get('/reminders/:id', authenticate, async (req, res) => {
 
 app.put('/reminders/:id', authenticate, async (req, res) => {
   const { id } = req.params;
-  const { userId, message, interval, time, utility_name, component_name, condition, display, delay, disappearOnCondition } = req.body;
+  const { userId, message, interval, time, utility_name, component_name, condition, display, delay, disappearOnCondition, activity, triggerTime, triggerType, lightCategoryId } = req.body;
 
   try {
-    const { user } = req;
-    const reminder = await db.reminders.findOne({ where: { id, userId: user.id } });
+    const reminder = await db.reminders.findOne({ where: { id, userId } });
 
     if (!reminder) {
       return res.status(404).json({ error: 'Reminder not found' });
     }
 
-    if (user.role === 'user' && reminder.userId !== user.id) {
-      return res.status(403).json({ error: 'You are not authorized to edit this reminder' });
-    }
-
-    reminder.userId = userId || reminder.userId;
     reminder.message = message || reminder.message;
     reminder.interval = interval || reminder.interval;
     reminder.time = time || reminder.time;
@@ -977,6 +1089,10 @@ app.put('/reminders/:id', authenticate, async (req, res) => {
     reminder.display = display || reminder.display;
     reminder.delay = delay || reminder.delay;
     reminder.disappearOnCondition = disappearOnCondition !== undefined ? disappearOnCondition : reminder.disappearOnCondition;
+    reminder.activity = activity || reminder.activity;
+    reminder.triggerTime = triggerTime || reminder.triggerTime;
+    reminder.triggerType = triggerType || reminder.triggerType;
+    reminder.lightCategoryId = lightCategoryId || reminder.lightCategoryId;
 
     await reminder.save();
     res.json(reminder);
@@ -986,19 +1102,16 @@ app.put('/reminders/:id', authenticate, async (req, res) => {
   }
 });
 
+
 app.delete('/reminders/:id', authenticate, async (req, res) => {
   const { id } = req.params;
+  const { userId } = req.body;
 
   try {
-    const { user } = req;
-    const reminder = await db.reminders.findOne({ where: { id, userId: user.id } });
+    const reminder = await db.reminders.findOne({ where: { id } });
 
     if (!reminder) {
       return res.status(404).json({ error: 'Reminder not found' });
-    }
-
-    if (user.role === 'user' && reminder.userId !== user.id) {
-      return res.status(403).json({ error: 'You are not authorized to delete this reminder' });
     }
 
     await reminder.destroy();
@@ -1009,13 +1122,13 @@ app.delete('/reminders/:id', authenticate, async (req, res) => {
   }
 });
 
+
 app.get('/activities', async (req, res) => {
   try {
-    const ActivityTypes = db.activityType.ActivityTypes;
-    const activities = await ActivityTypes.findAll();
+    const activities = await db.activityType.ActivityTypes.findAll();
     res.json(activities);
   } catch (error) {
-    console.log(error, "error");
+    console.error('Error fetching activities:', error);
     res.status(500).json({ error: 'Failed to fetch activities' });
   }
 });
@@ -1053,6 +1166,275 @@ app.post('/api/userClientMappings', async (req, res) => {
   } catch (error) {
     console.error('Error creating user-client mapping:', error);
     res.status(500).json({ error: 'Failed to create user-client mapping' });
+  }
+});
+
+app.post('/api/reminderMappings', authenticate, checkSuperuser, async (req, res) => {
+  try {
+    const { reminderId, userId } = req.body;
+    const mapping = await db.reminderUserMapping.create({ reminderId, userId });
+    res.status(201).send(mapping);
+  } catch (error) {
+    res.status(500).send({ message: error.message });
+  }
+});
+
+app.get('/api/reminderMappings', authenticate, checkSuperuser, async (req, res) => {
+  try {
+    const mappings = await db.reminderUserMapping.findAll();
+    res.status(200).send(mappings);
+  } catch (error) {
+    res.status(500).send({ message: error.message });
+  }
+});
+
+app.get('/api/reminderMappings/:id', authenticate, checkSuperuser, async (req, res) => {
+  try {
+    const id = req.params.id;
+    const mapping = await db.reminderUserMapping.findByPk(id);
+    if (mapping) {
+      res.status(200).send(mapping);
+    } else {
+      res.status(404).send({ message: `Cannot find ReminderUserMapping with id=${id}` });
+    }
+  } catch (error) {
+    res.status(500).send({ message: error.message });
+  }
+});
+
+app.put('/api/reminderMappings/:id', authenticate, checkSuperuser, async (req, res) => {
+  try {
+    const id = req.params.id;
+    const [updated] = await db.reminderUserMapping.update(req.body, {
+      where: { id: id }
+    });
+    if (updated) {
+      const updatedMapping = await db.reminderUserMapping.findByPk(id);
+      res.status(200).send(updatedMapping);
+    } else {
+      res.status(404).send({ message: `Cannot update ReminderUserMapping with id=${id}` });
+    }
+  } catch (error) {
+    res.status(500).send({ message: error.message });
+  }
+});
+
+app.delete('/api/reminderMappings/:id', authenticate, checkSuperuser, async (req, res) => {
+  try {
+    const id = req.params.id;
+    const deleted = await db.reminderUserMapping.destroy({
+      where: { id: id }
+    });
+    if (deleted) {
+      res.status(200).send({ message: `ReminderUserMapping with id=${id} deleted` });
+    } else {
+      res.status(404).send({ message: `Cannot delete ReminderUserMapping with id=${id}` });
+    }
+  } catch (error) {
+    res.status(500).send({ message: error.message });
+  }
+});
+
+// GET /api/users
+app.get('/api/users', async (req, res) => {
+  try {
+    const users = await db.users.findAll();
+    res.json(users);
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    res.status(500).json({ error: 'Failed to fetch users' });
+  }
+});
+
+// POST /api/users
+app.post('/api/users', async (req, res) => {
+  try {
+    const { username, email, password, role } = req.body;
+    
+    if (!password) {
+      return res.status(400).json({ error: 'Password is required' });
+    }
+    
+    const newUser = await db.users.create({ 
+      username, 
+      email, 
+      password, // The model will hash this automatically
+      role 
+    });
+    
+    const userWithoutPassword = { ...newUser.get(), password: undefined };
+    res.status(201).json(userWithoutPassword);
+  } catch (error) {
+    console.error('Error creating user:', error);
+    if (error.name === 'SequelizeUniqueConstraintError') {
+      res.status(400).json({ error: 'Username or email already exists' });
+    } else {
+      res.status(500).json({ error: 'Failed to create user' });
+    }
+  }
+});
+
+// PUT /api/users/:id
+app.put('/api/users/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { username, email, role, password } = req.body;
+    
+    const updateData = { username, email, role };
+    
+    if (password) {
+      updateData.password = await bcrypt.hash(password, 10);
+    }
+    
+    const [updated] = await db.users.update(updateData, { where: { id } });
+    
+    if (updated) {
+      const updatedUser = await db.users.findByPk(id);
+      const userWithoutPassword = { ...updatedUser.get(), password: undefined };
+      res.json(userWithoutPassword);
+    } else {
+      res.status(404).json({ error: 'User not found' });
+    }
+  } catch (error) {
+    console.error('Error updating user:', error);
+    if (error.name === 'SequelizeUniqueConstraintError') {
+      res.status(400).json({ error: 'Username or email already exists' });
+    } else {
+      res.status(500).json({ error: 'Failed to update user' });
+    }
+  }
+});
+
+// DELETE /api/users/:id
+app.delete('/api/users/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deleted = await db.users.destroy({ where: { id } });
+    if (deleted) {
+      res.json({ message: 'User deleted successfully' });
+    } else {
+      res.status(404).json({ error: 'User not found' });
+    }
+  } catch (error) {
+    console.error('Error deleting user:', error);
+    res.status(500).json({ error: 'Failed to delete user' });
+  }
+});
+
+app.post('/api/share-reminder', authenticate, checkSuperuser, async (req, res) => {
+  const { reminderId, userIds } = req.body;
+  try {
+    const shareMappings = userIds.map(userId => ({
+      reminderId,
+      sharedWithUserId: userId
+    }));
+
+    await db.reminderUserMapping.bulkCreate(shareMappings, { ignoreDuplicates: true });
+    res.json({ message: 'Reminder shared successfully' });
+  } catch (error) {
+    console.error('Error sharing reminder:', error);
+    res.status(500).json({ error: 'Failed to share reminder' });
+  }
+});
+
+
+app.get('/api/shared-reminders', authenticate, async (req, res) => {
+  try {
+    const sharedReminders = await db.reminderShare.findAll({
+      where: { sharedWithUserId: req.user.id },
+      include: [{
+        model: db.reminders,
+        include: [{
+          model: db.users,
+          attributes: ['username', 'email']
+        }]
+      }]
+    });
+    res.json(sharedReminders.map(share => ({
+      ...share.reminder.toJSON(),
+      sharedBy: share.reminder.user
+    })));
+  } catch (error) {
+    console.error('Error fetching shared reminders:', error);
+    res.status(500).json({ error: 'Failed to fetch shared reminders' });
+  }
+});
+
+// Get reminders shared with the current user
+app.delete('/api/unshare-reminder/:id', authenticate, async (req, res) => {
+  const { id } = req.params;
+  const { userId } = req.body;
+  try {
+    const reminder = await db.reminders.findByPk(id);
+    if (!reminder || reminder.userId !== req.user.id) {
+      return res.status(403).json({ error: 'Not authorized to unshare this reminder' });
+    }
+    
+    await db.reminderShare.destroy({
+      where: {
+        reminderId: id,
+        sharedWithUserId: userId
+      }
+    });
+    res.json({ message: 'Reminder unshared successfully' });
+  } catch (error) {
+    console.error('Error unsharing reminder:', error);
+    res.status(500).json({ error: 'Failed to unshare reminder' });
+  }
+});
+
+// Create a new reminder
+app.post('/api/reminderLibrary', authenticate, checkSuperuser, async (req, res) => {
+  try {
+    const { text } = req.body;
+    const reminder = await db.reminderLibrary.create({ text });
+    res.status(201).json(reminder);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Get all reminders
+app.get('/api/reminderLibrary', authenticate, async (req, res) => {
+  try {
+    const reminders = await db.reminderLibrary.findAll();
+    res.status(200).json(reminders);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Update a reminder
+app.put('/api/reminderLibrary/:id', authenticate, checkSuperuser, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { text } = req.body;
+    const reminder = await db.reminderLibrary.findByPk(id);
+    if (reminder) {
+      reminder.text = text;
+      await reminder.save();
+      res.status(200).json(reminder);
+    } else {
+      res.status(404).json({ error: 'Reminder not found' });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Delete a reminder
+app.delete('/api/reminderLibrary/:id', authenticate, checkSuperuser, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const reminder = await db.reminderLibrary.findByPk(id);
+    if (reminder) {
+      await reminder.destroy();
+      res.status(204).send();
+    } else {
+      res.status(404).json({ error: 'Reminder not found' });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -1120,6 +1502,66 @@ app.post('/api/userClientMappings', async (req, res) => {
 //     console.error("Error creating assistant:", error);
 //   }
 // })();
+
+app.post('/api/userClientMappings', async (req, res) => {
+  const { userId, targetClientId } = req.body;
+
+  // Validate input
+  if (!userId || !targetClientId) {
+    return res.status(400).json({ error: 'userId and targetClientId are required' });
+  }
+
+  try {
+    // Check if the user exists
+    const user = await db.users.findByPk(userId);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Check if the target client exists
+    const targetClient = await db.users.findByPk(targetClientId);
+    if (!targetClient) {
+      return res.status(404).json({ error: 'Target client not found' });
+    }
+
+    // Insert the user-client mapping
+    const userClientMapping = await db.userClientMap.create({
+      userId,
+      targetClientId
+    });
+
+    res.status(201).json(userClientMapping);
+  } catch (error) {
+    console.error('Error creating user-client mapping:', error);
+    res.status(500).json({ error: 'Failed to create user-client mapping' });
+  }
+});
+
+app.get('/api/light-categories', (req, res) => {
+  res.json(lightCategoriesOptions);
+});
+
+// Create a superuser if none exists
+async function createDefaultSuperuser() {
+  try {
+    const superusers = await db.users.findAll({ where: { role: 'superuser' } });
+    if (superusers.length === 0) {
+      const superuser = await db.users.create({
+        username: 'admin',
+        email: 'admin@example.com',
+        password: 'adminpassword',
+        role: 'superuser',
+      });
+      console.log('Default superuser created:', superuser.toJSON());
+    }
+  } catch (error) {
+    console.error('Error creating default superuser:', error);
+  }
+}
+
+
+// Call the function to create a superuser if none exists
+createDefaultSuperuser();
 
 const server = app.listen(port, () => {
   console.log(`Server running on port ${port}`);

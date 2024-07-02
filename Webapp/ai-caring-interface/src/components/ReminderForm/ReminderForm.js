@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { View, TextInput, Button, StyleSheet, Text } from 'react-native';
 import { AuthContext } from '../../Authcontext';
-import DropdownSelect from 'react-dropdown-select';
-import api from '../../utils/api';
+import Select from 'react-select';
+import { api } from '../../utils/api';
 
 function ReminderForm({ reminder, handleChange, handleSubmit, loadingReminder, invalidFields, isEditing, submitted }) {
   const { userId } = useContext(AuthContext);
@@ -20,13 +20,13 @@ function ReminderForm({ reminder, handleChange, handleSubmit, loadingReminder, i
   ];
 
   const [activityTypes, setActivityTypes] = useState([]);
+  const [lightCategoriesOptions, setLightCategoriesOptions] = useState([]);
 
   useEffect(() => {
     if (userId) {
       handleChange('userId', userId);
     }
 
-    // Fetch activity types from the API
     api
       .get('/activities')
       .then(response => {
@@ -39,12 +39,25 @@ function ReminderForm({ reminder, handleChange, handleSubmit, loadingReminder, i
       .catch(error => {
         console.error('Error fetching activity types:', error);
       });
+
+    api
+      .get('/api/light-categories')
+      .then(response => {
+        const categories = response.data.map(category => ({
+          value: category.id,  // Use category.id which is an integer
+          label: category.label,
+          color: category.color,
+        }));
+        setLightCategoriesOptions(categories);
+      })
+      .catch(error => {
+        console.error('Error fetching light categories:', error);
+      });
   }, [userId]);
 
   const getSelectedOption = (options, value) => {
-    if (!value) return null;
-    const lowerCaseValue = value.toString().toLowerCase();
-    return options.find(option => option.value === lowerCaseValue) || null;
+    if (value === null || value === undefined) return null;
+    return options.find(option => option.value === value) || null;  // Directly compare the integer values
   };
 
   const selectedIntervalOption = getSelectedOption(intervalOptions, reminder.interval);
@@ -53,49 +66,106 @@ function ReminderForm({ reminder, handleChange, handleSubmit, loadingReminder, i
   const selectedActivityOption = activityTypes.find(
     (option) => option.value.toLowerCase() === (reminder.activity || '').toLowerCase()
   );
+  const selectedLightCategoryOption = getSelectedOption(lightCategoriesOptions, reminder.lightCategoryId);
 
   const getStyle = (field) => (submitted && invalidFields.includes(field) ? styles.inputInvalid : styles.input);
 
   const getHintText = (field) => {
     switch (field) {
+      case 'message':
+        return 'Enter the text for your reminder.';
+      case 'interval':
+        return 'Interval: Can be like "Everytime" or "Once".';
       case 'time':
-        return reminder.time ? '' : 'Time is required for a non-dependent reminder.';
+        return 'Time is required for a non-dependent reminder.';
       case 'utility_name':
-        return reminder.utility_name ? '' : 'Utility Name is required for a dependent reminder.';
+        return 'Utility Name is required for a dependent reminder.';
       case 'component_name':
-        return reminder.component_name ? '' : 'Component Name is required for a dependent reminder.';
+        return 'Component Name is required for a dependent reminder.';
       case 'condition':
-        return reminder.condition ? '' : 'Condition is required for a dependent reminder.';
+        return 'Condition is required for a dependent reminder.';
+      case 'delay':
+        return 'Enter the number of seconds to wait before triggering the reminder.';
+      case 'display':
+        return 'Enter the text to be shown on the device when the reminder is triggered.';
+      case 'disappearOnCondition':
+        return 'Select if the reminder should disappear on condition.';
       case 'activity':
-        return reminder.activity ? '' : 'Activity is required for an activity-based reminder.';
+        return 'Activity is required for an activity-based reminder.';
       case 'triggerTime':
-        return reminder.triggerTime ? '' : 'Trigger Time is required for an activity-based reminder.';
+        return 'Trigger Time is required for an activity-based reminder.';
       case 'triggerType':
-        return reminder.triggerType ? '' : 'Trigger Type is required for an activity-based reminder.';
+        return 'Trigger Type is required for an activity-based reminder.';
+      case 'lightCategoryId':
+        return 'Select the category for the lights.';
       default:
         return '';
     }
   };
+
+  const customStyles = {
+    option: (provided, state) => ({
+      ...provided,
+      display: 'flex',
+      alignItems: 'center',
+    }),
+    singleValue: (provided, state) => ({
+      ...provided,
+      display: 'flex',
+      alignItems: 'center',
+    }),
+  };
+
+  const Option = (props) => (
+    <div {...props.innerProps} style={{ display: 'flex', alignItems: 'center' }}>
+      <div
+        style={{
+          width: 16,
+          height: 16,
+          backgroundColor: props.data.color,
+          borderRadius: '50%',
+          marginRight: 8,
+        }}
+      />
+      <span>{props.data.label}</span>
+    </div>
+  );
+
+  const SingleValue = (props) => (
+    <div style={{ display: 'flex', alignItems: 'center' }}>
+      <div
+        style={{
+          width: 16,
+          height: 16,
+          backgroundColor: props.data.color,
+          borderRadius: '50%',
+          marginRight: 8,
+        }}
+      />
+      <span>{props.data.label}</span>
+    </div>
+  );
 
   return (
     <View style={styles.container}>
       {submitted && invalidFields.length > 0 && (
         <Text style={styles.errorText}>Please fill in all required fields correctly.</Text>
       )}
-      <Text style={styles.hint}>Message: Enter the text for your reminder.</Text>
+      <Text style={styles.hint}>{getHintText('message')}</Text>
       <TextInput
         style={getStyle('message')}
         onChangeText={(value) => handleChange('message', value)}
         value={reminder.message}
         placeholder="Message"
       />
-      <Text style={styles.hint}>Interval: Can be like 'Everytime', 'Once'.</Text>
-      <DropdownSelect
+      <Text style={styles.hint}>{getHintText('interval')}</Text>
+      <Select
         options={intervalOptions}
-        onChange={(value) => handleChange('interval', value[0].value)}
-        value={selectedIntervalOption ? [selectedIntervalOption] : []}
+        onChange={(value) => handleChange('interval', value.value)}
+        value={selectedIntervalOption}
         placeholder={selectedIntervalOption?.label || "Select an interval"}
-        style={styles.dropdown}
+        styles={customStyles}
+        components={{ Option }}
       />
       <Text style={styles.hint}>{getHintText('time')}</Text>
       <TextInput
@@ -125,34 +195,35 @@ function ReminderForm({ reminder, handleChange, handleSubmit, loadingReminder, i
         value={reminder.condition}
         placeholder="Condition"
       />
-      <Text style={styles.hint}>Delay: Enter the number of seconds to wait before triggering the reminder.</Text>
+      <Text style={styles.hint}>{getHintText('delay')}</Text>
       <TextInput
         style={getStyle('delay')}
         onChangeText={(value) => handleChange('delay', value)}
         value={reminder.delay}
         placeholder="Delay"
       />
-      <Text style={styles.hint}>Display: Enter the text to be shown on the device when the reminder is triggered.</Text>
+      <Text style={styles.hint}>{getHintText('display')}</Text>
       <TextInput
         style={getStyle('display')}
         onChangeText={(value) => handleChange('display', value)}
         value={reminder.display}
         placeholder="Display"
       />
-      <DropdownSelect
+      <Text style={styles.hint}>{getHintText('disappearOnCondition')}</Text>
+      <Select
         options={disappearOptions}
-        onChange={(value) => handleChange('disappearOnCondition', value[0].value)}
-        value={selectedDisappearOption ? [selectedDisappearOption] : []}
+        onChange={(value) => handleChange('disappearOnCondition', value.value)}
+        value={selectedDisappearOption}
         placeholder={selectedDisappearOption?.label || "Select an option"}
-        style={styles.dropdown}
+        styles={customStyles}
       />
       <Text style={styles.hint}>{getHintText('activity')}</Text>
-      <DropdownSelect
+      <Select
         options={activityTypes}
-        onChange={(value) => handleChange('activity', value[0].value)}
-        value={selectedActivityOption ? [selectedActivityOption] : []}
+        onChange={(value) => handleChange('activity', value.value)}
+        value={selectedActivityOption}
         placeholder={selectedActivityOption ? selectedActivityOption.label : 'Select an activity'}
-        style={styles.dropdown}
+        styles={customStyles}
       />
       <Text style={styles.hint}>{getHintText('triggerTime')}</Text>
       <TextInput
@@ -162,18 +233,29 @@ function ReminderForm({ reminder, handleChange, handleSubmit, loadingReminder, i
         placeholder="Trigger Time (seconds)"
       />
       <Text style={styles.hint}>{getHintText('triggerType')}</Text>
-      <DropdownSelect
+      <Select
         options={triggerTypeOptions}
-        onChange={(value) => handleChange('triggerType', value[0].value)}
-        value={selectedTriggerTypeOption ? [selectedTriggerTypeOption] : []}
+        onChange={(value) => handleChange('triggerType', value.value)}
+        value={selectedTriggerTypeOption}
         placeholder={selectedTriggerTypeOption?.label || "Select trigger type"}
-        style={styles.dropdown}
+        styles={customStyles}
       />
-      <Button
-        onPress={handleSubmit}
-        title={isEditing ? "Update Reminder" : "Create Reminder"}
-        disabled={loadingReminder}
+      <Text style={styles.hint}>{getHintText('lightCategoryId')}</Text>
+      <Select
+        options={lightCategoriesOptions}
+        onChange={(value) => handleChange('lightCategoryId', value.value)}
+        value={selectedLightCategoryOption}
+        placeholder={selectedLightCategoryOption?.label || "Select a light category"}
+        styles={customStyles}
+        components={{ Option, SingleValue }}
       />
+      <View style={styles.buttonContainer}>
+        <Button
+          onPress={handleSubmit}
+          title={isEditing ? "Update Reminder" : "Create Reminder"}
+          disabled={loadingReminder}
+        />
+      </View>
     </View>
   );
 }
@@ -189,7 +271,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 4,
     paddingHorizontal: 8,
-    marginBottom: 8,
+    marginVertical: 8,
     backgroundColor: '#f5f5f5',
   },
   inputInvalid: {
@@ -198,7 +280,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 4,
     paddingHorizontal: 8,
-    marginBottom: 8,
+    marginVertical: 8,
     backgroundColor: '#f5e6e6',
   },
   hint: {
@@ -207,7 +289,7 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   dropdown: {
-    marginBottom: 8,
+    marginVertical: 8,
   },
   errorText: {
     color: 'red',
@@ -215,5 +297,9 @@ const styles = StyleSheet.create({
     fontSize: 14,
     textAlign: 'center',
   },
+  buttonContainer: {
+    marginTop: 16,
+  },
 });
+
 export default ReminderForm;

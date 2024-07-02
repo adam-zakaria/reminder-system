@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { useParams, useNavigate } from 'react-router-dom';
 import ReminderForm from '../../components/ReminderForm/ReminderForm';
-import api from '../../utils/api';
+import { api } from '../../utils/api';
 import { AuthContext } from '../../Authcontext';
 import { jwtDecode } from 'jwt-decode';
 
