@@ -1,24 +1,15 @@
-//
-//  MealPrepApp.swift
-//  MealPrep
-//
-//  Created by Jiachen Li on 5/16/23.
-//
-
 import SwiftUI
 
 @main
 struct MealPrepApp: App {
     var stickyList: StickyData
-    var dataManager : ExternalDataManager
+    var dataManager: ExternalDataManager
     
-    init()
-    {
-        UIApplication.shared.isIdleTimerDisabled = true
+    init() {
         stickyList = StickyData()
         dataManager = ExternalDataManager(stickyData: stickyList)
+        UIApplication.shared.isIdleTimerDisabled = true // Disable idle timer
     }
-    
     
     var body: some Scene {
         WindowGroup {

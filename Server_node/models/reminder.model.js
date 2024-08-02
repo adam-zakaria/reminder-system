@@ -1,3 +1,4 @@
+// models/reminder.js
 module.exports = (sequelize, Sequelize) => {
   const Reminder = sequelize.define('reminder', {
     id: {
@@ -56,6 +57,10 @@ module.exports = (sequelize, Sequelize) => {
     },
     triggerType: { // New field for specifying before or after the activity
       type: Sequelize.ENUM('begin', 'end'),
+      allowNull: true,
+    },
+    lightCategoryId: { // New field for light category ID
+      type: Sequelize.INTEGER,
       allowNull: true,
     },
   });

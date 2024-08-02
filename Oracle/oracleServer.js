@@ -4,14 +4,14 @@ const PORT = 7628; // Assuming your Node.js server runs on port 3000
 const SERVER_URL = `http://localhost:${PORT}/oracle-updates`;
 
 const activity_json = {
-    "house_id" : "house_1",
+    "house_id" : "aware_home",
     "timestamp": "2024-06-11T20:04:03",
     "device_id": "0015BC001A0115D3",
     "activity_status": "begin",
     "sensor_type": "motionStatus",
     "sensor_status": 1,
     "location": "loc-entry_hall_1",
-    "activity": "cooking"
+    "activity": "Work"
   }
 
 
@@ -21,7 +21,7 @@ function sendDummyUpdate() {
         "update": { // Wrap the original payload under "update"
             "home_utilities": [
                 {
-                    "home_id": "home123",       //awarehome (static for now)
+                    "house_id": "ep6",       //awarehome (static for now)
                     "utilities": [
                         {
                             "utility_id": "utility456", //sensor id
@@ -70,7 +70,7 @@ function sendDummyUpdate() {
             'Content-Type': 'application/json',
         },
         //body: JSON.stringify(dummyJson),
-        body: JSON.stringify(activity_json),
+        body: JSON.stringify(dummyJson),
     })
     .then(response => response.json())
     .then(data => console.log('Oracle update sent:', data))

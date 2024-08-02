@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, ScrollView, ActivityIndicator, StyleSheet, Text } from 'react-native';
+import { View, ScrollView, ActivityIndicator, StyleSheet } from 'react-native';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
@@ -29,6 +29,7 @@ function HomeScreen() {
   const [loadingReminder, setLoadingReminder] = useState(false);
   const [invalidFields, setInvalidFields] = useState([]);
   const [submitted, setSubmitted] = useState(false);
+  const [hasResponse, setHasResponse] = useState(false);
   const navigate = useNavigate();
   const { token } = useContext(AuthContext);
 
@@ -93,6 +94,7 @@ function HomeScreen() {
 
     setLoadingReminder(true);
     try {
+      console.log(reminder, "reminder inside submit");
       const response = await api.post('/reminders', reminder, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -125,6 +127,7 @@ function HomeScreen() {
         triggerType: response.response.triggerType || prevReminder.triggerType,
         lightCategoryId: response.response.lightCategoryId || prevReminder.lightCategoryId
       }));
+      setHasResponse(response.hasResponse);
     }
   };
 
@@ -134,21 +137,23 @@ function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.leftContainer}>
-        <ScrollView contentContainerStyle={styles.scrollContainer}>
-          <ReminderForm
-            reminder={reminder}
-            handleChange={handleChange}
-            handleSubmit={handleSubmit}
-            loadingReminder={loadingReminder}
-            invalidFields={invalidFields}
-            isEditing={false}
-            submitted={submitted}
-          />
-          {loadingReminder && <ActivityIndicator size="large" color="#0000ff" />}
-        </ScrollView>
+      <View style={[styles.leftContainer, hasResponse && styles.expandedLeftContainer]}>
+        {hasResponse && (
+          <ScrollView contentContainerStyle={styles.scrollContainer}>
+            <ReminderForm
+              reminder={reminder}
+              handleChange={handleChange}
+              handleSubmit={handleSubmit}
+              loadingReminder={loadingReminder}
+              invalidFields={invalidFields}
+              isEditing={false}
+              submitted={submitted}
+            />
+            {loadingReminder && <ActivityIndicator size="large" color="#0000ff" />}
+          </ScrollView>
+        )}
       </View>
-      <View style={styles.rightContainer}>
+      <View style={[styles.rightContainer, hasResponse && styles.expandedRightContainer]}>
         <ChatBox onChatResponse={handleChatResponse} />
       </View>
     </View>
@@ -161,15 +166,23 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   leftContainer: {
-    flex: 1,
+    flex: 0, // Hidden when no response
+    padding: 16,
+    height: '100vh',
+    display: 'none' // Ensure it does not take space when collapsed
+  },
+  expandedLeftContainer: {
+    flex: 1, // Expand to 50% when there is a response
+    display: 'flex' // Make it visible when expanded
+  },
+  rightContainer: {
+    flex: 1, // Full screen when no response
     padding: 16,
     height: '100vh',
   },
-  rightContainer: {
-    flex: 1,
-    padding: 16,
-    height: '100vh',
-    maxHeight: '90vh', // Adjusted height to make ChatBox shorter
+  expandedRightContainer: {
+    flex: 1, // 50% when there is a response
+    maxHeight: '90vh',
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between',

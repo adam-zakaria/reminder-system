@@ -20,15 +20,21 @@ import {
 import { Send as SendIcon, EmojiObjects as IdeaIcon, Alarm as AlarmIcon } from '@mui/icons-material';
 
 const ChatBox = ({ onChatResponse }) => {
-  const [messages, setMessages] = useState([
-    { text: 'Hi there! Let me know what you\'d like me to remind you about.', sender: 'Assistant' },
-  ]);
+  const { token, username } = useContext(AuthContext);
+  const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const [sessionId, setSessionId] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [reminderLibrary, setReminderLibrary] = useState([]);
   const [examplesVisible, setExamplesVisible] = useState(true);
-  const { token } = useContext(AuthContext);
+
+  useEffect(() => {
+    if (username) {
+      setMessages([
+        { text: `Let me know what kind of reminder you want to create.`, sender: 'Assistant' },
+      ]);
+    }
+  }, [username]);
 
   useEffect(() => {
     const fetchReminderLibrary = async () => {
@@ -69,7 +75,7 @@ const ChatBox = ({ onChatResponse }) => {
 
   const sendMessage = () => {
     if (newMessage.trim() !== '') {
-      const userMessage = { text: newMessage, sender: 'You' };
+      const userMessage = { text: newMessage, sender: username || 'You' };
       setMessages((prevMessages) => [...prevMessages, userMessage, { text: '...', sender: 'Assistant' }]);
       sendMessageToAPI(newMessage);
       setNewMessage('');
@@ -78,7 +84,7 @@ const ChatBox = ({ onChatResponse }) => {
   };
 
   const handleTileClick = (reminderText) => {
-    const userMessage = { text: reminderText, sender: 'You' };
+    const userMessage = { text: reminderText, sender: username || 'You' };
     setMessages((prevMessages) => [...prevMessages, userMessage, { text: '...', sender: 'Assistant' }]);
     sendMessageToAPI(reminderText);
     setExamplesVisible(false); // Hide examples after clicking a tile
@@ -91,9 +97,9 @@ const ChatBox = ({ onChatResponse }) => {
           {messages.map((message, index) => (
             <ListItem key={index} alignItems="flex-start">
               <ListItemAvatar>
-                <Avatar>{message.sender === 'You' ? 'Y' : 'A'}</Avatar>
+                <Avatar>{message.sender === (username || 'You') ? (username ? username.charAt(0) : 'Y') : 'A'}</Avatar>
               </ListItemAvatar>
-              <ListItemText primary={message.text} />
+              <ListItemText primary={`${message.sender}: ${message.text}`} />
             </ListItem>
           ))}
           {examplesVisible && (

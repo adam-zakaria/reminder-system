@@ -1,0 +1,2907 @@
+[
+    {
+        "update": {
+            "activity": "Work",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Work",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Relax",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Relax",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Work",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Work",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Leave_Home",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Leave_Home",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Relax",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Relax",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Bed_To_Toilet",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Bed_To_Toilet",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Enter_Home",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Enter_Home",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Bed_To_Toilet",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Bed_To_Toilet",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Work",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Work",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Enter_Home",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Enter_Home",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Other",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Other",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Enter_Home",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Enter_Home",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Sleeping",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Sleeping",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Bed_To_Toilet",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Bed_To_Toilet",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Leave_Home",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Leave_Home",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Relax",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Relax",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Leave_Home",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Leave_Home",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Relax",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Relax",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Sleeping",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Sleeping",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Relax",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Relax",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Relax",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Relax",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Enter_Home",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Enter_Home",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Other",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Other",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Enter_Home",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Enter_Home",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Sleeping",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Sleeping",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Relax",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Relax",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Leave_Home",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Leave_Home",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Enter_Home",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Enter_Home",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Work",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Work",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Work",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Work",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Work",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Work",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Relax",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Relax",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Relax",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Relax",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Work",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Work",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Work",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Work",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Relax",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Relax",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Work",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Work",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Work",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Work",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Work",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Work",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Relax",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Relax",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Work",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Work",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Work",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Work",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Work",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Work",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Work",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Work",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Other",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Other",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    },
+    {
+        "update": {
+            "activity": "Eating",
+            "house_id": "AH",
+            "activity_status": "end"
+        }
+    },
+    {
+        "update": {
+            "activity": "Meal_Preparation",
+            "house_id": "AH",
+            "activity_status": "begin"
+        }
+    }
+]

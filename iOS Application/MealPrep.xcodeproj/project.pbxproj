@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6B433CFA2C387EC00074308F /* BLEManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B433CF92C387EC00074308F /* BLEManager.swift */; };
+		6B433CFE2C3882160074308F /* ContentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B433CFD2C3882160074308F /* ContentViewModel.swift */; };
 		D90996AA2A534FFE0027EDEA /* NWWebSocket in Frameworks */ = {isa = PBXBuildFile; productRef = D90996A92A534FFE0027EDEA /* NWWebSocket */; };
 		D90996AC2A53551F0027EDEA /* ExternalData.swift in Sources */ = {isa = PBXBuildFile; fileRef = D90996AB2A53551F0027EDEA /* ExternalData.swift */; };
 		E412DEA72A140AC70026DEDC /* MealPrepApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E412DEA62A140AC70026DEDC /* MealPrepApp.swift */; };
@@ -23,6 +25,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		6B433CF92C387EC00074308F /* BLEManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BLEManager.swift; sourceTree = "<group>"; };
+		6B433CFD2C3882160074308F /* ContentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentViewModel.swift; sourceTree = "<group>"; };
 		D90996AB2A53551F0027EDEA /* ExternalData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalData.swift; sourceTree = "<group>"; };
 		E412DEA32A140AC70026DEDC /* MealPrep.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MealPrep.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E412DEA62A140AC70026DEDC /* MealPrepApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealPrepApp.swift; sourceTree = "<group>"; };
@@ -80,6 +84,8 @@
 				E412DEB62A14158F0026DEDC /* stickyStruct.swift */,
 				E412DEAA2A140AC80026DEDC /* Assets.xcassets */,
 				E412DEAC2A140AC80026DEDC /* Preview Content */,
+				6B433CF92C387EC00074308F /* BLEManager.swift */,
+				6B433CFD2C3882160074308F /* ContentViewModel.swift */,
 			);
 			path = MealPrep;
 			sourceTree = "<group>";
@@ -124,7 +130,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1400;
-				LastUpgradeCheck = 1400;
+				LastUpgradeCheck = 1530;
 				TargetAttributes = {
 					E412DEA22A140AC70026DEDC = {
 						CreatedOnToolsVersion = 14.0.1;
@@ -177,6 +183,8 @@
 				E4F015D92A1EBD1000B20BD4 /* User.swift in Sources */,
 				E412DEB52A1412F00026DEDC /* stickyCard.swift in Sources */,
 				E412DEB92A141C590026DEDC /* detailView.swift in Sources */,
+				6B433CFE2C3882160074308F /* ContentViewModel.swift in Sources */,
+				6B433CFA2C387EC00074308F /* BLEManager.swift in Sources */,
 				E4435E4C2A1C100700D8C64A /* addView.swift in Sources */,
 				E4F015DD2A2650C600B20BD4 /* addStickyView.swift in Sources */,
 			);
@@ -221,6 +229,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -281,6 +290,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -307,9 +317,10 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"MealPrep/Preview Content\"";
-				DEVELOPMENT_TEAM = UF6QZ2GAG2;
+				DEVELOPMENT_TEAM = 52ZRHM63YK;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "This app uses Bluetooth to connect to external devices and control LED lights.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -320,7 +331,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.jiachen.MealPrep;
+				PRODUCT_BUNDLE_IDENTIFIER = com.parcs.MealPrep;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -336,9 +347,10 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"MealPrep/Preview Content\"";
-				DEVELOPMENT_TEAM = UF6QZ2GAG2;
+				DEVELOPMENT_TEAM = 52ZRHM63YK;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "This app uses Bluetooth to connect to external devices and control LED lights.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -349,7 +361,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.jiachen.MealPrep;
+				PRODUCT_BUNDLE_IDENTIFIER = com.parcs.MealPrep;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;

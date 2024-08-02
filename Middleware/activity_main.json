@@ -1,0 +1,1796 @@
+[
+    {
+        "activity": "Work"
+    },
+    {
+        "activity": "Work"
+    },
+    {
+        "activity": "Work"
+    },
+    {
+        "activity": "Work"
+    },
+    {
+        "activity": "Work"
+    },
+    {
+        "activity": "Work"
+    },
+    {
+        "activity": "Relax"
+    },
+    {
+        "activity": "Work"
+    },
+    {
+        "activity": "Work"
+    },
+    {
+        "activity": "Leave_Home"
+    },
+    {
+        "activity": "Relax"
+    },
+    {
+        "activity": "Relax"
+    },
+    {
+        "activity": "Bed_To_Toilet"
+    },
+    {
+        "activity": "Bed_To_Toilet"
+    },
+    {
+        "activity": "Enter_Home"
+    },
+    {
+        "activity": "Bed_To_Toilet"
+    },
+    {
+        "activity": "Bed_To_Toilet"
+    },
+    {
+        "activity": "Bed_To_Toilet"
+    },
+    {
+        "activity": "Bed_To_Toilet"
+    },
+    {
+        "activity": "Bed_To_Toilet"
+    },
+    {
+        "activity": "Bed_To_Toilet"
+    },
+    {
+        "activity": "Bed_To_Toilet"
+    },
+    {
+        "activity": "Bed_To_Toilet"
+    },
+    {
+        "activity": "Bed_To_Toilet"
+    },
+    {
+        "activity": "Bed_To_Toilet"
+    },
+    {
+        "activity": "Work"
+    },
+    {
+        "activity": "Work"
+    },
+    {
+        "activity": "Work"
+    },
+    {
+        "activity": "Work"
+    },
+    {
+        "activity": "Work"
+    },
+    {
+        "activity": "Work"
+    },
+    {
+        "activity": "Work"
+    },
+    {
+        "activity": "Work"
+    },
+    {
+        "activity": "Enter_Home"
+    },
+    {
+        "activity": "Enter_Home"
+    },
+    {
+        "activity": "Enter_Home"
+    },
+    {
+        "activity": "Enter_Home"
+    },
+    {
+        "activity": "Enter_Home"
+    },
+    {
+        "activity": "Enter_Home"
+    },
+    {
+        "activity": "Enter_Home"
+    },
+    {
+        "activity": "Enter_Home"
+    },
+    {
+        "activity": "Enter_Home"
+    },
+    {
+        "activity": "Other"
+    },
+    {
+        "activity": "Other"
+    },
+    {
+        "activity": "Enter_Home"
+    },
+    {
+        "activity": "Sleeping"
+    },
+    {
+        "activity": "Sleeping"
+    },
+    {
+        "activity": "Sleeping"
+    },
+    {
+        "activity": "Sleeping"
+    },
+    {
+        "activity": "Sleeping"
+    },
+    {
+        "activity": "Sleeping"
+    },
+    {
+        "activity": "Bed_To_Toilet"
+    },
+    {
+        "activity": "Bed_To_Toilet"
+    },
+    {
+        "activity": "Bed_To_Toilet"
+    },
+    {
+        "activity": "Bed_To_Toilet"
+    },
+    {
+        "activity": "Bed_To_Toilet"
+    },
+    {
+        "activity": "Bed_To_Toilet"
+    },
+    {
+        "activity": "Bed_To_Toilet"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Leave_Home"
+    },
+    {
+        "activity": "Relax"
+    },
+    {
+        "activity": "Relax"
+    },
+    {
+        "activity": "Relax"
+    },
+    {
+        "activity": "Relax"
+    },
+    {
+        "activity": "Relax"
+    },
+    {
+        "activity": "Leave_Home"
+    },
+    {
+        "activity": "Leave_Home"
+    },
+    {
+        "activity": "Leave_Home"
+    },
+    {
+        "activity": "Leave_Home"
+    },
+    {
+        "activity": "Leave_Home"
+    },
+    {
+        "activity": "Leave_Home"
+    },
+    {
+        "activity": "Leave_Home"
+    },
+    {
+        "activity": "Leave_Home"
+    },
+    {
+        "activity": "Leave_Home"
+    },
+    {
+        "activity": "Relax"
+    },
+    {
+        "activity": "Relax"
+    },
+    {
+        "activity": "Relax"
+    },
+    {
+        "activity": "Relax"
+    },
+    {
+        "activity": "Relax"
+    },
+    {
+        "activity": "Sleeping"
+    },
+    {
+        "activity": "Relax"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Relax"
+    },
+    {
+        "activity": "Relax"
+    },
+    {
+        "activity": "Relax"
+    },
+    {
+        "activity": "Relax"
+    },
+    {
+        "activity": "Relax"
+    },
+    {
+        "activity": "Relax"
+    },
+    {
+        "activity": "Relax"
+    },
+    {
+        "activity": "Relax"
+    },
+    {
+        "activity": "Relax"
+    },
+    {
+        "activity": "Relax"
+    },
+    {
+        "activity": "Relax"
+    },
+    {
+        "activity": "Relax"
+    },
+    {
+        "activity": "Relax"
+    },
+    {
+        "activity": "Enter_Home"
+    },
+    {
+        "activity": "Enter_Home"
+    },
+    {
+        "activity": "Enter_Home"
+    },
+    {
+        "activity": "Other"
+    },
+    {
+        "activity": "Other"
+    },
+    {
+        "activity": "Other"
+    },
+    {
+        "activity": "Other"
+    },
+    {
+        "activity": "Other"
+    },
+    {
+        "activity": "Other"
+    },
+    {
+        "activity": "Other"
+    },
+    {
+        "activity": "Enter_Home"
+    },
+    {
+        "activity": "Enter_Home"
+    },
+    {
+        "activity": "Sleeping"
+    },
+    {
+        "activity": "Sleeping"
+    },
+    {
+        "activity": "Sleeping"
+    },
+    {
+        "activity": "Sleeping"
+    },
+    {
+        "activity": "Sleeping"
+    },
+    {
+        "activity": "Sleeping"
+    },
+    {
+        "activity": "Sleeping"
+    },
+    {
+        "activity": "Sleeping"
+    },
+    {
+        "activity": "Sleeping"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Relax"
+    },
+    {
+        "activity": "Relax"
+    },
+    {
+        "activity": "Leave_Home"
+    },
+    {
+        "activity": "Leave_Home"
+    },
+    {
+        "activity": "Leave_Home"
+    },
+    {
+        "activity": "Leave_Home"
+    },
+    {
+        "activity": "Leave_Home"
+    },
+    {
+        "activity": "Leave_Home"
+    },
+    {
+        "activity": "Leave_Home"
+    },
+    {
+        "activity": "Leave_Home"
+    },
+    {
+        "activity": "Enter_Home"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Work"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Work"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Work"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Relax"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Relax"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Work"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Work"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Relax"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Work"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Work"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Work"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Relax"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Work"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Work"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Work"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Work"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Meal_Preparation"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Other"
+    },
+    {
+        "activity": "Eating"
+    },
+    {
+        "activity": "Meal_Preparation"
+    }
+]

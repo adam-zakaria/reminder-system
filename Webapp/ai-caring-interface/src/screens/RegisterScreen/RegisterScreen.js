@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../../utils/api';
-import AICaringLogo from '../../AICaringLogo.png';
+import AICaringLogo from '../../assests/AICaringLogo.png';
 import {
   Container,
   Typography,

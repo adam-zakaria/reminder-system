@@ -1,11 +1,3 @@
-//
-//  addStickyView.swift
-//  MealPrep
-//
-//  Created by Jiachen Li on 5/30/23.
-//
-
-//NOT USING
 import SwiftUI
 
 struct addStickyView: View {
@@ -15,26 +7,25 @@ struct addStickyView: View {
     @State var content = ""
     @State var instructions = [Instruction]()
     @State var individualInstruction = ""
+    var notificationSoundId: Int // Add this parameter
+
     var body: some View {
-        
         GeometryReader { geometry in
-            //Add background color/texture
-            ZStack{
+            // Add background color/texture
+            ZStack {
                 Color("stickyYellow")
                     .ignoresSafeArea()
             }
-            
-            VStack{
-                VStack{
-                    HStack{
+
+            VStack {
+                VStack {
+                    HStack {
                         Spacer()
                         Text(getTime())
                             .font(.system(size: 40))
                             .bold()
-                        
                     }
-                    //.padding(.horizontal)
-                    HStack{
+                    HStack {
                         Spacer()
                         (Text(getDayname())
                          +  Text(" , ")
@@ -43,34 +34,30 @@ struct addStickyView: View {
                     }
                 }
                 .padding(.horizontal)
-                VStack{
-                    HStack{
+                VStack {
+                    HStack {
                         Text("Title:")
                             .font(.system(size: 30))
                             .bold()
-                        TextField(
-                            "title",
-                            text: $title
-                        ).font(.system(size: 30))
+                        TextField("title", text: $title)
+                            .font(.system(size: 30))
                     }
-                    HStack{
+                    HStack {
                         Text("Content:")
                             .font(.system(size: 30))
                             .bold()
-                        TextField(
-                            "Content",
-                            text: $content
-                        ).font(.system(size: 30))
+                        TextField("Content", text: $content)
+                            .font(.system(size: 30))
                     }
-                    HStack{
+                    HStack {
                         Text("Detail instruction")
                             .font(.system(size: 30))
                             .bold()
                         Spacer()
                     }
                     // Now show all instructions
-                    ForEach(instructions.indices, id: \.self) {idx in
-                        HStack{
+                    ForEach(instructions.indices, id: \.self) { idx in
+                        HStack {
                             Spacer(minLength: 10)
                             Text(instructions[idx].name)
                             Spacer()
@@ -80,49 +67,51 @@ struct addStickyView: View {
                                 .overlay(
                                     Image(systemName: "minus")
                                         .foregroundColor(.white)
-                                        .font(.system(size:30))
-                                        .position(x: 20, y:20)
-                                    )
+                                        .font(.system(size: 30))
+                                        .position(x: 20, y: 20)
+                                )
                                 .onTapGesture {
                                     instructions.remove(at: idx)
                                 }
-                                
                         }
                     }
-                    HStack{
-                        TextField(
-                            "Add Detail instruction",
-                            text: $individualInstruction
-                        )
-                        .font(.system(size: 20))
-                        .padding(.horizontal, 10)
-                        .textFieldStyle(.roundedBorder)
-                        
+                    HStack {
+                        TextField("Add Detail instruction", text: $individualInstruction)
+                            .font(.system(size: 20))
+                            .padding(.horizontal, 10)
+                            .textFieldStyle(.roundedBorder)
+
                         Circle()
                             .fill(Color.green)
                             .frame(width: 40)
                             .overlay(
                                 Image(systemName: "plus")
                                     .foregroundColor(.white)
-                                    .font(.system(size:30))
-                                    .position(x: 20, y:20)
-                                )
+                                    .font(.system(size: 30))
+                                    .position(x: 20, y: 20)
+                            )
                             .onTapGesture {
-                                instructions.append(Instruction(name:individualInstruction))
+                                instructions.append(Instruction(name: individualInstruction))
                                 individualInstruction = ""
                             }
                     }
-                    
-                    Button("Done"){
-                        if(!title.isEmpty && !content.isEmpty){
-                            self.stickyList.active_stickyNotes.append(Sticky(title: title, content: content, instructions: instructions, finished: false))
+
+                    Button("Done") {
+                        if !title.isEmpty && !content.isEmpty {
+                            let newSticky = Sticky(
+                                title: title,
+                                content: content,
+                                instructions: instructions,
+                                finished: false,
+                                notificationSoundId: notificationSoundId // Pass notificationSoundId here
+                            )
+                            self.stickyList.addActiveSticky(sticky: newSticky, play_sound: true)
                             presentationMode.wrappedValue.dismiss()
                         }
                     }
                     .font(.system(size: 40))
                     .bold()
                     .buttonStyle(.borderedProminent)
- 
                 }
                 .padding(10)
                 .background(
@@ -138,6 +127,6 @@ struct addStickyView: View {
 
 struct addStickyView_Previews: PreviewProvider {
     static var previews: some View {
-        addStickyView()
+        addStickyView(notificationSoundId: 1007)
     }
 }

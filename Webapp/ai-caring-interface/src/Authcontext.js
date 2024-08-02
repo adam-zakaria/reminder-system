@@ -7,7 +7,8 @@ export const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(null);
   const [userId, setUserId] = useState(null);
-  const [role, setRole] = useState(null); // Add role state
+  const [username, setUsername] = useState(null);
+  const [role, setRole] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
@@ -15,10 +16,13 @@ export const AuthProvider = ({ children }) => {
       try {
         const storedToken = await AsyncStorage.getItem('token');
         const storedUserId = await AsyncStorage.getItem('userId');
-        const storedRole = await AsyncStorage.getItem('role'); // Load role from storage
-        if (storedToken && storedUserId && storedRole) {
+        const storedUsername = await AsyncStorage.getItem('username');
+        const storedRole = await AsyncStorage.getItem('role');
+        console.log('Loaded auth data:', { storedToken, storedUserId, storedUsername, storedRole });
+        if (storedToken && storedUserId && storedUsername && storedRole) {
           setToken(storedToken);
           setUserId(storedUserId);
+          setUsername(storedUsername);
           setRole(storedRole);
           setIsAuthenticated(true);
         }
@@ -30,14 +34,17 @@ export const AuthProvider = ({ children }) => {
     loadAuthData();
   }, []);
 
-  const saveAuthData = async (token, userId, role) => { // Add role parameter
+  const saveAuthData = async (token, userId, username, role) => {
     try {
+      console.log('Saving auth data:', { token, userId, username, role });
       await AsyncStorage.setItem('token', token);
       await AsyncStorage.setItem('userId', userId);
-      await AsyncStorage.setItem('role', role); // Save role to storage
+      await AsyncStorage.setItem('username', username);
+      await AsyncStorage.setItem('role', role);
       setToken(token);
       setUserId(userId);
-      setRole(role); // Set role state
+      setUsername(username);
+      setRole(role);
       setIsAuthenticated(true);
     } catch (error) {
       console.error('Failed to save auth data', error);
@@ -46,12 +53,15 @@ export const AuthProvider = ({ children }) => {
 
   const clearAuthData = async () => {
     try {
+      console.log('Clearing auth data');
       await AsyncStorage.removeItem('token');
       await AsyncStorage.removeItem('userId');
-      await AsyncStorage.removeItem('role'); // Clear role from storage
+      await AsyncStorage.removeItem('username');
+      await AsyncStorage.removeItem('role');
       setToken(null);
       setUserId(null);
-      setRole(null); // Clear role state
+      setUsername(null);
+      setRole(null);
       setIsAuthenticated(false);
     } catch (error) {
       console.error('Failed to clear auth data', error);
@@ -63,7 +73,8 @@ export const AuthProvider = ({ children }) => {
       const response = await api.post('/refresh-token', { token });
       if (response.status === 200) {
         const newToken = response.data.token;
-        await saveAuthData(newToken, userId, role); // Include role when refreshing token
+        console.log('Refreshing token:', newToken);
+        await saveAuthData(newToken, userId, username, role);
       } else {
         console.error('Failed to refresh token');
       }
@@ -73,7 +84,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ token, userId, role, isAuthenticated, setToken: saveAuthData, setUserId, setIsAuthenticated, clearAuthData, refreshToken }}>
+    <AuthContext.Provider value={{ token, userId, username, role, isAuthenticated, setToken: saveAuthData, setUserId, setRole, setIsAuthenticated, clearAuthData, refreshToken, setUsername }}>
       {children}
     </AuthContext.Provider>
   );

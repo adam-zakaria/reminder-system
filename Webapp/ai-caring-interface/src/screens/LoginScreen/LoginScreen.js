@@ -2,8 +2,8 @@ import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../Authcontext';
 import { api } from '../../utils/api';
-import AICaringLogo from '../../AICaringLogo.png';
-import NortheasternLogo from '../../Northeastern-university-logo.svg';
+import AICaringLogo from '../../assests/AICaringLogo.png';
+import NortheasternLogo from '../../assests/Northeastern-university-logo.svg';
 import {
   Container,
   Typography,
@@ -19,26 +19,25 @@ import {
 } from '@mui/material';
 import { Email, Lock, Visibility, VisibilityOff } from '@mui/icons-material';
 
-// Create a custom theme based on the AI CARING color scheme
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#D4AF37', // Light beige/gold color
+      main: '#D4AF37',
     },
     secondary: {
-      main: '#000000', // Black
+      main: '#000000',
     },
     error: {
-      main: '#FF0000', // Red
+      main: '#FF0000',
     },
     success: {
-      main: '#008000', // Green
+      main: '#008000',
     },
     info: {
-      main: '#0000FF', // Blue
+      main: '#0000FF',
     },
     warning: {
-      main: '#FFA500', // Orange
+      main: '#FFA500',
     },
     background: {
       default: '#F5F5F5',
@@ -46,7 +45,7 @@ const theme = createTheme({
   },
   typography: {
     fontFamily: 'Arial, sans-serif',
-    fontSize: 16, // Slightly larger base font size for better readability
+    fontSize: 16,
   },
 });
 
@@ -54,7 +53,7 @@ function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const { setToken, setIsAuthenticated, setUserId, setRole } = useContext(AuthContext);
+  const { setToken, setIsAuthenticated, setUserId, setRole, setUsername } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleAuthentication = async (e) => {
@@ -63,7 +62,11 @@ function LoginScreen() {
       const response = await api.post('/login', { email, password });
       const data = response.data;
       if (response.status === 200) {
-        setToken(data.token, data.userId, data.role);
+        console.log('Login response data:', data);
+        setToken(data.token, data.userId, data.username, data.role); // Ensure all parameters are passed
+        setUserId(data.userId);
+        setRole(data.role);
+        setUsername(data.username);
         setIsAuthenticated(true);
         navigate('/home');
       } else {

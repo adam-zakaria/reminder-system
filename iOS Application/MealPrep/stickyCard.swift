@@ -9,7 +9,6 @@ import SwiftUI
 import NavigationTransitions
 import AVFoundation
 
-
 //this is how we modify the style & interaction of the stickies
 struct stickyCard: View {
     @State var sticky: Sticky
@@ -19,6 +18,7 @@ struct stickyCard: View {
     @EnvironmentObject var stickyList: StickyData
     @State private var dragAmount = CGSize.zero
     let synthesizer = AVSpeechSynthesizer()
+    
     var body: some View {
         NavigationStack {
             VStack{
@@ -49,17 +49,15 @@ struct stickyCard: View {
                             .onTapGesture {
                                 if(sticky.finished){
                                     print("archived not available")
-                                    
-                                }
-                                else{
-                                    tap=true
+                                } else {
+                                    tap = true
                                     print("completed")
                                     sticky.finished = true
-                                    //animationActive.toggle()
-                                    if let index = self.stickyList.active_stickyNotes.firstIndex(where: {$0.id == sticky.id}){
+                                    if let index = self.stickyList.active_stickyNotes.firstIndex(where: { $0.id == sticky.id }) {
                                         self.stickyList.active_stickyNotes.remove(at: index)
                                     }
                                     self.stickyList.archive_stickyNotes.append(sticky)
+                                    self.stickyList.turnOffLights() // Turn off the lights
                                 }
                             }
                             Spacer()
@@ -74,12 +72,12 @@ struct stickyCard: View {
                                             .frame(width: proxy.size.width/2.5, height: proxy.size.height/8))
                                     .onTapGesture {
                                         sticky.finished = false
-                                        if let index = self.stickyList.archive_stickyNotes.firstIndex(where: {$0.id == sticky.id}){
+                                        if let index = self.stickyList.archive_stickyNotes.firstIndex(where: { $0.id == sticky.id }) {
                                             self.stickyList.archive_stickyNotes.remove(at: index)
                                         }
                                         self.stickyList.active_stickyNotes.append(sticky)
+                                        self.stickyList.turnOnLights() // Turn on the lights
                                     }
-                                
                             }
                         }
                         .padding(3)
@@ -88,118 +86,95 @@ struct stickyCard: View {
                             .bold()
                             .padding(.horizontal)
                             .minimumScaleFactor(0.5)
-                        if (sticky.content != "")
-                        {
+                        if (sticky.content != "") {
                             Text(sticky.content)
                                 .font(.system(size: 35))
                                 .padding(.horizontal)
                                 .minimumScaleFactor(0.5)
                         }
-                        ZStack{
-                                RoundedRectangle(cornerRadius: 12).foregroundColor(.white)
-                                HStack{
-                                    Image(systemName: "speaker.wave.3.fill")
-                                        .resizable()
-                                        .padding([.vertical,.leading],8)
-                                        .foregroundColor(.black)
-                                        .scaledToFit()
-                                    Text("Play the audio  ")
-                                        .foregroundColor(.black)
-                                        .bold()
-                                }
-                                .padding(.horizontal,2)
+                        ZStack {
+                            RoundedRectangle(cornerRadius: 12).foregroundColor(.white)
+                            HStack {
+                                Image(systemName: "speaker.wave.3.fill")
+                                    .resizable()
+                                    .padding([.vertical, .leading], 8)
+                                    .foregroundColor(.black)
+                                    .scaledToFit()
+                                Text("Play the audio  ")
+                                    .foregroundColor(.black)
+                                    .bold()
                             }
-                            .fixedSize()
-                            .padding(.horizontal)
-                            .onTapGesture {
-                                synthesizer.speak(sticky.mainUtterance)
+                            .padding(.horizontal, 2)
+                        }
+                        .fixedSize()
+                        .padding(.horizontal)
+                        .onTapGesture {
+                            if !synthesizer.isSpeaking {
+                                let utterance = AVSpeechUtterance(string: sticky.content)
+                                utterance.voice = AVSpeechSynthesisVoice(language: "en-US")
+                                synthesizer.speak(utterance)
+                            } else {
+                                print("Speech synthesizer is already speaking.")
                             }
+                        }
                         Spacer()
-                        Group{
-                            if (sticky.instructions.count > 0){
+                        Group {
+                            if (sticky.instructions.count > 0) {
                                 Button(action: {
                                     showingInstructions = true
                                     print("Show Instructions")
                                 }, label: {
-                                    (Text("**Instructions**   ")+Text(Image(systemName: "arrow.right.circle")))
+                                    (Text("**Instructions**   ") + Text(Image(systemName: "arrow.right.circle")))
                                         .frame(alignment: .trailing)
                                         .padding(.leading)
                                         .font(.system(size: 20))
                                         .foregroundColor(.white)
                                         .lineLimit(1)
                                 })
-                                .frame(width: proxy.size.width, height: proxy.size.height/6, alignment: .leading)
+                                .frame(width: proxy.size.width, height: proxy.size.height / 6, alignment: .leading)
                                 .background(Color.black)
-                                .navigationDestination(isPresented: $showingInstructions){
-                                    detailView(sticky:$sticky)
+                                .navigationDestination(isPresented: $showingInstructions) {
+                                    detailView(sticky: $sticky)
                                 }
                             }
-                            
                         }.frame(alignment: .bottom)
                     }
-                    //.padding()
                     .foregroundColor(.black)
                 }
                 .frame(width: 330, height: 330, alignment: .top)
                 .background(sticky.backgroundColor
                     .shadow(color: .gray, radius: 10, x: 12, y: 4))
             }
-            //dragged to finish and delete the task
             .offset(dragAmount)
             .gesture(DragGesture(minimumDistance: 0, coordinateSpace: .local)
                 .onChanged { dragAmount = $0.translation }
-                                .onEnded({ value in
-                                    //for active stickies, we can remove those if drag them further away
-                                    if(!sticky.finished && (dragAmount.height>50 || dragAmount.width>50)){
-                                        print("completed")
-                                        dragAmount = .zero
-                                        sticky.finished = true
-                                        //animationActive.toggle()
-                                        //print(animationActive)
-                                        if let index = self.stickyList.active_stickyNotes.firstIndex(where: {$0.id == sticky.id}){
-                                            self.stickyList.active_stickyNotes.remove(at: index)
-                                        }
-                                        self.stickyList.archive_stickyNotes.append(Sticky(title: sticky.title, content: sticky.content,finished:true))
-                                        
-                                        print(self.stickyList.active_stickyNotes.count)
-                                        if value.translation.width < 0 {
-                                            // left
-                                        }
-                                        
-                                        if value.translation.width > 0 {
-                                            // right
-                                        }
-                                        if value.translation.height < 0 {
-                                            // up
-                                        }
-                                        
-                                        if value.translation.height > 0 {
-                                            // down
-                                        }
-                                    }
-                                    else if(sticky.finished){
-                                        print("archive not dragable")
-                                        dragAmount = .zero
-                                    }
-                                    else if(!(dragAmount.height>50 || dragAmount.width>50)){
-                                        print("please drag more")
-                                        dragAmount = .zero
-                                        
-                                    }
-                                }))
+                .onEnded { value in
+                    if (!sticky.finished && (dragAmount.height > 50 || dragAmount.width > 50)) {
+                        print("completed")
+                        dragAmount = .zero
+                        sticky.finished = true
+                        if let index = self.stickyList.active_stickyNotes.firstIndex(where: { $0.id == sticky.id }) {
+                            self.stickyList.active_stickyNotes.remove(at: index)
+                        }
+                        self.stickyList.archive_stickyNotes.append(Sticky(title: sticky.title, content: sticky.content, finished: true))
+                        print(self.stickyList.active_stickyNotes.count)
+                        self.stickyList.turnOffLights() // Turn off the lights
+                    } else if (sticky.finished) {
+                        print("archive not draggable")
+                        dragAmount = .zero
+                    } else if (!(dragAmount.height > 50 || dragAmount.width > 50)) {
+                        print("please drag more")
+                        dragAmount = .zero
+                    }
+                })
             .scaleEffect(tap ? 0.5 : 1.0)
- //           .animation(.spring(response: 0.4, dampingFraction: 0.6))
-            
-
-
         }
     }
 }
 
-
 struct stickyCard_Previews: PreviewProvider {
     static var previews: some View {
-        let note1 = Sticky(title:"Title",content:"Content", instructions: [Instruction(name: "Open")], finished: true)
+        let note1 = Sticky(title: "Title", content: "Content", instructions: [Instruction(name: "Open")], finished: true)
         stickyCard(sticky: note1)
             .padding(40)
             .previewLayout(.fixed(width: 480, height: 300))

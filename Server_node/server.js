@@ -13,13 +13,15 @@ const { _reminderPrompt } = require('./prompt');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { body, validationResult, check } = require('express-validator');
-
+const fs = require('fs');
+const winston = require('winston');
+const moment = require('moment-timezone');
 
 const openai = new OpenAI(process.env.OPENAI_API_KEY);
 const JWT_SECRET = process.env.JWT_SECRET
 
 const app = express();
-const port = 7628;
+const port = 7628 //6541 //7628;
 
 // Enable CORS for all requests
 app.use(cors());
@@ -47,6 +49,9 @@ const lightCategoriesOptions = [
 
 const sessions = {};
 
+// Global state object to maintain the state for each client
+const clientState = {};
+let lastPowerComponentTime = null; // Variable to track the last power component timestamp
 
 // function isConditional(message) {
 //   const conditionalPhrases = ['everytime', 'if', 'once', 'while', 'as soon as', 'and'];
@@ -135,6 +140,20 @@ const sessions = {};
 //   }
 // });
 
+const connectionLogger = winston.createLogger({
+  level: 'info',
+  format: winston.format.combine(
+    winston.format.timestamp({
+      format: () => moment().tz('America/New_York').format('YYYY-MM-DD HH:mm:ss z') // Eastern Time Zone
+    }),
+    winston.format.printf(({ timestamp, level, message }) => `${timestamp} ${level}: ${message}`)
+  ),
+  transports: [
+    new winston.transports.Console(),
+    new winston.transports.File({ filename: 'connections.log' })
+  ]
+});
+
 // Middleware to authenticate and attach user to request
 const authenticate = async (req, res, next) => {
   const token = req.headers.authorization?.split(' ')[1];
@@ -145,7 +164,7 @@ const authenticate = async (req, res, next) => {
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
     const user = await db.users.findByPk(decoded.userId);
-    console.log(user,"user")
+    console.log(user, "user")
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
@@ -162,19 +181,22 @@ const authenticate = async (req, res, next) => {
   }
 };
 
-function determineReminderType(utilityName, componentName, time, activity) {
+function determineReminderType(utilityName, components, time, activity) {
   if (activity && activity.trim() !== '') {
     return 'activity-based';
-  } else if (utilityName && componentName && (!time || time.trim() === '')) {
+  } else if (utilityName && components.length > 1) {
+    return 'stateful-activity';
+  } else if (utilityName && components.length === 1 && (!time || time.trim() === '')) {
     return 'dependent';
-  } else if ((!utilityName || utilityName.trim() === '') && (!componentName || componentName.trim() === '') && (time && time.trim() !== '')) {
+  } else if ((!utilityName || utilityName.trim() === '') && components.length === 0 && (time && time.trim() !== '')) {
     return 'non-dependent';
-  } else if (utilityName && componentName && time && time.trim() !== '') {
+  } else if (utilityName && components.length > 0 && time && time.trim() !== '') {
     return 'union';
   } else {
     return 'unknown'; // Default value if none of the conditions match
   }
 }
+
 
 // WebSocket server
 const wss = new WebSocket.Server({ noServer: true });
@@ -190,7 +212,7 @@ const checkSuperuser = (req, res, next) => {
   db.users.findByPk(decoded.userId)
     .then(user => {
       if (user.role !== 'superuser') {
-        console.log("=============",user)
+        console.log("=============", user)
         return res.status(403).json({ error: 'Access denied' });
       }
       next();
@@ -201,27 +223,40 @@ const checkSuperuser = (req, res, next) => {
     });
 };
 
+//multiple client handling with same homekey
 
 wss.on('connection', function connection(ws, request) {
-  console.log(request, "connection")
+  console.log(request, "connection");
+  connectionLogger.info(`${request}, connection`);
   let tempClientId = "temp_" + new Date().getTime();
   connectedClients[tempClientId] = ws;
 
+  logConnectedClients();
+
   ws.on('message', function incoming(message) {
     console.log('received: %s', message);
+    connectionLogger.info(`received: ${message}`);
     const parsedMessage = JSON.parse(message);
 
     if (parsedMessage.type === 'init') {
       if ((parsedMessage.role === 'primary' && parsedMessage.secret === PRIMARY_SECRET) ||
         (parsedMessage.role === 'client' && parsedMessage.secret === CLIENT_SECRET)) {
         const clientId = parsedMessage.home_key || 'primary';
-        connectedClients[clientId] = ws;
+        
+        if (!connectedClients[clientId]) {
+          connectedClients[clientId] = [];
+        }
+        connectedClients[clientId].push(ws);
         delete connectedClients[tempClientId];
+        
         ws.send(JSON.stringify({ response: 'success' }));
+        connectionLogger.info(`Authenticated ${parsedMessage.role} with clientId: ${clientId}`);
         console.log(`Authenticated ${parsedMessage.role} with clientId: ${clientId}`);
+        logConnectedClients();
       } else {
         ws.send(JSON.stringify({ response: 'invalid token' }));
         console.log("Invalid secret key");
+        connectionLogger.info("Invalid secret key");
         ws.close();
       }
     }
@@ -229,21 +264,99 @@ wss.on('connection', function connection(ws, request) {
 
   ws.on('close', function () {
     console.log(`Client disconnected`);
-    delete connectedClients[tempClientId];
+    connectionLogger.info(`Client disconnected: ${tempClientId}`);
+    
+    // Find and remove the ws from connectedClients
+    for (const clientId in connectedClients) {
+      if (Array.isArray(connectedClients[clientId])) {
+        const index = connectedClients[clientId].indexOf(ws);
+        if (index !== -1) {
+          connectedClients[clientId].splice(index, 1);
+          if (connectedClients[clientId].length === 0) {
+            delete connectedClients[clientId];
+          }
+          break;
+        }
+      } else if (connectedClients[clientId] === ws) {
+        delete connectedClients[clientId];
+        break;
+      }
+    }
+
+    logConnectedClients();
   });
 });
 
+function logConnectedClients() {
+  const clientInfo = Object.keys(connectedClients).reduce((info, clientId) => {
+    const clients = connectedClients[clientId];
+    if (Array.isArray(clients)) {
+      info[clientId] = clients.length;
+    } else {
+      info[clientId] = 1;
+    }
+    return info;
+  }, {});
+
+  const totalClients = Object.values(clientInfo).reduce((sum, count) => sum + count, 0);
+  console.log(`Total connected clients: ${totalClients}`);
+  connectionLogger.info(`Total connected clients: ${totalClients}`);
+  console.log(`Client details: ${JSON.stringify(clientInfo)}`);
+  connectionLogger.info(`Client details: ${JSON.stringify(clientInfo)}`);
+}
+
+
+//single client handling with same home key
+
+// wss.on('connection', function connection(ws, request) {
+//   console.log(request, "connection")
+//   connectionLogger.info(`${request}, connection`);
+//   let tempClientId = "temp_" + new Date().getTime();
+//   connectedClients[tempClientId] = ws;
+
+//   ws.on('message', function incoming(message) {
+//     console.log('received: %s', message);
+//     connectionLogger.info(`received: ${message}`);
+//     const parsedMessage = JSON.parse(message);
+
+//     if (parsedMessage.type === 'init') {
+//       if ((parsedMessage.role === 'primary' && parsedMessage.secret === PRIMARY_SECRET) ||
+//         (parsedMessage.role === 'client' && parsedMessage.secret === CLIENT_SECRET)) {
+//         const clientId = parsedMessage.home_key || 'primary';
+//         connectedClients[clientId] = ws;
+//         delete connectedClients[tempClientId];
+//         ws.send(JSON.stringify({ response: 'success' }));
+//         connectionLogger.info(`Authenticated ${parsedMessage.role} with clientId: ${clientId}`);
+//         console.log(`Authenticated ${parsedMessage.role} with clientId: ${clientId}`);
+//       } else {
+//         ws.send(JSON.stringify({ response: 'invalid token' }));
+//         console.log("Invalid secret key");
+//         connectionLogger.info("Invalid secret key");
+//         ws.close();
+//       }
+//     }
+//   });
+
+//   ws.on('close', function () {
+//     console.log(`Client disconnected`);
+//     connectionLogger.info(`Client disconnected: ${tempClientId}`);
+//     delete connectedClients[tempClientId];
+//   });
+// });
+
+
+//handling multiple client with same home key
 function sendMessageToClient(clientId, action, stickyNote, id) {
-  const clientWs = connectedClients[clientId];
-  if (clientWs) {
+  const clientWsList = connectedClients[clientId];
+  if (clientWsList && clientWsList.length > 0) {
     let message;
     if (action === "add") {
-      console.log(id, "id")
+      console.log(id, "id");
       message = {
         action: action,
         id: id,
+        lightCategoryId: stickyNote.lightCategoryId,
         msg: {
-          //id: stickyNote.id,
           title: stickyNote.title,
           content: stickyNote.content,
           notificationSoundID: stickyNote.notificationSoundID,
@@ -254,16 +367,59 @@ function sendMessageToClient(clientId, action, stickyNote, id) {
       message = {
         action: action,
         id: id,
+        lightCategoryId: 0,
         msg: null
       };
     }
-    console.log(JSON.stringify(message), "message TO the device")
-    clientWs.send(JSON.stringify(message));
-    console.log(`Message sent to client ${clientId}: ${JSON.stringify(message)}`);
+    
+    const messageString = JSON.stringify(message);
+    console.log(messageString, "message TO the device");
+    
+    clientWsList.forEach(clientWs => {
+      clientWs.send(messageString);
+      console.log(`Message sent to client ${clientId}: ${messageString}`);
+    });
+
   } else {
     console.log(`No client connected with ID: ${clientId}`);
   }
 }
+
+
+//send note to single client with home key
+// function sendMessageToClient(clientId, action, stickyNote, id) {
+//   const clientWs = connectedClients[clientId];
+//   if (clientWs) {
+//     let message;
+//     if (action === "add") {
+//       console.log(id, "id")
+//       message = {
+//         action: action,
+//         id: id,
+//         lightCategoryId: stickyNote.lightCategoryId,
+//         msg: {
+//           //id: stickyNote.id,
+//           title: stickyNote.title,
+//           content: stickyNote.content,
+//           notificationSoundID: stickyNote.notificationSoundID,
+//           instructions: stickyNote.instructions
+//         }
+//       };
+//     } else if (action === "remove") {
+//       message = {
+//         action: action,
+//         id: id,
+//         lightCategoryId: 0,
+//         msg: null
+//       };
+//     }
+//     console.log(JSON.stringify(message), "message TO the device")
+//     clientWs.send(JSON.stringify(message));
+//     console.log(`Message sent to client ${clientId}: ${JSON.stringify(message)}`);
+//   } else {
+//     console.log(`No client connected with ID: ${clientId}`);
+//   }
+// }
 
 function broadcastMessage(message) {
   Object.values(connectedClients).forEach(clientWs => {
@@ -320,7 +476,7 @@ app.get('/reminders', authenticate, async (req, res) => {
           ]
         });
 
-        console.log(sharedReminders,"shared reminders")
+        //console.log(sharedReminders,"shared reminders")
 
         reminders = [...createdReminders, ...sharedReminders];
       } catch (error) {
@@ -348,27 +504,32 @@ app.post('/oracle-updates', async (req, res) => {
     return res.status(400).send({ status: 'Missing update' });
   }
 
-  console.log(`Update from Oracle for client`, update);
+  console.log(`Update from Oracle for client`, update.update);
 
-  // Hardcoded userId for demonstration purposes
-  const userId = "137ce759-00af-42d8-9210-c3f784afbb80";
+  // // Hardcoded userId for demonstration purposes
+  // const userId = "137ce759-00af-42d8-9210-c3f784afbb80";
 
-  // Fetch the latest reminder for the specified userId from the database
-  const userClientMap = await db.userClientMap.findOne({ where: { userId: userId } });
-  if (!userClientMap) {
-    return res.status(404).send({ status: 'User not found' });
-  }
+  // // Fetch the latest reminder for the specified userId from the database
+  // const userClientMap = await db.userClientMap.findOne({ where: { userId: userId } });
+  // if (!userClientMap) {
+  //   return res.status(404).send({ status: 'User not found' });
+  // }
 
-  const targetClientId = userClientMap.targetClientId;
+  //const targetClientId = userClientMap.targetClientId;
+
+  //const targetClientId = "activity" in update.update ? update.update["house_id"] : update.update["home_utilities"][0]["house_id"]
+  
+  //testing purpose
+  const targetClientId = "ep6"
 
   // Send the response immediately
   res.status(200).send({ status: 'Update received' });
 
   // Emit events to handle the update
-  if (update.activity) {
-    updateEvent.emit('handleActivityReminders', update, targetClientId);
+  if ("activity" in update.update) {
+    updateEvent.emit('handleActivityReminders', update.update, targetClientId);
   } else if (update.update) {
-    updateEvent.emit('newUpdate', update, targetClientId);
+    updateEvent.emit('newUpdate', update.update, targetClientId);
   }
 });
 
@@ -452,51 +613,158 @@ time try to find it in the text itself otherwise try to add relevant time as in 
   }
 });
 
-
 updateEvent.on('newUpdate', async (update, targetClientId) => {
+  let updates = [];
+  update.home_utilities.forEach(home => {
+    home.utilities.forEach(utility => {
+      if (utility.group === 'microwave') {
+        utility.components.forEach(component => {
+          updates.push({
+            component_name: component.component_name,
+            value: parseInt(component.value),
+            time: component.time
+          });
+        });
+      }
+    });
+  });
+
+  for (const singleUpdate of updates) {
+    stateLogger.info(`${singleUpdate} single update`);
+    if (singleUpdate.component_name === 'power') logTimeDifference(singleUpdate);
+    const activityDetected = stateMachine(singleUpdate, targetClientId);
+    if (activityDetected) {
+      console.log(`Food left in microwave after reheating detected for client ${targetClientId}`);
+      await handleDetection(targetClientId, update);
+    } else if (activityDetected === false && singleUpdate.component_name === 'doorStatus' && singleUpdate.value === 1) {
+      stateLogger.info(`Door opened, removing reminders for client ${targetClientId}`);
+      await removeReminders(targetClientId);
+    }
+  }
+
   const matchingReminders = await findMatchingReminders(update);
-  console.log(matchingReminders, "matching reminders")
+  console.log(matchingReminders, "matching reminders");
   if (matchingReminders.length > 0) {
     matchingReminders.forEach(async (reminder) => {
       if (reminder.delay) {
         await delayExecution(reminder.delay);
-        console.log("delay Elapsed")
+        console.log("delay Elapsed");
         updateEvent.emit('delayElapsed', targetClientId);
       } else {
-        //using default delay if the delay is not present
-        //await delayExecution(dataStore.delayTable[reminder.utility_name])
-        //updateEvent.emit('delayElapsed', targetClientId);
+        if (reminder.interval === 'once' && reminder.sent) {
+          console.log(`Reminder already sent once, skipping for client ${targetClientId}`);
+          return;
+        }
         sendReminderToClient(matchingReminders, targetClientId);
+        if (reminder.interval === 'once') {
+          await Reminder.update({ sent: true }, { where: { id: reminder.id } });
+        }
       }
     });
   }
 
   const sentReminders = await db.sentReminders.findAll();
 
-  // Check for each sent reminder if its condition is still met
   sentReminders.forEach(async (sentReminder) => {
     const reminder = await db.reminders.findOne({ where: { id: sentReminder.reminderId } });
-    if (!reminder) return; // Skip if the reminder does not exist in the dataStore
+    if (!reminder) return;
 
     const isMatch = update.home_utilities.some(home => {
       return home.utilities.some(utility => {
-        if (utility.utility_name === reminder.dataValues.utility_name) {
+        if (utility.utility_name === reminder.utility_name) {
           return utility.components.some(component => {
-            if (component.component_name === reminder.dataValues.component_name && component.status === reminder.dataValues.condition) {
-              return true;
-            }
-            return false;
+            return component.component_name === reminder.component_name && component.status === reminder.condition;
           });
         }
         return false;
       });
-    })
+    });
 
-    // If the reminder's condition is not met, remove it from the client device
-    if (!isMatch && reminder.disappearOnCondition) {
+    if (reminder.type !== "stateful-activity" && !isMatch && reminder.disappearOnCondition) {
       const stickyNoteUpdate = {
         action: "remove",
         id: reminder.id.toString() + "00",
+        stickyNote: {
+          title: "Reminder",
+          content: reminder.display,
+          notificationSoundID: 1007,
+          instructions: []
+        }
+      };
+
+      sendMessageToClient(sentReminder.clientId, stickyNoteUpdate.action, stickyNoteUpdate.stickyNote, stickyNoteUpdate.id);
+      reminder.sent = false;
+
+      await Reminder.update({ sent: false }, { where: { id: reminder.id } });
+      await db.sentReminders.destroy({ where: { reminderId: reminder.id } });
+    }
+  });
+});
+updateEvent.on('handleActivityReminders', async (update, targetClientId) => {
+  activityLogger.info(`Handling activity reminders event ${update.activity} ${update.activity_status} targetClient ${targetClientId}`); // Added logging statement
+  
+  const reminders = await db.reminders.findAll({
+    where: {
+      type: 'activity-based',
+      sent: false
+    }
+  });
+
+  activityLogger.info('Fetched activity-based reminders', { reminders }); // Added logging statement
+
+  const matchingReminders = reminders.filter(reminder => {
+    activityLogger.info(`Checking reminder: ${reminder.activity} against update activity: ${update.activity}`); // Added logging statement
+    return update.activity && update.activity === reminder.activity;
+  });
+
+  activityLogger.info('Matching reminders', { matchingReminders }); // Added logging statement
+
+  const processReminder = async (reminder, updateTimestamp) => {
+    const cronTime = reminder.triggerTime
+      ? new Date(new Date(updateTimestamp).getTime() + reminder.triggerTime * 1000)
+      : null;
+
+    if (cronTime) {
+      scheduleReminder(cronTime, reminder, targetClientId);
+    } else {
+      if (reminder.interval === 'once' && reminder.sent) {
+        activityLogger.info(`Reminder already sent once, skipping for client ${targetClientId}`); // Added logging statement
+        return;
+      }
+      sendReminderToClient(reminder, targetClientId);
+      activityLogger.info('Sent reminder to client', { reminder, targetClientId }); // Added logging statement
+      if (reminder.interval === 'once') {
+        await db.reminders.update({ sent: true }, { where: { id: reminder.id } });
+        activityLogger.info('Updated reminder as sent', { reminderId: reminder.id }); // Added logging statement
+      }
+    }
+  };
+
+  if (matchingReminders.length > 0) {
+    for (const reminder of matchingReminders) {
+      const { triggerType } = reminder;
+      const updateTimestamp = update.timestamp;
+
+      if (update.activity_status === 'begin' && triggerType === 'begin') {
+        await processReminder(reminder, updateTimestamp);
+      } else if (update.activity_status === 'end' && triggerType === 'end') {
+        await processReminder(reminder, updateTimestamp);
+      }
+    }
+  }
+
+  const sentReminders = await db.sentReminders.findAll();
+
+  for (const sentReminder of sentReminders) {
+    const reminder = await db.reminders.findOne({ where: { id: sentReminder.reminderId } });
+    if (!reminder) continue;
+
+    const isMatch = update.activity && update.activity === reminder.activity;
+
+    if (!isMatch && reminder.disappearOnCondition) {
+      const stickyNoteUpdate = {
+        action: "remove",
+        id: `${reminder.id}00`,
         stickyNote: {
           title: "Reminder",
           content: reminder.display,
@@ -508,84 +776,14 @@ updateEvent.on('newUpdate', async (update, targetClientId) => {
       sendMessageToClient(sentReminder.clientId, stickyNoteUpdate.action, stickyNoteUpdate.stickyNote, stickyNoteUpdate.id);
       reminder.sent = false;
 
-      // Update the 'sent' status of the reminder in the database
       await db.reminders.update({ sent: false }, { where: { id: reminder.id } });
-      // Remove the sent reminder from the database
       await db.sentReminders.destroy({ where: { reminderId: reminder.id } });
-    }
-  });
-});
 
-updateEvent.on('handleActivityReminders', async (update, targetClientId) => {
-  const reminders = await db.reminders.findAll({
-    where: {
-      type: 'activity-based',
-      sent: false
-    }
-  });
-
-  console.log(reminders, "activity-based reminders");
-
-  const matchingReminders = reminders.filter(reminder => {
-    console.log(reminder.dataValues, "reminder", reminder.dataValues.activity, update.activity);
-    return update.activity && update.activity === reminder.dataValues.activity;
-  });
-
-  console.log(matchingReminders, "matching reminders");
-
-  const processReminder = (reminder, updateTimestamp) => {
-    const cronTime = reminder.triggerTime
-      ? new Date(new Date(updateTimestamp).getTime() + reminder.triggerTime * 1000)
-      : null;
-
-    if (cronTime) {
-      scheduleReminder(cronTime, reminder, targetClientId);
-    } else {
-      sendReminderToClient(reminder, targetClientId);
-    }
-  };
-
-  if (matchingReminders.length > 0) {
-    for (const reminder of matchingReminders) {
-      const { triggerType } = reminder.dataValues;
-      const updateTimestamp = update.timestamp;
-
-      if (update.activity_status === 'begin' && triggerType === 'begin') {
-        processReminder(reminder.dataValues, updateTimestamp);
-      } else if (update.activity_status === 'end' && triggerType === 'end') {
-        processReminder(reminder.dataValues, updateTimestamp);
-      }
-    }
-  }
-
-  const sentReminders = await db.sentReminders.findAll();
-
-  for (const sentReminder of sentReminders) {
-    const reminder = await db.reminders.findOne({ where: { id: sentReminder.reminderId } });
-    if (!reminder) continue;
-
-    const isMatch = update.activity && update.activity === reminder.dataValues.activity;
-
-    if (!isMatch && reminder.dataValues.disappearOnCondition) {
-      const stickyNoteUpdate = {
-        action: "remove",
-        id: `${reminder.dataValues.id}00`,
-        stickyNote: {
-          title: "Reminder",
-          content: reminder.dataValues.display,
-          notificationSoundID: 1,
-          instructions: []
-        }
-      };
-
-      sendMessageToClient(sentReminder.clientId, stickyNoteUpdate.action, stickyNoteUpdate.stickyNote, stickyNoteUpdate.id);
-      reminder.dataValues.sent = false;
-
-      await db.reminders.update({ sent: false }, { where: { id: reminder.dataValues.id } });
-      await db.sentReminders.destroy({ where: { reminderId: reminder.dataValues.id } });
+      activityLogger.info('Removed sticky note and updated reminder', { reminder, sentReminder }); // Added logging statement
     }
   }
 });
+
 updateEvent.on('delayElapsed', async (targetClientId) => {
   console.log("inside delay elapsed")
   updateEvent.once('newUpdate', async (update) => {
@@ -606,6 +804,7 @@ updateEvent.on('delayElapsed', async (targetClientId) => {
 
 
 async function sendReminderToClient(matchingReminder, targetClientId) {
+  console.log(matchingReminder, "matchingReminder ")
   const stickyNoteUpdate = {
     action: "add",
     id: matchingReminder.id.toString() + "00",
@@ -613,7 +812,8 @@ async function sendReminderToClient(matchingReminder, targetClientId) {
       title: "Reminder",
       content: matchingReminder.display,
       notificationSoundID: 1,
-      instructions: []
+      instructions: [],
+      lightCategoryId: matchingReminder.lightCategoryId
     }
   };
 
@@ -669,9 +869,158 @@ async function findMatchingReminders(update) {
   });
 }
 
-app.post('/chat',authenticate, async (req, res) => {
+async function findMatchingRemindersForMicrowave(update) {
+  const reminders = await db.reminders.findAll({
+    where: {
+      type: 'stateful-activity',
+      sent: false,
+      utility_name: 'Microwave'  // Filter for Microwave-specific reminders
+    }
+  });
+
+  return reminders.filter(reminder => {
+    return update.home_utilities.some(home => {
+      return home.utilities.some(utility => {
+        // Ensure the utility is in the 'microwave' group
+        return utility.group === 'microwave';
+      });
+    });
+  });
+}
+
+
+const validate = (reminder) => {
+  const invalid = [];
+  const { userId, message, interval, display, time, utility_name, component_name, condition, delay, activity, triggerTime, triggerType, type, lightCategoryId } = reminder;
+
+  if (!userId) invalid.push('userId');
+  if (!message) invalid.push('message');
+  if (!interval) invalid.push('interval');
+  if (!display) invalid.push('display');
+  if (!lightCategoryId) invalid.push('lightCategoryId');
+
+  if (type === 'General') {
+    if (!time) invalid.push('time');
+    if (utility_name || component_name || condition || delay || activity || triggerTime || triggerType) {
+      invalid.push('utility_name', 'component_name', 'condition', 'delay', 'activity', 'triggerTime', 'triggerType');
+    }
+  } else if (type === 'Utility') {
+    if (!utility_name) invalid.push('utility_name');
+    if (!component_name) invalid.push('component_name');
+    if (!condition) invalid.push('condition');
+    if (!delay) invalid.push('delay');
+    if (time || activity || triggerTime || triggerType) {
+      invalid.push('time', 'activity', 'triggerTime', 'triggerType');
+    }
+  } else if (type === 'Activity') {
+    if (!activity) invalid.push('activity');
+    if (!triggerTime) invalid.push('triggerTime');
+    if (!triggerType) invalid.push('triggerType');
+    if (time || utility_name || component_name || condition || delay) {
+      invalid.push('time', 'utility_name', 'component_name', 'condition', 'delay');
+    }
+  }
+
+  return invalid;
+};
+
+// app.post('/chat', authenticate, async (req, res) => {
+//   const { message, sessionId } = req.body;
+//   const userId = req.user.id;
+
+//   if (!message) {
+//     return res.status(400).json({ error: 'Message is required' });
+//   }
+
+//   const currentSessionId = sessionId || uuidv4();
+
+//   try {
+//     // Step 1: Find or create a chat thread for the current session
+//     let thread = await db.chatThreads.findOne({ where: { id: currentSessionId } });
+//     if (!thread) {
+//       const newThread = {
+//         id: currentSessionId,
+//         userId,
+//         messages: [],
+//         timestamp: new Date().toISOString(),
+//         sessionId: currentSessionId,
+//       };
+//       thread = await db.chatThreads.create(newThread);
+//     }
+
+//     // Step 2: Save the user's message to the database
+//     const newMessage = {
+//       id: uuidv4(),
+//       role: 'user',
+//       content: message,
+//       sessionId: currentSessionId,
+//       threadId: currentSessionId,
+//       userId,
+//       timestamp: new Date().toISOString(),
+//     };
+//     const savedMessage = await db.chatMessages.create(newMessage);
+
+//     // Step 3: Update the thread with the new message
+//     thread.messages.push(savedMessage);
+//     await thread.save();
+
+//     // Step 4: Generate the assistant's response using OpenAI
+//     const prompt = _reminderPrompt;
+//     const messagesForAI = [...prompt, ...thread.messages];
+//     console.log(messagesForAI, "Message for ai");
+//     const completion = await openai.chat.completions.create({
+//       model: "gpt-4o",
+//       messages: messagesForAI,
+//       response_format: { type: "json_object" },
+//       temperature: 1,
+//       max_tokens: 2600,
+//       top_p: 0.7,
+//       frequency_penalty: 0,
+//       presence_penalty: 0,
+//     });
+//     let responseMessage = completion.choices[0].message.content;
+//     console.log(responseMessage, "response message")
+
+//     // Step 5: Ensure the response contains 'assistant' and 'response' keys
+//     let jsonResponse = JSON.parse(responseMessage);
+//     if (!jsonResponse.hasOwnProperty('assistant')) {
+//       jsonResponse['assistant'] = 'There has been an issue on our side, please try again later.';
+//     }
+//     if (!jsonResponse.hasOwnProperty('response')) {
+//       jsonResponse['response'] = {};
+//     }
+
+//     // Step 6: Add the hasResponse flag based on reminder validation
+//     const invalidFields = validate(jsonResponse.response);
+//     jsonResponse.hasResponse = invalidFields.length === 0;
+
+//     // Step 7: Save the assistant's response to the database
+//     const assistantMessage = {
+//       id: uuidv4(),
+//       role: 'assistant',
+//       content: JSON.stringify(jsonResponse),
+//       sessionId: currentSessionId,
+//       threadId: currentSessionId,
+//       userId,
+//       timestamp: new Date().toISOString(),
+//     };
+//     await db.chatMessages.create(assistantMessage);
+
+//     // Step 8: Update the thread with the assistant's message
+//     thread.messages.push(assistantMessage);
+//     await thread.save();
+
+//     res.status(200).json({ sessionId: currentSessionId, response: jsonResponse });
+//   } catch (error) {
+//     console.error('Error with OpenAI API:', error);
+//     res.status(500).json({ error: 'Failed to generate response from OpenAI' });
+//   }
+// });
+
+app.post('/chat', authenticate, async (req, res) => {
   const { message, sessionId } = req.body;
-  const userId = req.user.id; 
+  const userId = req.user.id;
+  const username = req.user.username;
 
   if (!message) {
     return res.status(400).json({ error: 'Message is required' });
@@ -680,7 +1029,6 @@ app.post('/chat',authenticate, async (req, res) => {
   const currentSessionId = sessionId || uuidv4();
 
   try {
-    // Step 1: Find or create a chat thread for the current session
     let thread = await db.chatThreads.findOne({ where: { id: currentSessionId } });
     if (!thread) {
       const newThread = {
@@ -693,7 +1041,6 @@ app.post('/chat',authenticate, async (req, res) => {
       thread = await db.chatThreads.create(newThread);
     }
 
-    // Step 2: Save the user's message to the database
     const newMessage = {
       id: uuidv4(),
       role: 'user',
@@ -705,37 +1052,41 @@ app.post('/chat',authenticate, async (req, res) => {
     };
     const savedMessage = await db.chatMessages.create(newMessage);
 
-    // Step 3: Update the thread with the new message
     thread.messages.push(savedMessage);
     await thread.save();
 
-    // Step 4: Generate the assistant's response using OpenAI
     const prompt = _reminderPrompt;
     const messagesForAI = [...prompt, ...thread.messages];
-    console.log(messagesForAI, "Message for ai");
+    console.log(messagesForAI, "Message for AI");
     const completion = await openai.chat.completions.create({
       model: "gpt-4o",
       messages: messagesForAI,
       response_format: { type: "json_object" },
-      temperature: 0.59,
-      max_tokens: 2600,
+      temperature: 1,
+      max_tokens: 3000,
       top_p: 1,
       frequency_penalty: 0,
       presence_penalty: 0,
     });
     let responseMessage = completion.choices[0].message.content;
-    console.log(responseMessage,"response message")
+    console.log(responseMessage, "Response message");
 
-    // Step 5: Ensure the response contains 'assistant' and 'response' keys
     let jsonResponse = JSON.parse(responseMessage);
     if (!jsonResponse.hasOwnProperty('assistant')) {
-      jsonResponse['assistant'] = 'There has been an issue on our side, please try again later.';;
+      jsonResponse['assistant'] = 'There has been an issue on our side, please try again later.';
     }
-    if (!jsonResponse.hasOwnProperty('response')) {
+    if (!jsonResponse.hasOwnProperty('response') || Object.keys(jsonResponse.response).length === 0) {
       jsonResponse['response'] = {};
+    } else {
+      // Replace words in the message field
+      if (jsonResponse.response.message) {
+        jsonResponse.response.message = jsonResponse.response.message.replace(/\b(me|user|you)\b/gi, username);
+      }
     }
 
-    // Step 6: Save the assistant's response to the database
+    const invalidFields = validate(jsonResponse.response);
+    jsonResponse.hasResponse = invalidFields.length === 0;
+
     const assistantMessage = {
       id: uuidv4(),
       role: 'assistant',
@@ -747,7 +1098,6 @@ app.post('/chat',authenticate, async (req, res) => {
     };
     await db.chatMessages.create(assistantMessage);
 
-    // Step 7: Update the thread with the assistant's message
     thread.messages.push(assistantMessage);
     await thread.save();
 
@@ -757,7 +1107,6 @@ app.post('/chat',authenticate, async (req, res) => {
     res.status(500).json({ error: 'Failed to generate response from OpenAI' });
   }
 });
-
 
 app.get('/chat/:threadId', async (req, res) => {
   const { threadId } = req.params;
@@ -938,16 +1287,19 @@ app.post('/login', async (req, res) => {
 });
 
 app.post('/reminders', authenticate, async (req, res) => {
+  console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>inside reminders")
   const { message, interval, time, utility_name, component_name, condition, display, delay, disappearOnCondition, activity, triggerTime, triggerType, lightCategoryId } = req.body;
-  const userId = req.user.id; 
+  const userId = req.user.id;
   // Determine the type of the reminder
   const type = determineReminderType(utility_name, component_name, time, activity);
-
+  console.log(time, "time...")
   // Format the time
   let formattedTime = null;
   if (time) {
+    console.log(time, "time...")
     const timeDateObject = new Date(time);
     formattedTime = timeDateObject.toISOString().slice(0, 19).replace('T', ' ');
+    console.log(formattedTime, "formatted time")
   }
 
   // Create the reminder object without setting the id field
@@ -972,6 +1324,7 @@ app.post('/reminders', authenticate, async (req, res) => {
 
   try {
     // Save the new reminder to the database
+    console.log("saving reminder", newReminder)
     const savedReminder = await db.reminders.create(newReminder);
 
     // Fetch the latest user-client mapping for the specified userId
@@ -990,6 +1343,7 @@ app.post('/reminders', authenticate, async (req, res) => {
         const stickyNoteUpdate = {
           action: "add",
           id: savedReminder.id.toString() + "00",
+          lightCategoryId: savedReminder.lightCategoryId,
           stickyNote: {
             title: "Reminder",
             content: newReminder.display,
@@ -1027,7 +1381,7 @@ app.post('/reminders', authenticate, async (req, res) => {
 //         where: { sharedWithUserId: user.id },
 //         include: [{ model: db.reminders }]
 //       });
-      
+
 //       reminders = [
 //         ...ownReminders,
 //         ...sharedReminders.map(share => share.reminder)
@@ -1250,18 +1604,18 @@ app.get('/api/users', async (req, res) => {
 app.post('/api/users', async (req, res) => {
   try {
     const { username, email, password, role } = req.body;
-    
+
     if (!password) {
       return res.status(400).json({ error: 'Password is required' });
     }
-    
-    const newUser = await db.users.create({ 
-      username, 
-      email, 
+
+    const newUser = await db.users.create({
+      username,
+      email,
       password, // The model will hash this automatically
-      role 
+      role
     });
-    
+
     const userWithoutPassword = { ...newUser.get(), password: undefined };
     res.status(201).json(userWithoutPassword);
   } catch (error) {
@@ -1279,15 +1633,15 @@ app.put('/api/users/:id', async (req, res) => {
   try {
     const { id } = req.params;
     const { username, email, role, password } = req.body;
-    
+
     const updateData = { username, email, role };
-    
+
     if (password) {
       updateData.password = await bcrypt.hash(password, 10);
     }
-    
+
     const [updated] = await db.users.update(updateData, { where: { id } });
-    
+
     if (updated) {
       const updatedUser = await db.users.findByPk(id);
       const userWithoutPassword = { ...updatedUser.get(), password: undefined };
@@ -1369,7 +1723,7 @@ app.delete('/api/unshare-reminder/:id', authenticate, async (req, res) => {
     if (!reminder || reminder.userId !== req.user.id) {
       return res.status(403).json({ error: 'Not authorized to unshare this reminder' });
     }
-    
+
     await db.reminderShare.destroy({
       where: {
         reminderId: id,
@@ -1541,6 +1895,194 @@ app.get('/api/light-categories', (req, res) => {
   res.json(lightCategoriesOptions);
 });
 
+const stateLogger = winston.createLogger({
+  level: 'info',
+  format: winston.format.combine(
+    winston.format.timestamp({
+      format: () => moment().tz('America/New_York').format('YYYY-MM-DD HH:mm:ss z') // Eastern Time Zone
+    }),
+    winston.format.printf(({ timestamp, level, message }) => `${timestamp} ${level}: ${message}`)
+  ),
+  transports: [
+    new winston.transports.Console(),
+    new winston.transports.File({ filename: 'state_machine.log' })
+  ]
+});
+
+const activityLogger = winston.createLogger({
+  level: 'info',
+  format: winston.format.combine(
+    winston.format.timestamp({
+      format: () => moment().tz('America/New_York').format('YYYY-MM-DD HH:mm:ss z') // Eastern Time Zone
+    }),
+    winston.format.printf(({ timestamp, level, message }) => `${timestamp} ${level}: ${message}`)
+  ),
+  transports: [
+    new winston.transports.Console(),
+    new winston.transports.File({ filename: 'activity-based-reminders.log' })
+  ]
+});
+
+function logTimeDifference(update) {
+  if (lastPowerComponentTime) {
+    const timeDiff = new Date(update.time) - new Date(lastPowerComponentTime);
+    stateLogger.info(`${update} Time difference between the current and the previous power component: ${timeDiff} ms`);
+  }
+
+  if (update.component_name === 'power') {
+    lastPowerComponentTime = update.time;
+  }
+}
+
+
+function initializeClientState(clientId) {
+  if (!clientState[clientId]) {
+    clientState[clientId] = {
+      state: 'Idle',
+      detected: false,
+      lastPowerDecreaseTime: null,
+      reheatCount: 0,
+      lastUpdateTime: new Date(),
+      sentReminders: new Set(),  // Track sent reminders to avoid duplicates
+      powerCycleDetected: false
+    };
+  }
+}
+
+function stateMachine(update, clientId) {
+  initializeClientState(clientId);
+
+  const stateData = clientState[clientId];
+  const { state, lastPowerDecreaseTime, reheatCount, powerCycleDetected } = stateData;
+
+  stateLogger.info(`Processing update for client ${clientId}: ${JSON.stringify(update)}`);
+  stateLogger.info(`Current state: ${state}, Reheat Count: ${reheatCount}`);
+
+  switch (state) {
+    case 'Idle':
+      if (update.component_name === 'doorStatus' && update.value === 1) {
+        stateData.state = 'Door Opened';
+        stateLogger.info('State changed to Door Opened');
+      }
+      break;
+
+    case 'Door Opened':
+      if (update.component_name === 'doorStatus' && update.value === 0) {
+        stateData.state = 'Door Closed Before Reheating';
+        stateLogger.info('State changed to Door Closed Before Reheating');
+      }
+      break;
+
+    case 'Door Closed Before Reheating':
+      if (update.component_name === 'power' && update.value > 500) {
+        stateData.state = 'Power Increase';
+        stateLogger.info('State changed to Power Increase');
+      }
+      break;
+
+    case 'Power Increase':
+      if (update.component_name === 'power' && update.value < 500) {
+        stateData.state = 'Reheated';
+        stateData.reheatCount += 1;
+        stateLogger.info(`State changed to Reheated, Reheat Count: ${stateData.reheatCount}`);
+        stateData.lastPowerDecreaseTime = new Date();
+        stateData.powerCycleDetected = true;
+      }
+      break;
+
+    case 'Reheated':
+      if (update.component_name === 'doorStatus' && update.value === 1) {
+        stateData.state = 'Idle';  // Reset if the door is opened after reheating
+        stateData.lastPowerDecreaseTime = null;
+        stateData.reheatCount = 0;
+        stateData.powerCycleDetected = false;
+        stateLogger.info('State reset to Idle and reheat count reset');
+        return false;  // Indicate that the reminder should be removed
+      } else if (lastPowerDecreaseTime && (new Date() - new Date(lastPowerDecreaseTime)) > 2000) { // 2 seconds
+        if (stateData.reheatCount > 1 || stateData.powerCycleDetected) {  // Detect for multiple reheats or power cycle
+          stateLogger.info('Detection occurred');
+          stateData.detected = true;
+          stateData.state = 'Idle';  // Reset state after detection
+          stateData.powerCycleDetected = false;  // Reset power cycle detection
+          return true;  // Indicate that a detection has occurred
+        }
+      }
+      break;
+
+    default:
+      stateLogger.info(`Unhandled state: ${state}`);
+      break;
+  }
+
+  stateData.lastUpdateTime = new Date();
+  return stateData.detected;
+}
+async function removeReminders(clientId) {
+  const sentReminders = await db.sentReminders.findAll({ where: { clientId } });
+
+  for (const sentReminder of sentReminders) {
+    const reminder = await db.reminders.findOne({ where: { id: sentReminder.reminderId } });
+    stateLogger.info(`${reminder}`)
+    if (!reminder) continue; // Skip if the reminder does not exist in the dataStore
+
+    const stickyNoteUpdate = {
+      action: "remove",
+      id: reminder.id.toString() + "00",
+      stickyNote: {
+        title: "Reminder",
+        content: reminder.display,
+        notificationSoundID: 1,
+        instructions: []
+      }
+    };
+
+    sendMessageToClient(clientId, stickyNoteUpdate.action, stickyNoteUpdate.stickyNote, stickyNoteUpdate.id);
+    reminder.sent = false;
+
+    // Update the 'sent' status of the reminder in the database
+    await db.reminders.update({ sent: false }, { where: { id: reminder.id } });
+    // Remove the sent reminder from the database
+    await db.sentReminders.destroy({ where: { reminderId: reminder.id, clientId } });
+  }
+}
+
+// Periodically check for detection condition and send reminders if necessary
+setInterval(async () => {
+  for (const clientId in clientState) {
+    const stateData = clientState[clientId];
+    if (stateData.state === 'Reheated' && stateData.lastPowerDecreaseTime) {
+      //if ((new Date() - stateData.lastPowerDecreaseTime) > 1000) { // 2 seconds
+        //if (stateData.reheatCount > 1 || stateData.powerCycleDetected) {  // Detect for multiple reheats or power cycle
+          stateLogger.info(`Periodic check detection occurred for client ${clientId}`);
+          await handleDetection(clientId, { home_utilities: [{ utilities: [{ group: 'microwave', components: [] }] }] });
+       // }
+      //}
+    }
+  }
+}, 1000); // Check every second
+
+async function handleDetection(clientId, update) {
+  const stateData = clientState[clientId];
+  const reminders = await findMatchingRemindersForMicrowave(update);
+  stateLogger.info(`inside handle detection`)
+  if (reminders.length > 0) {
+    for (const reminder of reminders) {
+      //if (!stateData.sentReminders.has(reminder.id)) {
+        await sendReminderToClient(reminder, clientId);
+        stateData.sentReminders.add(reminder.id);
+        stateLogger.info(`Reminder sent and state reset to Idle for client ${clientId}`);
+      //}
+    }
+  }
+
+  // Reset state after sending reminder
+  stateData.state = 'Idle';
+  stateData.detected = false;
+  stateData.lastPowerDecreaseTime = null;
+  stateData.reheatCount = 0;
+  stateData.powerCycleDetected = false;
+}
+
 // Create a superuser if none exists
 async function createDefaultSuperuser() {
   try {
@@ -1558,6 +2100,7 @@ async function createDefaultSuperuser() {
     console.error('Error creating default superuser:', error);
   }
 }
+
 
 
 // Call the function to create a superuser if none exists

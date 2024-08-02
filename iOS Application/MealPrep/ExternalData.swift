@@ -1,13 +1,8 @@
-//
-//  ExternalData.swift
-//  MealPrep
-//
-//  Created by Zhi Tan on 7/3/23.
-//
-
 import Foundation
 import NWWebSocket
 import Network
+import CoreBluetooth
+import AudioToolbox
 
 struct StickyJSON: Codable {
     var title: String
@@ -19,6 +14,7 @@ struct StickyJSON: Codable {
 struct IncomingMsg: Codable {
     var action: String
     var id: String
+    var lightCategoryId: Int
     var msg: StickyJSON?
 }
 
@@ -26,124 +22,136 @@ struct ResponseMsg: Codable {
     var response: String
 }
 
-
-class ExternalDataManager : WebSocketConnectionDelegate{
-    var lastData : String = ""
-    var socket : NWWebSocket? = nil
+class ExternalDataManager: WebSocketConnectionDelegate, ObservableObject {
+    @Published var lastData: String = ""
+    @Published var connected: Bool = false
+    @Published var socketURL: URL?
+    @Published var notificationSoundId: Int? = nil  // Add this line
+    var socket: NWWebSocket? = nil
     var stickyData: StickyData
-    var connected: Bool = false
-
-    init(stickyData: StickyData){
+    var bleManager = BLEManager()
+    
+    init(stickyData: StickyData, socketURL: URL? = URL(string: "https://gateway.parcs.northeastern.edu/ai-caring/api/")) {
         self.stickyData = stickyData
-        let socketURL = URL(string: "https://z.ngrok.dev")
-        self.socket = NWWebSocket(url: socketURL!)
+        self.socketURL = socketURL
+        self.socket = NWWebSocket(url: self.socketURL!)
         self.socket?.delegate = self
     }
     
-    func connect_and_initialize(){
-        // connet to server if not connetected
-        print("in connect and intialize")
-        if (!self.connected){
+    func connect_and_initialize() {
+        print("in connect and initialize")
+        if (!self.connected) {
             self.socket?.connect()
             self.socket?.listen()
-            // send the initial code
             self.socket?.send(string: "{\"type\": \"init\",\"secret\":\"qyPDrj5yxq6rUHbwHbpTR8CXJVRFWRSU\",\"role\": \"client\",\"home_key\": \"ep6\"}")
         }
     }
     
-    func disconnect(){
-        //gracefully disconnect
+    func disconnect() {
         self.socket?.disconnect(closeCode: .protocolCode(.normalClosure))
         self.connected = false
         self.stickyData.connected = false
         print("external data disconnected.")
     }
-        
+    
+    func changeSocketURL(newURL: URL) {
+        self.disconnect()
+        self.socketURL = newURL
+        self.socket = NWWebSocket(url: self.socketURL!)
+        self.socket?.delegate = self
+        self.connect_and_initialize()
+    }
+    
     func webSocketDidConnect(connection: WebSocketConnection) {
         print("connected")
-        // Respond to a WebSocket connection event
+        self.connected = true
+        self.stickyData.connected = true
     }
 
-    func webSocketDidDisconnect(connection: WebSocketConnection,
-                                closeCode: NWProtocolWebSocket.CloseCode, reason: Data?) {
+    func webSocketDidDisconnect(connection: WebSocketConnection, closeCode: NWProtocolWebSocket.CloseCode, reason: Data?) {
         print("failed \(closeCode)")
-        print(reason!)
+        print(reason ?? "No reason provided")
         self.connected = false
         self.stickyData.connected = false
-        // Respond to a WebSocket disconnection event
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+            self.connect_and_initialize()
+        }
     }
 
     func webSocketViabilityDidChange(connection: WebSocketConnection, isViable: Bool) {
-        // Respond to a WebSocket connection viability change event
+        print("WebSocket viability did change: \(isViable)")
     }
 
     func webSocketDidAttemptBetterPathMigration(result: Result<WebSocketConnection, NWError>) {
-        // Respond to when a WebSocket connection migrates to a better network path
-        // (e.g. A device moves from a cellular connection to a Wi-Fi connection)
+        switch result {
+        case .success:
+            print("Successfully migrated to a better path")
+        case .failure(let error):
+            print("Failed to migrate to a better path: \(error)")
+        }
     }
 
     func webSocketDidReceiveError(connection: WebSocketConnection, error: NWError) {
-        // Respond to a WebSocket error event
+        print("WebSocket did receive error: \(error)")
     }
 
     func webSocketDidReceivePong(connection: WebSocketConnection) {
-        // Respond to a WebSocket connection receiving a Pong from the peer
+        print("WebSocket did receive Pong")
     }
 
     func webSocketDidReceiveMessage(connection: WebSocketConnection, string: String) {
-        
-        if (connected)
-        {
-            // try to decode the string as a JSON
+        if (connected) {
             let decoder = JSONDecoder()
             do {
                 print(string)
-                print(string.data(using: .utf8)!)
-                let msg = try decoder.decode(IncomingMsg.self, from: string.data(using: .utf8)!)
-                // do different actions
-                if (msg.action == "add"){
+                let data = string.data(using: .utf8)!
+                let msg = try decoder.decode(IncomingMsg.self, from: data)
+                if (msg.action == "add") {
                     let stickyJSON = msg.msg!
-                    var sticky = Sticky(title: stickyJSON.title, content: stickyJSON.content, instructions: stickyJSON.instructions.map {text in Instruction(name:text)},  external_id: msg.id)
+                    var sticky = Sticky(title: stickyJSON.title, content: stickyJSON.content, instructions: stickyJSON.instructions.map { text in Instruction(name: text) }, external_id: msg.id)
                     sticky.soundEffectID = stickyJSON.notificationSoundID ?? -1
+                    self.notificationSoundId = stickyJSON.notificationSoundID  // Update notificationSoundId
                     self.stickyData.addActiveSticky(sticky: sticky, play_sound: true)
+                    
+                   
+                    // Log and play the notification sound directly
+                    if let soundID = stickyJSON.notificationSoundID {
+                        print("Playing sound with ID: \(soundID)")
+                        AudioServicesPlaySystemSound(1007)
+                    } else {
+                        print("No valid sound ID found.")
+                    }
+                    
+                    self.bleManager.writeColor(value: msg.lightCategoryId)
                     print("adding card")
-                }
-                else if (msg.action == "remove" && msg.id != ""){
-                    // remove if and only if its not completed by the user
-                    self.stickyData.active_stickyNotes = self.stickyData.active_stickyNotes.filter{ sticky in
+                } else if (msg.action == "remove" && msg.id != "") {
+                    print(msg, "remove")
+                    self.stickyData.active_stickyNotes = self.stickyData.active_stickyNotes.filter { sticky in
                         return sticky.external_id != msg.id
                     }
+                    self.bleManager.writeColor(value: msg.lightCategoryId)
                 }
-            }
-            catch let error
-            {
-                // do nothing
+            } catch let error {
                 print("decode error: \(error)")
             }
-        }
-        else {
-            // try to decode the string as a JSON
+        } else {
             let decoder = JSONDecoder()
             do {
                 print(string)
-                print(string.data(using: .utf8)!)
-                let msg = try decoder.decode(ResponseMsg.self, from: string.data(using: .utf8)!)
-                if (msg.response == "success"){
+                let data = string.data(using: .utf8)!
+                let msg = try decoder.decode(ResponseMsg.self, from: data)
+                if (msg.response == "success") {
                     self.connected = true
                     self.stickyData.connected = true
                     print("CONNECTED!")
                 }
-            }
-            catch let error
-            {
-                // do nothing
+            } catch let error {
                 print("decode error: \(error)")
             }
         }
     }
-    
-    func webSocketDidReceiveMessage(connection: WebSocketConnection, data: Data) {
 
+    func webSocketDidReceiveMessage(connection: WebSocketConnection, data: Data) {
         print("received some data")
         print(data)
     }
