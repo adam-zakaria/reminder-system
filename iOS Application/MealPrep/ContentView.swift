@@ -325,49 +325,34 @@ struct ContentView: View {
     }
 
     func startTestingMode() {
-        print("Starting testing mode.")
-        DispatchQueue.global(qos: .background).async {
-            while self.isTesting {
-                if !self.bleManager.isConnected {
-                    print("BLE is not connected. Exiting testing mode.")
-                    return
-                }
+           print("Starting testing mode.")
+           DispatchQueue.global(qos: .background).async {
+               while self.isTesting {
+                   if !self.bleManager.checkConnection() {
+                       print("BLE is not connected. Exiting testing mode.")
+                       return
+                   }
 
-                for color in 1...7 {
-                    if !self.isTesting {
-                        print("Testing mode stopped.")
-                        return
-                    }
-                    print("BLE is connected: \(self.bleManager.isConnected)")
-                    print("Writing color value: \(color)")
-                    self.bleManager.writeColor(value: color)
-                    sleep(1)
-                }
+                   if !self.isTesting {
+                       print("Testing mode stopped.")
+                       return
+                   }
+                   print("BLE is connected: \(self.bleManager.isConnected)")
+                   print("Writing color value: 1")
+                   self.bleManager.writeColor(value: 1)
+                   sleep(1)
+               }
+           }
+       }
 
-                for brightness in stride(from: 50, to: 256, by: 50) {
-                    if !self.isTesting {
-                        print("Testing mode stopped.")
-                        return
-                    }
-                    print("BLE is connected: \(self.bleManager.isConnected)")
-                    print("Writing brightness value: \(brightness)")
-                    self.bleManager.writeBrightness(value: brightness)
-                    sleep(1)
-                }
-            }
-        }
-    }
-
-    func stopTestingMode() {
-        print("Stopping testing mode.")
-        isTesting = false
-        DispatchQueue.global(qos: .background).async {
-            self.bleManager.writeColor(value: 0)
-            self.bleManager.writeBrightness(value: 0)
-            print("Reset color and brightness values to 0.")
-        }
-    }
-
+       func stopTestingMode() {
+           print("Stopping testing mode.")
+           isTesting = false
+           DispatchQueue.global(qos: .background).async {
+               self.bleManager.writeColor(value: 0)
+               print("Reset color value to 0.")
+           }
+       }
     func testSystemSound() {
         // Play the test sound, use a known sound ID like 1007
         AudioServicesPlaySystemSound(1007)
