@@ -1,136 +1,123 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { AuthContext } from '../../Authcontext';
-import { api } from '../../utils/api';
+import React, { useState, useEffect, useContext } from "react";
+import { AuthContext } from "../../Authcontext";
+import { chatApi } from "../../utils/api";
 import {
   Container,
   TextField,
   IconButton,
   Grid,
-  Typography,
   List,
   ListItem,
   ListItemAvatar,
   ListItemText,
   Avatar,
   Box,
-  Card,
-  CardContent,
-  CardHeader,
-} from '@mui/material';
-import { Send as SendIcon, EmojiObjects as IdeaIcon, Alarm as AlarmIcon } from '@mui/icons-material';
+} from "@mui/material";
+import { Send as SendIcon } from "@mui/icons-material";
 
 const ChatBox = ({ onChatResponse }) => {
-  const { token, username } = useContext(AuthContext);
+  const { token, username, userId } = useContext(AuthContext);
   const [messages, setMessages] = useState([]);
-  const [newMessage, setNewMessage] = useState('');
-  const [sessionId, setSessionId] = useState(null);
+  const [newMessage, setNewMessage] = useState("");
+  const [chatSessionId, setChatSessionId] = useState(null); // Session ID for chat API
   const [isLoading, setIsLoading] = useState(false);
-  const [reminderLibrary, setReminderLibrary] = useState([]);
   const [examplesVisible, setExamplesVisible] = useState(true);
 
   useEffect(() => {
     if (username) {
       setMessages([
-        { text: `Let me know what kind of reminder you want to create.`, sender: 'Assistant' },
+        {
+          text: "Let me know what kind of reminder you want to create.",
+          sender: "Assistant",
+        },
       ]);
     }
   }, [username]);
 
-  useEffect(() => {
-    const fetchReminderLibrary = async () => {
-      try {
-        const response = await api.get('/api/reminderLibrary', {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setReminderLibrary(response.data.slice(0, 5)); // Limit the number of examples to 5
-      } catch (error) {
-        console.error('Error fetching reminder library:', error);
-      }
-    };
-    fetchReminderLibrary();
-  }, [token]);
-
   const sendMessageToAPI = async (message) => {
     setIsLoading(true);
+
     try {
-      const response = await api.post('/chat', { message, sessionId }, {
+      const payload = { message, userId };
+      if (chatSessionId) {
+        payload.sessionId = chatSessionId;
+      }
+
+      const response = await chatApi.post("/chat/", payload, {
         headers: { Authorization: `Bearer ${token}` },
+        timeout: 20000, // Set timeout to 20,000 milliseconds (20 seconds)
       });
-      const { sessionId: newSessionId, response: apiResponse } = response.data;
-      setSessionId(newSessionId);
-      const assistantMessage = { text: apiResponse.assistant, sender: 'Assistant' };
-      setMessages((prevMessages) => {
-        const updatedMessages = prevMessages.filter(msg => msg.text !== '...');
-        return [...updatedMessages, assistantMessage];
-      });
-      if (onChatResponse) {
-        onChatResponse(apiResponse);
+
+      if (response.data?.sessionId && !chatSessionId) {
+        setChatSessionId(response.data.sessionId);
+      }
+
+      const apiResponse = response.data?.response;
+      const analysedCodeOutput = response.data?.analysed_code_output;
+
+      if (apiResponse?.assistant) {
+        const assistantMessage = { text: apiResponse.assistant, sender: "Assistant" };
+
+        setMessages((prevMessages) => {
+          const updatedMessages = prevMessages.filter(
+            (msg) => msg.text !== "..."
+          );
+          return [...updatedMessages, assistantMessage];
+        });
+
+        if (onChatResponse) {
+          onChatResponse({
+            message: apiResponse.assistant,
+            code: response.data?.code_output?.code,
+            language: response.data?.code_output?.language,
+            analysed_code_output: analysedCodeOutput, // Pass analysed code output
+          });
+        }
+      } else {
+        console.error("Unexpected API response format:", response.data);
       }
     } catch (error) {
-      console.error('Error sending message to API:', error);
+      console.error("Error sending message to API:", error);
     } finally {
       setIsLoading(false);
     }
   };
 
   const sendMessage = () => {
-    if (newMessage.trim() !== '') {
-      const userMessage = { text: newMessage, sender: username || 'You' };
-      setMessages((prevMessages) => [...prevMessages, userMessage, { text: '...', sender: 'Assistant' }]);
+    if (newMessage.trim() !== "") {
+      const userMessage = { text: newMessage, sender: username || "You" };
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        userMessage,
+        { text: "...", sender: "Assistant" },
+      ]);
+
       sendMessageToAPI(newMessage);
-      setNewMessage('');
-      setExamplesVisible(false); // Hide examples after sending a message
+
+      setNewMessage("");
+      setExamplesVisible(false);
     }
   };
 
-  const handleTileClick = (reminderText) => {
-    const userMessage = { text: reminderText, sender: username || 'You' };
-    setMessages((prevMessages) => [...prevMessages, userMessage, { text: '...', sender: 'Assistant' }]);
-    sendMessageToAPI(reminderText);
-    setExamplesVisible(false); // Hide examples after clicking a tile
-  };
-
   return (
-    <Container maxWidth="sm" style={{ display: 'flex', flexDirection: 'column', height: '90vh' }}>
-      <Box style={{ flexGrow: 1, overflowY: 'auto' }}>
+    <Container maxWidth="sm" style={{ display: "flex", flexDirection: "column", height: "90vh" }}>
+      <Box style={{ flexGrow: 1, overflowY: "auto" }}>
         <List>
           {messages.map((message, index) => (
             <ListItem key={index} alignItems="flex-start">
               <ListItemAvatar>
-                <Avatar>{message.sender === (username || 'You') ? (username ? username.charAt(0) : 'Y') : 'A'}</Avatar>
+                <Avatar>
+                  {message.sender === (username || "You")
+                    ? username?.charAt(0) || "Y"
+                    : "A"}
+                </Avatar>
               </ListItemAvatar>
               <ListItemText primary={`${message.sender}: ${message.text}`} />
             </ListItem>
           ))}
-          {examplesVisible && (
-            <Box style={{ margin: '16px 0' }}>
-              <Typography variant="h6" gutterBottom>
-                Examples:
-              </Typography>
-              <Grid container spacing={2}>
-                {reminderLibrary.map((reminder, index) => (
-                  <Grid item xs={12} sm={6} key={reminder.id}>
-                    <Card onClick={() => handleTileClick(reminder.text)} style={{ cursor: 'pointer' }}>
-                      <CardHeader
-                        avatar={
-                          index % 2 === 0 ? <IdeaIcon color="primary" /> : <AlarmIcon color="secondary" />
-                        }
-                        title={reminder.text}
-                      />
-                      <CardContent>
-                        <Typography variant="body2" color="textSecondary">
-                          {reminder.text}
-                        </Typography>
-                      </CardContent>
-                    </Card>
-                  </Grid>
-                ))}
-              </Grid>
-            </Box>
-          )}
         </List>
       </Box>
-      <Box style={{ borderTop: '1px solid #ccc', paddingTop: '8px', backgroundColor: '#fff' }}>
+      <Box style={{ borderTop: "1px solid #ccc", paddingTop: "8px", backgroundColor: "#fff" }}>
         <Grid container spacing={2} alignItems="center">
           <Grid item xs>
             <TextField
@@ -140,7 +127,7 @@ const ChatBox = ({ onChatResponse }) => {
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
               onKeyPress={(e) => {
-                if (e.key === 'Enter') {
+                if (e.key === "Enter") {
                   sendMessage();
                 }
               }}

@@ -1,0 +1,128 @@
+[
+    {
+        "assistant": "I'll remind you to drink water 10 minutes after you finish eating.",
+        "response": {
+            "userId": "User's ID",
+            "message": "Remind me to drink water after eating",
+            "display": "Drink water after eating",
+            "interval": "everytime",
+            "time": null,
+            "delay": "10 minutes",
+            "utility_name": null,
+            "component_name": null,
+            "condition": null,
+            "activity": "Eating",
+            "triggerTime": null,
+            "triggerType": "end",
+            "lightCategoryId": 3
+        }
+    },
+    {
+        "assistant": "I'll remind you to start preparing dinner at 6 PM.",
+        "response": {
+            "userId": "User's ID",
+            "message": "Remind me to start meal preparation at 6 PM",
+            "display": "Start meal preparation",
+            "interval": "everyday",
+            "time": "18:00",
+            "delay": null,
+            "utility_name": null,
+            "component_name": null,
+            "condition": null,
+            "activity": "Meal_Preparation",
+            "triggerTime": "18:00",
+            "triggerType": "begin",
+            "lightCategoryId": 2
+        }
+    },
+    {
+        "assistant": "I'll remind you to read a book when you start relaxing.",
+        "response": {
+            "userId": "User's ID",
+            "message": "Remind me to read a book while relaxing",
+            "display": "Read a book",
+            "interval": "everytime",
+            "time": null,
+            "delay": "0 minutes",
+            "utility_name": null,
+            "component_name": null,
+            "condition": null,
+            "activity": "Relax",
+            "triggerTime": null,
+            "triggerType": "begin",
+            "lightCategoryId": 3
+        }
+    },
+    {
+        "assistant": "I'll remind you to take your keys before you leave home.",
+        "response": {
+            "userId": "User's ID",
+            "message": "Remind me to take keys before leaving home",
+            "display": "Take keys before leaving",
+            "interval": "everytime",
+            "time": null,
+            "delay": "0 minutes",
+            "utility_name": null,
+            "component_name": null,
+            "condition": null,
+            "activity": "Leave_Home",
+            "triggerTime": null,
+            "triggerType": "begin",
+            "lightCategoryId": 1
+        }
+    },
+    {
+        "assistant": "I'll remind you to set an alarm when you start getting ready for bed.",
+        "response": {
+            "userId": "User's ID",
+            "message": "Remind me to set an alarm before bed",
+            "display": "Set an alarm before bed",
+            "interval": "everytime",
+            "time": null,
+            "delay": "0 minutes",
+            "utility_name": null,
+            "component_name": null,
+            "condition": null,
+            "activity": "Sleeping",
+            "triggerTime": null,
+            "triggerType": "begin",
+            "lightCategoryId": 3
+        }
+    },
+    {
+        "assistant": "I'll remind you to turn off the lights when you return to bed from the bathroom.",
+        "response": {
+            "userId": "User's ID",
+            "message": "Remind me to turn off lights after using the bathroom",
+            "display": "Turn off lights",
+            "interval": "everytime",
+            "time": null,
+            "delay": "0 minutes",
+            "utility_name": null,
+            "component_name": null,
+            "condition": null,
+            "activity": "Bed_To_Toilet",
+            "triggerTime": null,
+            "triggerType": "end",
+            "lightCategoryId": 3
+        }
+    },
+    {
+        "assistant": "I'll remind you to lock the door when you come home.",
+        "response": {
+            "userId": "User's ID",
+            "message": "Remind me to lock the door after entering home",
+            "display": "Lock the door",
+            "interval": "everytime",
+            "time": null,
+            "delay": "0 minutes",
+            "utility_name": null,
+            "component_name": null,
+            "condition": null,
+            "activity": "Enter_Home",
+            "triggerTime": null,
+            "triggerType": "end",
+            "lightCategoryId": 1
+        }
+    }
+]

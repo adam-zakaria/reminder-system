@@ -18,6 +18,7 @@ import {
   IconButton,
 } from '@mui/material';
 import { Email, Lock, Visibility, VisibilityOff } from '@mui/icons-material';
+import { jwtDecode } from 'jwt-decode';
 
 const theme = createTheme({
   palette: {
@@ -62,9 +63,12 @@ function LoginScreen() {
       const response = await api.post('/login', { email, password });
       const data = response.data;
       if (response.status === 200) {
+        const decodedToken = jwtDecode(data.token);
         console.log('Login response data:', data);
-        setToken(data.token, data.userId, data.username, data.role); // Ensure all parameters are passed
-        setUserId(data.userId);
+        setToken(data.token, decodedToken.userId, data.username, data.role); // Ensure all parameters are passed
+        
+        console.log("login screen userid", data.userId, decodedToken.userId)
+        setUserId(decodedToken.userId);
         setRole(data.role);
         setUsername(data.username);
         setIsAuthenticated(true);

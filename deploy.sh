@@ -3,6 +3,7 @@
 # Variables
 REACT_NATIVE_PROJECT_PATH="/c/Users/sghar/Documents/Research-code-repo/Git/meal-prep-nu/Webapp/ai-caring-interface"
 NODE_SERVER_PATH="/c/Users/sghar/Documents/Research-code-repo/Git/meal-prep-nu/Server_node"
+BOTS_SERVER_PATH="/c/Users/sghar/Documents/Research-code-repo/Git/meal-prep-nu/bots"
 BUILD_OUTPUT_PATH="$REACT_NATIVE_PROJECT_PATH/build"
 BUILD_ZIP_PATH="/c/Users/sghar/Documents/Research-code-repo/Git/meal-prep-nu/Deployments/build.zip"
 SERVER_ZIP_PATH="/c/Users/sghar/Documents/Research-code-repo/Git/meal-prep-nu/Deployments/server.zip"

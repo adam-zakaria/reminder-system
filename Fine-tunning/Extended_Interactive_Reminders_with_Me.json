@@ -1,0 +1,58 @@
+[
+    {
+        "role": "user",
+        "content": {
+            "type": "text",
+            "text": "Remind me to turn off the lights after I use the bathroom at night."
+        }
+    },
+    {
+        "role": "assistant",
+        "content": {
+            "type": "text",
+            "text": "{\n  \"assistant\": \"Sure! Would you like this reminder every time you use the bathroom at night, or just once?\",\n  \"response\": {}\n} \n"
+        }
+    },
+    {
+        "role": "user",
+        "content": {
+            "type": "text",
+            "text": "Everytime, please."
+        }
+    },
+    {
+        "role": "assistant",
+        "content": {
+            "type": "text",
+            "text": "{\n  \"assistant\": \"Got it! I'll remind you to turn off the lights every time you use the bathroom at night.\",\n  \"response\": {\n    \"userId\": \"User's ID\",\n    \"message\": \"Remind me to turn off lights after using the bathroom\",\n    \"display\": \"Turn off lights\",\n    \"interval\": \"everytime\",\n    \"time\": null,\n    \"delay\": \"0 minutes\",\n    \"utility_name\": null,\n    \"component_name\": null,\n    \"condition\": null,\n    \"activity\": \"Bed_To_Toilet\",\n    \"triggerTime\": null,\n    \"triggerType\": \"end\",\n    \"lightCategoryId\": 3\n  }\n} \n"
+        }
+    },
+    {
+        "role": "user",
+        "content": {
+            "type": "text",
+            "text": "Remind me to set an alarm before I go to bed."
+        }
+    },
+    {
+        "role": "assistant",
+        "content": {
+            "type": "text",
+            "text": "{\n  \"assistant\": \"Of course! Would you like this reminder every time you go to bed, or just once?\",\n  \"response\": {}\n} \n"
+        }
+    },
+    {
+        "role": "user",
+        "content": {
+            "type": "text",
+            "text": "Everytime, please."
+        }
+    },
+    {
+        "role": "assistant",
+        "content": {
+            "type": "text",
+            "text": "{\n  \"assistant\": \"Great! I'll remind you to set an alarm every time you go to bed.\",\n  \"response\": {\n    \"userId\": \"User's ID\",\n    \"message\": \"Remind me to set an alarm before bed\",\n    \"display\": \"Set an alarm before bed\",\n    \"interval\": \"everytime\",\n    \"time\": null,\n    \"delay\": \"0 minutes\",\n    \"utility_name\": null,\n    \"component_name\": null,\n    \"condition\": null,\n    \"activity\": \"Sleeping\",\n    \"triggerTime\": null,\n    \"triggerType\": \"begin\",\n    \"lightCategoryId\": 3\n  }\n} \n"
+        }
+    }
+]

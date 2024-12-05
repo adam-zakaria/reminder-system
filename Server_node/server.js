@@ -13,15 +13,17 @@ const { _reminderPrompt } = require('./prompt');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { body, validationResult, check } = require('express-validator');
-const fs = require('fs');
 const winston = require('winston');
 const moment = require('moment-timezone');
+const fs = require('fs');
+const path = require('path');
+const xlsx = require('xlsx');
 
 const openai = new OpenAI(process.env.OPENAI_API_KEY);
 const JWT_SECRET = process.env.JWT_SECRET
 
 const app = express();
-const port = 7628 //6541 //7628;
+const port = 7628 //6541 //7628 //6541 //7628;
 
 // Enable CORS for all requests
 app.use(cors());
@@ -139,6 +141,34 @@ let lastPowerComponentTime = null; // Variable to track the last power component
 //     res.status(500).json({ error: 'Failed to generate response from OpenAI' });
 //   }
 // });
+
+// Function to store conversation in an Excel file
+function storeConversationInExcel(sessionId, userId, username, role, content, timestamp) {
+  const filePath = path.join(__dirname, 'conversations.xlsx');
+  let workbook;
+  let worksheet;
+
+  // Check if the Excel file exists
+  if (fs.existsSync(filePath)) {
+    workbook = xlsx.readFile(filePath);
+    worksheet = workbook.Sheets['Conversations'];
+  } else {
+    // Create a new workbook and worksheet if the file doesn't exist
+    workbook = xlsx.utils.book_new();
+    worksheet = xlsx.utils.aoa_to_sheet([['Session ID', 'User ID', 'Username', 'Role', 'Content', 'Timestamp']]);
+    xlsx.utils.book_append_sheet(workbook, worksheet, 'Conversations');
+  }
+
+  // Add the new message to the worksheet
+  const newRow = [sessionId, userId, username, role, content, timestamp];
+  const rows = xlsx.utils.sheet_to_json(worksheet, { header: 1 });
+  rows.push(newRow);
+  worksheet = xlsx.utils.aoa_to_sheet(rows);
+  workbook.Sheets['Conversations'] = worksheet;
+
+  // Write the updated workbook back to the file
+  xlsx.writeFile(workbook, filePath);
+}
 
 const connectionLogger = winston.createLogger({
   level: 'info',
@@ -504,6 +534,7 @@ app.post('/oracle-updates', async (req, res) => {
     return res.status(400).send({ status: 'Missing update' });
   }
 
+  console.log(update,"update")
   console.log(`Update from Oracle for client`, update.update);
 
   // // Hardcoded userId for demonstration purposes
@@ -525,6 +556,8 @@ app.post('/oracle-updates', async (req, res) => {
   // Send the response immediately
   res.status(200).send({ status: 'Update received' });
 
+  updateEvent.emit('processUpdate', update);
+
   // Emit events to handle the update
   if ("activity" in update.update) {
     updateEvent.emit('handleActivityReminders', update.update, targetClientId);
@@ -533,6 +566,139 @@ app.post('/oracle-updates', async (req, res) => {
   }
 });
 
+/**
+ * Execute the Python state machine with the provided input data.
+ * @param {Object} inputData - The data to pass to the Python state machine.
+ * @returns {Promise<Object>} - The updated blackboard from the state machine.
+ */
+function executePythonStateMachine(inputData) {
+  return new Promise((resolve, reject) => {
+    const inputDataStr = JSON.stringify(inputData);
+    const pythonFilePath = 'generated_state_machine.py';  // Path to the dynamically generated Python file
+
+    const command = `python3 ${pythonFilePath}`;
+    const process = exec(command, (error, stdout, stderr) => {
+      if (error) {
+        return reject(`Error executing Python script: ${error.message}`);
+      }
+      if (stderr) {
+        console.error(`Python script stderr: ${stderr}`);
+      }
+      resolve(JSON.parse(stdout));  // Parse the output from Python
+    });
+
+    // Pass input data to the Python script via stdin
+    process.stdin.write(inputDataStr);
+    process.stdin.end();
+  });
+}
+
+/**
+ * Extract sensor data from the update payload.
+ * @param {Object} update - The update payload.
+ * @returns {Object} - Extracted sensor data.
+ */
+function extractSensorData(update) {
+  const homeUtility = update.home_utilities[0];
+  const utility = homeUtility.utilities[0];
+  const component = utility.components[0];
+
+  return {
+    component_name: component.component_name,
+    value: component.value,
+    utility_name: utility.utility_name
+  };
+}
+
+/**
+ * Extract activity data from the update payload.
+ * @param {Object} update - The update payload.
+ * @returns {Object} - Extracted activity data.
+ */
+function extractActivityData(update) {
+  return {
+    activity: update.activity,
+    status: update.activity_status,
+    house_id: update.house_id
+  };
+}
+
+/**
+ * Generic function to handle the execution of the state machine based on sensor or activity data.
+ * @param {Object} sensorData - The sensor data (if available).
+ * @param {Object} activityData - The activity data (if available).
+ * @param {Object} res - The HTTP response object.
+ */
+async function handleStateMachineExecution(sensorData, activityData, res) {
+  const stateMachineInput = {
+    sensor_data: sensorData || {},  // Default to an empty object if no sensor data
+    activity_data: activityData || {},  // Default to an empty object if no activity data
+    blackboard: {}  // Initialize with an empty blackboard (can be persisted later)
+  };
+
+  try {
+    const result = await executePythonStateMachine(stateMachineInput);
+    console.log('Updated blackboard from Python state machine:', result.blackboard);
+    res.status(200).send({ status: 'Update processed successfully', blackboard: result.blackboard });
+  } catch (error) {
+    console.error('Error while executing the Python state machine:', error);
+    res.status(500).send({ status: 'Error processing update', error: error.message });
+  }
+}
+
+// Separate function to process and extract sensor data
+function processSensorData(update) {
+  const homeUtilities = update.update.home_utilities || [];
+
+  homeUtilities.forEach((homeUtility) => {
+    const houseId = homeUtility.house_id;
+
+    // Iterate over the utilities to get component data
+    homeUtility.utilities.forEach((utility) => {
+      const components = utility.components || [];
+
+      components.forEach((component) => {
+        const componentName = component.component_name;
+        const componentValue = component.value;
+        const componentTime = component.time;
+
+        console.log(`Extracted data: House ID: ${houseId}, Component: ${componentName}, Value: ${componentValue}, Time: ${componentTime}`);
+
+        // Return the extracted data so it can be used by the event listener
+        return { houseId, componentName, componentValue, componentTime };
+      });
+    });
+  });
+}
+
+// Event listener for processing updates and triggering the state machine
+updateEvent.on('processUpdate', async (update) => {
+  console.log('Processing update:', update);
+
+  const sensorData = update.update.home_utilities[0].utilities[0].components[0];  // Adjust based on the actual structure of your data
+  const activityData = update.update.activity || 'idle';  // Default to idle if no activity
+
+  // Prepare the input data for the state machine
+  const stateMachineInput = {
+    sensor_data: {
+      component_name: sensorData.component_name,
+      value: sensorData.value
+    },
+    activity_data: { activity: activityData },
+    blackboard: {}  // Initialize with an empty blackboard (you can also load a persisted blackboard from a database)
+  };
+
+  try {
+    // Trigger the Python state machine with the input data
+    const result = await executePythonStateMachine(stateMachineInput);
+
+    console.log('Updated blackboard from Python state machine:', result.blackboard);
+
+    // You can now persist the updated blackboard or send the response back to the client
+  } catch (error) {
+    console.error('Error while executing the Python state machine:', error);
+  }
+});
 
 
 app.post('/smart-text', async (req, res) => {
@@ -632,7 +798,9 @@ updateEvent.on('newUpdate', async (update, targetClientId) => {
   for (const singleUpdate of updates) {
     stateLogger.info(`${singleUpdate} single update`);
     if (singleUpdate.component_name === 'power') logTimeDifference(singleUpdate);
+    
     const activityDetected = stateMachine(singleUpdate, targetClientId);
+    
     if (activityDetected) {
       console.log(`Food left in microwave after reheating detected for client ${targetClientId}`);
       await handleDetection(targetClientId, update);
@@ -685,8 +853,9 @@ updateEvent.on('newUpdate', async (update, targetClientId) => {
         action: "remove",
         id: reminder.id.toString() + "00",
         stickyNote: {
-          title: "Reminder",
-          content: reminder.display,
+          title: reminder.display,
+          content : "",
+          //content: reminder.display,
           notificationSoundID: 1007,
           instructions: []
         }
@@ -809,8 +978,9 @@ async function sendReminderToClient(matchingReminder, targetClientId) {
     action: "add",
     id: matchingReminder.id.toString() + "00",
     stickyNote: {
-      title: "Reminder",
-      content: matchingReminder.display,
+      title: matchingReminder.display,
+      content: "",
+      //content: matchingReminder.display,
       notificationSoundID: 1,
       instructions: [],
       lightCategoryId: matchingReminder.lightCategoryId
@@ -1022,15 +1192,26 @@ app.post('/chat', authenticate, async (req, res) => {
   const userId = req.user.id;
   const username = req.user.username;
 
+  chatLogger.info('Received a chat request', { userId, username, message });
+
   if (!message) {
+    chatLogger.warn('Message is missing in the request', { userId, username });
     return res.status(400).json({ error: 'Message is required' });
   }
 
   const currentSessionId = sessionId || uuidv4();
 
   try {
-    let thread = await db.chatThreads.findOne({ where: { id: currentSessionId } });
-    if (!thread) {
+    let thread = await db.chatThreads.findOne({ where: { id: currentSessionId }, include: db.chatMessages });
+
+    let formattedThreadMessages = [];
+
+    if (thread) {
+      formattedThreadMessages = thread.messages.map(msg => ({
+        role: msg.role,
+        content: [{ text: msg.content, type: "text" }]
+      }));
+    } else {
       const newThread = {
         id: currentSessionId,
         userId,
@@ -1039,6 +1220,7 @@ app.post('/chat', authenticate, async (req, res) => {
         sessionId: currentSessionId,
       };
       thread = await db.chatThreads.create(newThread);
+      chatLogger.info('Created a new chat thread', { currentSessionId, userId });
     }
 
     const newMessage = {
@@ -1055,30 +1237,41 @@ app.post('/chat', authenticate, async (req, res) => {
     thread.messages.push(savedMessage);
     await thread.save();
 
+    formattedThreadMessages.push({
+      role: 'user',
+      content: [{ text: message, type: "text" }]
+    });
+
+    // Store the user message in the Excel file
+    storeConversationInExcel(currentSessionId, userId, username, 'user', message, newMessage.timestamp);
+
     const prompt = _reminderPrompt;
-    const messagesForAI = [...prompt, ...thread.messages];
-    console.log(messagesForAI, "Message for AI");
+    const messagesForAI = [...prompt, ...formattedThreadMessages];
+
+    chatLogger.info('Messages sent to AI', { currentSessionId, userId, messagesForAI });
+
     const completion = await openai.chat.completions.create({
-      model: "gpt-4o",
+      model: "gpt-4o", 
       messages: messagesForAI,
       response_format: { type: "json_object" },
-      temperature: 1,
-      max_tokens: 3000,
-      top_p: 1,
+      temperature: 0,
+      max_tokens: 2000,
+      top_p: 0.7,
       frequency_penalty: 0,
       presence_penalty: 0,
     });
+
     let responseMessage = completion.choices[0].message.content;
-    console.log(responseMessage, "Response message");
+    chatLogger.info('Received response from AI', { responseMessage });
 
     let jsonResponse = JSON.parse(responseMessage);
     if (!jsonResponse.hasOwnProperty('assistant')) {
       jsonResponse['assistant'] = 'There has been an issue on our side, please try again later.';
+      chatLogger.error('AI response missing assistant field', { jsonResponse });
     }
     if (!jsonResponse.hasOwnProperty('response') || Object.keys(jsonResponse.response).length === 0) {
       jsonResponse['response'] = {};
     } else {
-      // Replace words in the message field
       if (jsonResponse.response.message) {
         jsonResponse.response.message = jsonResponse.response.message.replace(/\b(me|user|you)\b/gi, username);
       }
@@ -1101,9 +1294,12 @@ app.post('/chat', authenticate, async (req, res) => {
     thread.messages.push(assistantMessage);
     await thread.save();
 
+    // Store the AI response in the Excel file
+    storeConversationInExcel(currentSessionId, userId, username, 'assistant', assistantMessage.content, assistantMessage.timestamp);
+
     res.status(200).json({ sessionId: currentSessionId, response: jsonResponse });
   } catch (error) {
-    console.error('Error with OpenAI API:', error);
+    chatLogger.error('Error with OpenAI API', { error });
     res.status(500).json({ error: 'Failed to generate response from OpenAI' });
   }
 });
@@ -1692,7 +1888,7 @@ app.post('/api/share-reminder', authenticate, checkSuperuser, async (req, res) =
 });
 
 
-app.get('/api/shared-reminders', authenticate, async (req, res) => {
+app.get('/api/shared-reminders',authenticate, async (req, res) => {
   try {
     const sharedReminders = await db.reminderShare.findAll({
       where: { sharedWithUserId: req.user.id },
@@ -1923,6 +2119,17 @@ const activityLogger = winston.createLogger({
   ]
 });
 
+const chatLogger = winston.createLogger({
+  level: 'info',
+  format: winston.format.combine(
+    winston.format.timestamp({ format: () => moment().tz('America/New_York').format('YYYY-MM-DD HH:mm:ss z')  }), // Eastern Time Zone
+    winston.format.json() // Log in JSON format for easier parsing
+  ),
+  transports: [
+    new winston.transports.File({ filename: 'chat.log' }) // Log to chat.log
+  ],
+});
+
 function logTimeDifference(update) {
   if (lastPowerComponentTime) {
     const timeDiff = new Date(update.time) - new Date(lastPowerComponentTime);
@@ -1932,11 +2139,12 @@ function logTimeDifference(update) {
   if (update.component_name === 'power') {
     lastPowerComponentTime = update.time;
   }
-}
+} 
 
 
 function initializeClientState(clientId) {
   if (!clientState[clientId]) {
+    stateLogger.info(` ~ clientState ${clientState}`)
     clientState[clientId] = {
       state: 'Idle',
       detected: false,
@@ -1950,6 +2158,7 @@ function initializeClientState(clientId) {
 }
 
 function stateMachine(update, clientId) {
+  stateLogger.info(`~ clientId ${clientId}`)
   initializeClientState(clientId);
 
   const stateData = clientState[clientId];
@@ -2083,6 +2292,61 @@ async function handleDetection(clientId, update) {
   stateData.powerCycleDetected = false;
 }
 
+app.put('/reset-reminders', async (req, res) => {
+  try {
+    await db.reminders.update({ sent: false }, {
+      where: {
+        id: [33, 11]
+      }
+    });
+
+    res.status(200).send('Reminders updated successfully.');
+  } catch (error) {
+    console.error('Error updating reminders:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+app.get('/healthcheck', (req,res)=>{
+  res.status(200)
+})
+
+// Add this endpoint to your Express app
+app.post('/notify', async (req, res) => {
+  const { clientId, message } = req.body;
+
+  // Validate input
+  if (!clientId || !message) {
+    return res.status(400).json({ error: 'clientId and message are required' });
+  }
+
+  // Find the WebSocket connections for the clientId
+  const clients = connectedClients[clientId];
+
+  if (!clients || (Array.isArray(clients) && clients.length === 0)) {
+    return res.status(404).json({ error: `No connected client found for clientId: ${clientId}` });
+  }
+
+  // Send the message to all connected clients for this clientId
+  try {
+    if (Array.isArray(clients)) {
+      clients.forEach((ws) => {
+        if (ws.readyState === WebSocket.OPEN) {
+          ws.send(JSON.stringify({ type: 'notification', message }));
+        }
+      });
+    } else if (clients.readyState === WebSocket.OPEN) {
+      clients.send(JSON.stringify({ type: 'notification', message }));
+    }
+
+    return res.json({ success: true, message: `Notification sent to clientId: ${clientId}` });
+  } catch (error) {
+    console.error('Error sending message:', error);
+    return res.status(500).json({ error: 'Failed to send message' });
+  }
+});
+
+
 // Create a superuser if none exists
 async function createDefaultSuperuser() {
   try {
@@ -2100,7 +2364,6 @@ async function createDefaultSuperuser() {
     console.error('Error creating default superuser:', error);
   }
 }
-
 
 
 // Call the function to create a superuser if none exists

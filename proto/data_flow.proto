@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+service DataFlow {
+  rpc SendData (DataRequest) returns (DataResponse);
+}
+
+message DataRequest {
+  Update update = 1;
+}
+
+message DataResponse {
+  string status = 1;
+  string message = 2;
+}
+
+message Update {
+  repeated HomeUtility home_utilities = 1;
+}
+
+message HomeUtility {
+  string house_id = 1;
+  repeated Utility utilities = 2;
+}
+
+message Utility {
+  string utility_id = 1;
+  string utility_name = 2;
+  int32 location = 3;
+  string status = 4;
+  string group = 5;
+  repeated Component components = 6;
+}
+
+message Component {
+  string component_name = 1;
+  string status = 2;
+  string value = 3;
+  int64 time = 4;
+}

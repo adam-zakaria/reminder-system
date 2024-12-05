@@ -9,10 +9,10 @@ import sys
 logging.basicConfig(filename='activity.log', level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # URL to send the data to
-SERVER_URL = "http://localhost:7628/oracle-updates"
+SERVER_URL = "http://localhost:4005/activity/"
 
 # Load activity data from the JSON file
-with open('activity.json') as f:
+with open('activity_demo_sequence.json') as f:
     activities = json.load(f)
     logging.info('Loaded activities from activity.json')
 
@@ -80,13 +80,14 @@ def send_data_on_change():
                 activity_state["repeat_count"] = 0
 
                 try:
+                    print(transformed_data,"transformed data")
                     response = requests.post(SERVER_URL, json=transformed_data)
                     response.raise_for_status()
                     logging.info(f'Successfully sent begin data: {transformed_data}')
                 except requests.exceptions.RequestException as e:
                     logging.error(f'Error sending begin data: {e}')
 
-        time.sleep(3)
+        time.sleep(1)
 
 # Graceful shutdown handler
 def signal_handler(sig, frame):

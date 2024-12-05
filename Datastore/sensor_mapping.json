@@ -1,0 +1,18 @@
+{
+    "MP Microwave Smart Cable": "microwave_smart_cable",
+    "Kids Bedroom Extension Cable": "bedroom_extension_cable",
+    "Living Room Smart Cable": "living_room_smart_cable",
+    "MP Kitchen Motion": "kitchen_motion_sensor",
+    "MP Dining Room Motion": "dining_room_motion_sensor",
+    "DMaster Bedroom Motion": "master_bedroom_motion_sensor",
+    "DLiving Room Motion": "living_room_motion_sensor",
+    "MP Fridge entry": "fridge_entry_sensor",
+    "DMainDoor Entry": "main_door_entry_sensor",
+    "DSilverwareDrawer Entry": "silverware_drawer_entry_sensor",
+    "MP Microwave Entry2": "microwave_door_entry_sensor",
+    "DStove Temp/Humidity": "stove_temp_humidity_sensor",
+    "MP Living Room Temp/Humidity": "living_room_temp_humidity_sensor",
+    "DMaster Bathroom Toilet Vibration": "bathroom_toilet_vibration_sensor",
+    "Master Bedroom 2 Vayyar": "master_bedroom_uwb_sensor",
+    "emfit": "master_bedroom_bed_sensor"
+}

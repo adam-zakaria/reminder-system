@@ -5,9 +5,18 @@ import { useNavigate } from 'react-router-dom';
 import { PopupContext } from '../PopupContext'; // Make sure the path is correct
 
 const api = axios.create({
-  //baseURL: 'http://localhost:7628/', // Update with your backend server URL
-  baseURL: 'https://gateway.parcs.northeastern.edu/ai-caring/api/', // Update with your backend server URL
+  baseURL: 'http://localhost:7628/', // Update with your backend server URL
+  //baseURL: 'https://gateway.parcs.northeastern.edu/ai-caring/api/', // Update with your backend server URL
   timeout: 10000, // Set a timeout for requests
+  headers: {
+    'Content-Type': 'application/json',
+  }
+});
+
+// Separate instance for chat-specific requests
+const chatApi = axios.create({
+  baseURL: 'http://localhost:4005/',  // Chat API URL
+  timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
   }
@@ -63,4 +72,4 @@ const useApiWithAuth = () => {
   return api;
 };
 
-export { api, useApiWithAuth };
+export { api, chatApi, useApiWithAuth };

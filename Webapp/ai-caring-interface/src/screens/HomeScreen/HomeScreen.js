@@ -8,6 +8,14 @@ import ChatBox from '../../components/ChatBox/ChatBox';
 import { api } from '../../utils/api';
 import { AuthContext } from '../../Authcontext';
 import { jwtDecode } from 'jwt-decode';
+import CodeViewer from '../../components/CodeViewer/CodeViewer'
+import Flowchart from '../../components/Flowchart/Flowchart'; // Import Flowchart component
+import ReactFlow, {
+  Background,
+  Controls,
+  MiniMap,
+  MarkerType, // This is necessary for arrow markers
+} from "reactflow";
 
 function HomeScreen() {
   const [reminder, setReminder] = useState({
@@ -26,23 +34,111 @@ function HomeScreen() {
     triggerType: null,
     lightCategoryId: null
   });
+
+  const [flowchartData, setFlowchartData] = useState({ nodes: [], edges: [] });
   const [loadingReminder, setLoadingReminder] = useState(false);
   const [invalidFields, setInvalidFields] = useState([]);
   const [submitted, setSubmitted] = useState(false);
   const [hasResponse, setHasResponse] = useState(false);
+  const [codeSnippet, setCodeSnippet] = useState(null);
+  const [assistantMessage, setAssistantMessage] = useState('');
   const navigate = useNavigate();
-  const { token } = useContext(AuthContext);
+  const { token, role } = useContext(AuthContext);
+
+  const isAdmin = role === 'superuser';
+  console.log(isAdmin, "isAdmin")
 
   useEffect(() => {
     if (token) {
       const decodedToken = jwtDecode(token);
       const userId = decodedToken.userId;
-      setReminder((prevReminder) => ({ ...prevReminder, userId }));
+      const userRole = decodedToken.role;
+      //setReminder((prevReminder) => ({ ...prevReminder, userId }));
     }
   }, [token]);
 
+  const createDynamicFlowchart = (analysedCodeOutput) => {
+    const nodes = [];
+    const edges = [];
+
+    if (analysedCodeOutput) {
+      const { sensors = {}, activities = [] } = analysedCodeOutput; // Default to empty objects/arrays
+
+      // Start Node
+      nodes.push({
+        id: "1",
+        type: "start",
+        data: { label: "Start" },
+        position: { x: 250, y: 0 },
+      });
+
+      let nextNodeId = 2;
+
+      // Sensor Nodes
+      Object.keys(sensors).forEach((sensorKey) => {
+        nodes.push({
+          id: `${nextNodeId}`,
+          type: "sensor",
+          data: { label: `${sensorKey} (${sensors[sensorKey] ? "Active" : "Inactive"})` },
+          position: { x: 150 * nextNodeId, y: 100 },
+        });
+        edges.push({
+          id: `e1-${nextNodeId}`,
+          source: "1",
+          target: `${nextNodeId}`,
+          type: "smoothstep",
+          markerEnd: { type: MarkerType.ArrowClosed },
+        });
+        nextNodeId++;
+      });
+
+      // Activity Nodes
+      activities.forEach((activity, index) => {
+        nodes.push({
+          id: `${nextNodeId}`,
+          type: "activity",
+          data: { label: `${activity.activity_type} (${activity.status})` },
+          position: { x: 150 * (index + 1), y: 200 },
+        });
+        edges.push({
+          id: `e${nextNodeId - 1}-${nextNodeId}`,
+          source: `${nextNodeId - 1}`,
+          target: `${nextNodeId}`,
+          type: "smoothstep",
+          markerEnd: { type: MarkerType.ArrowClosed },
+        });
+        nextNodeId++;
+      });
+
+      // End Node
+      nodes.push({
+        id: `${nextNodeId}`,
+        type: "end",
+        data: { label: "End" },
+        position: { x: 250, y: 300 },
+      });
+      edges.push({
+        id: `e${nextNodeId - 1}-${nextNodeId}`,
+        source: `${nextNodeId - 1}`,
+        target: `${nextNodeId}`,
+        type: "smoothstep",
+        markerEnd: { type: MarkerType.ArrowClosed },
+      });
+    } else {
+      // Fallback flowchart
+      nodes.push({
+        id: "1",
+        type: "start",
+        data: { label: "No Data Available" },
+        position: { x: 250, y: 0 },
+      });
+    }
+
+    return { nodes, edges };
+  };
+
   const handleChange = (name, value) => {
-    setReminder({ ...reminder, [name]: value });
+    //setReminder({ ...reminder, [name]: value });
   };
 
   const formInvalid = () => {
@@ -55,7 +151,8 @@ function HomeScreen() {
     if (!interval) invalid.push('interval');
     if (!display) invalid.push('display');
     if (!lightCategoryId) invalid.push('lightCategoryId');
-      
+
+
     // Non-dependent reminder
     if (time) {
       if (utility_name || component_name || condition || delay || activity || triggerTime || triggerType) {
@@ -110,24 +207,55 @@ function HomeScreen() {
     setLoadingReminder(false);
   };
 
+  // const handleChatResponse = (response) => {
+  //   if (response && Object.keys(response).length > 0) {
+  //     console.log("insdie handle chat response", response)
+  //     setReminder((prevReminder) => ({
+  //       ...prevReminder,
+  //       message: response.assistant.message || prevReminder.message,
+  //       display: response.response.display || prevReminder.display,
+  //       interval: response.response.interval?.toLowerCase() || prevReminder.interval,
+  //       time: response.response.time || prevReminder.time,
+  //       utility_name: response.response.utility_name || prevReminder.utility_name,
+  //       component_name: response.response.component_name || prevReminder.component_name,
+  //       condition: response.response.condition || prevReminder.condition,
+  //       delay: response.response.delay || prevReminder.delay,
+  //       activity: response.response.activity || prevReminder.activity,
+  //       triggerTime: response.response.triggerTime || prevReminder.triggerTime,
+  //       triggerType: response.response.triggerType || prevReminder.triggerType,
+  //       lightCategoryId: response.response.lightCategoryId || prevReminder.lightCategoryId
+  //     }));
+  //     setHasResponse(response.hasResponse);
+  //   }
+  // };
+
   const handleChatResponse = (response) => {
-    if (response && Object.keys(response).length > 0) {
-      setReminder((prevReminder) => ({
-        ...prevReminder,
-        message: response.response.message || prevReminder.message,
-        display: response.response.display || prevReminder.display,
-        interval: response.response.interval?.toLowerCase() || prevReminder.interval,
-        time: response.response.time || prevReminder.time,
-        utility_name: response.response.utility_name || prevReminder.utility_name,
-        component_name: response.response.component_name || prevReminder.component_name,
-        condition: response.response.condition || prevReminder.condition,
-        delay: response.response.delay || prevReminder.delay,
-        activity: response.response.activity || prevReminder.activity,
-        triggerTime: response.response.triggerTime || prevReminder.triggerTime,
-        triggerType: response.response.triggerType || prevReminder.triggerType,
-        lightCategoryId: response.response.lightCategoryId || prevReminder.lightCategoryId
-      }));
-      setHasResponse(response.hasResponse);
+    // Update assistant message
+    if (response?.message) {
+      setAssistantMessage(response.message);
+    }
+
+    if (response?.analysed_code_output) {
+      const dynamicFlowchart = createDynamicFlowchart(response.analysed_code_output);
+      setFlowchartData(dynamicFlowchart);
+    }
+
+    // Update code snippet if available
+    if (response?.code) {
+      // Decode the code string properly
+      let decodedCode = response.code;
+      try {
+        decodedCode = JSON.parse(`"${decodedCode}"`); // Parse and decode the string
+      } catch (error) {
+        console.error('Error parsing code:', error);
+      }
+
+      setCodeSnippet({
+        code: decodedCode,
+        language: response.language,
+      });
+    } else {
+      setCodeSnippet(null); // Clear code snippet if none is available
     }
   };
 
@@ -137,7 +265,7 @@ function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      <View style={[styles.leftContainer, hasResponse && styles.expandedLeftContainer]}>
+      <View style={[styles.leftContainer, isAdmin && codeSnippet && styles.expandedLeftContainer]}>
         {hasResponse && (
           <ScrollView contentContainerStyle={styles.scrollContainer}>
             <ReminderForm
@@ -152,8 +280,26 @@ function HomeScreen() {
             {loadingReminder && <ActivityIndicator size="large" color="#0000ff" />}
           </ScrollView>
         )}
+
+        {/* Render Flowchart Above the Code Snippet */}
+        {/* Render Flowchart */}
+        {isAdmin && flowchartData.nodes.length > 0 && (
+          <View style={styles.flowchartContainer}>
+            <Flowchart nodes={flowchartData.nodes} edges={flowchartData.edges} />
+          </View>
+        )}
+        {/* Code Snippet in the Left Container */}
+        {/* Only show CodeViewer if the user is an admin */}
+        {isAdmin && codeSnippet && (
+          <View style={styles.codeSnippetContainer}>
+            <ScrollView contentContainerStyle={styles.scrollContainer}>
+              <CodeViewer code={codeSnippet.code} language={codeSnippet.language} />
+            </ScrollView>
+          </View>
+        )}
+
       </View>
-      <View style={[styles.rightContainer, hasResponse && styles.expandedRightContainer]}>
+      <View style={[styles.rightContainer, isAdmin && styles.expandedRightContainer]}>
         <ChatBox onChatResponse={handleChatResponse} />
       </View>
     </View>
@@ -173,19 +319,27 @@ const styles = StyleSheet.create({
   },
   expandedLeftContainer: {
     flex: 1, // Expand to 50% when there is a response
-    display: 'flex' // Make it visible when expanded
+    display: 'flex', // Make it visible when expanded
+    justifyContent: "space-between"
   },
   rightContainer: {
     flex: 1, // Full screen when no response
     padding: 16,
     height: '100vh',
   },
+  expandedLeftContainer: {
+    flex: 1, // Expand to 50% when there is a response
+    display: 'flex', // Make it visible when expanded
+    flexDirection: 'column', // Arrange items vertically
+    justifyContent: 'flex-start', // Align items to the bottom
+    alignItems: 'center', // Center items horizontally
+  },
   expandedRightContainer: {
     flex: 1, // 50% when there is a response
     maxHeight: '90vh',
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end',
   },
   scrollContainer: {
     flexGrow: 1,
@@ -203,6 +357,33 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 16,
   },
+  codeSnippetContainer: {
+    width: "100%",
+    maxHeight: "50%",
+    backgroundColor: '#f5f5f5',
+    borderRadius: 8,
+    padding: 10,
+    overflow: 'hidden',
+    border: '1px solid #ddd',
+    marginBottom: 100
+  },
+  centeredContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 16,
+  },
+  flowchartContainer: {
+    width: "100%",
+    backgroundColor: '#f5f5f5',
+    borderRadius: 8,
+    padding: 10,
+    overflow: 'auto', // Ensure scrolling if needed
+    border: '1px solid #ddd',
+    minHeight: 200, // Ensure minimum visibility
+    marginBottom: 16,
+  },
+
 });
 
 export default HomeScreen;

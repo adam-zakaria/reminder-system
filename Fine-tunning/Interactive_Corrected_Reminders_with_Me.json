@@ -1,0 +1,114 @@
+[
+    {
+        "role": "user",
+        "content": {
+            "type": "text",
+            "text": "Can you remind me to call my mom at 7 PM tonight?"
+        }
+    },
+    {
+        "role": "assistant",
+        "content": {
+            "type": "text",
+            "text": "{\n  \"assistant\": \"Sure! I'll remind you to call your mom at 7 PM tonight. Is that a good time for you?\",\n  \"response\": {}\n} \n"
+        }
+    },
+    {
+        "role": "user",
+        "content": {
+            "type": "text",
+            "text": "Actually, can we make it 8 PM instead?"
+        }
+    },
+    {
+        "role": "assistant",
+        "content": {
+            "type": "text",
+            "text": "{\n  \"assistant\": \"No problem! I'll set the reminder for 8 PM instead. Family time is important!\",\n  \"response\": {\n    \"userId\": \"User's ID\",\n    \"message\": \"Remind me to call my mom at 8 PM\",\n    \"display\": \"Call your mom\",\n    \"interval\": \"once\",\n    \"time\": \"2024-03-30T20:00:00.000Z\",\n    \"delay\": null,\n    \"utility_name\": null,\n    \"component_name\": null,\n    \"condition\": null,\n    \"activity\": null,\n    \"triggerTime\": \"2024-03-30T20:00:00.000Z\",\n    \"triggerType\": null,\n    \"lightCategoryId\": 2\n  }\n} \n"
+        }
+    },
+    {
+        "role": "user",
+        "content": {
+            "type": "text",
+            "text": "Remind me to water the plants at 8 AM tomorrow."
+        }
+    },
+    {
+        "role": "assistant",
+        "content": {
+            "type": "text",
+            "text": "{\n  \"assistant\": \"Sure! I can remind you at 8 AM tomorrow. Is that a good time, or would you prefer a different time?\",\n  \"response\": {}\n} \n"
+        }
+    },
+    {
+        "role": "user",
+        "content": {
+            "type": "text",
+            "text": "8 AM is fine, but make it every day, please."
+        }
+    },
+    {
+        "role": "assistant",
+        "content": {
+            "type": "text",
+            "text": "{\n  \"assistant\": \"Got it! I'll remind you to water the plants every day at 8 AM. Your plants will be happy!\",\n  \"response\": {\n    \"userId\": \"User's ID\",\n    \"message\": \"Remind me to water the plants every day at 8 AM\",\n    \"display\": \"Water the plants\",\n    \"interval\": \"everyday\",\n    \"time\": \"2024-03-30T08:00:00.000Z\",\n    \"delay\": null,\n    \"utility_name\": null,\n    \"component_name\": null,\n    \"condition\": null,\n    \"activity\": null,\n    \"triggerTime\": \"2024-03-30T08:00:00.000Z\",\n    \"triggerType\": null,\n    \"lightCategoryId\": 3\n  }\n} \n"
+        }
+    },
+    {
+        "role": "user",
+        "content": {
+            "type": "text",
+            "text": "Can you remind me to take a break at 2 PM every day?"
+        }
+    },
+    {
+        "role": "assistant",
+        "content": {
+            "type": "text",
+            "text": "{\n  \"assistant\": \"Absolutely! I'll remind you to take a break at 2 PM every day. Would you like to change that time, or does 2 PM work for you?\",\n  \"response\": {}\n} \n"
+        }
+    },
+    {
+        "role": "user",
+        "content": {
+            "type": "text",
+            "text": "Actually, let's make it 3 PM instead."
+        }
+    },
+    {
+        "role": "assistant",
+        "content": {
+            "type": "text",
+            "text": "{\n  \"assistant\": \"No problem! I'll remind you to take a break at 3 PM every day. Remember to stretch!\",\n  \"response\": {\n    \"userId\": \"User's ID\",\n    \"message\": \"Remind me to take a break at 3 PM\",\n    \"display\": \"Take a break\",\n    \"interval\": \"everyday\",\n    \"time\": \"2024-03-30T15:00:00.000Z\",\n    \"delay\": null,\n    \"utility_name\": null,\n    \"component_name\": null,\n    \"condition\": null,\n    \"activity\": null,\n    \"triggerTime\": \"2024-03-30T15:00:00.000Z\",\n    \"triggerType\": null,\n    \"lightCategoryId\": 2\n  }\n} \n"
+        }
+    },
+    {
+        "role": "user",
+        "content": {
+            "type": "text",
+            "text": "Remind me to take my vitamins every day at 7:30 AM."
+        }
+    },
+    {
+        "role": "assistant",
+        "content": {
+            "type": "text",
+            "text": "{\n  \"assistant\": \"Got it! I'll remind you to take your vitamins every day at 7:30 AM. Would you like to adjust that time, or does 7:30 AM work for you?\",\n  \"response\": {}\n} \n"
+        }
+    },
+    {
+        "role": "user",
+        "content": {
+            "type": "text",
+            "text": "Actually, make it 7 AM. Thanks!"
+        }
+    },
+    {
+        "role": "assistant",
+        "content": {
+            "type": "text",
+            "text": "{\n  \"assistant\": \"Sure thing! I'll remind you to take your vitamins every day at 7 AM. A healthy start to the day!\",\n  \"response\": {\n    \"userId\": \"User's ID\",\n    \"message\": \"Remind me to take my vitamins at 7 AM\",\n    \"display\": \"Take your vitamins\",\n    \"interval\": \"everyday\",\n    \"time\": \"2024-03-30T07:00:00.000Z\",\n    \"delay\": null,\n    \"utility_name\": null,\n    \"component_name\": null,\n    \"condition\": null,\n    \"activity\": null,\n    \"triggerTime\": \"2024-03-30T07:00:00.000Z\",\n    \"triggerType\": null,\n    \"lightCategoryId\": 1\n  }\n} \n"
+        }
+    }
+]

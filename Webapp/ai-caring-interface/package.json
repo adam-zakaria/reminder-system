@@ -31,6 +31,7 @@
     "date-fns": "^3.6.0",
     "framer-motion": "^11.2.10",
     "jwt-decode": "^4.0.0",
+    "mermaid": "^11.4.0",
     "react": "^18.2.0",
     "react-avatar": "^5.0.3",
     "react-chatbot-kit": "^2.2.2",
@@ -56,8 +57,11 @@
     "react-select": "^5.8.0",
     "react-simple-chatbot": "^0.6.1",
     "react-spring": "^9.7.3",
+    "react-syntax-highlighter": "^15.6.1",
     "react-toastify": "^10.0.5",
+    "reactflow": "^11.11.4",
     "styled-components": "^4.4.1",
+    "stylis": "^4.3.4",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
