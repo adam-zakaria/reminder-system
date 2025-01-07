@@ -1,6 +1,12 @@
 # config.py
 
 import os
+from dotenv import load_dotenv
 
-# Set your OpenAI API Key here (or retrieve it from environment variables for security)
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "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")
+# Load environment variables from .env file
+load_dotenv()
+
+# OpenAI API configuration
+OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
+
+# Other configuration variables can be added here

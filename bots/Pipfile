@@ -1,0 +1,23 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+fastapi = "*"
+pydantic = "*"
+langchain-openai = "*"
+grpcio = "*"
+grpcio-tools = "*"
+schedule = "*"
+openpyxl = "*"
+langchain = "*"
+pytest-cov = "*"
+python-dotenv = "*"
+freezegun = "*"
+
+[dev-packages]
+pytest = "*"
+
+[requires]
+python_version = "3.11"

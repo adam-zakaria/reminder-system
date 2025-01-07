@@ -2311,38 +2311,120 @@ app.get('/healthcheck', (req,res)=>{
   res.status(200)
 })
 
-// Add this endpoint to your Express app
-app.post('/notify', async (req, res) => {
-  const { clientId, message } = req.body;
+// // Add this endpoint to your Express app
+// app.post('/notify', async (req, res) => {
+//   const { clientId, message } = req.body;
+//   console.log(req.body, clientId, message,">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>inside notify")
+//   // Validate input
+//   if (!clientId || !message) {
+//     return res.status(400).json({ error: 'clientId and message are required' });
+//   }
 
-  // Validate input
-  if (!clientId || !message) {
-    return res.status(400).json({ error: 'clientId and message are required' });
+//   // Find the WebSocket connections for the clientId
+//   const clients = connectedClients[clientId];
+
+//   if (!clients || (Array.isArray(clients) && clients.length === 0)) {
+//     return res.status(404).json({ error: `No connected client found for clientId: ${clientId}` });
+//   }
+
+//   // Send the message to all connected clients for this clientId
+//   try {
+//     if (Array.isArray(clients)) {
+//       clients.forEach((ws) => {
+//         if (ws.readyState === WebSocket.OPEN) {
+//           ws.send(JSON.stringify({ type: 'notification', message }));
+//         }
+//       });
+//     } else if (clients.readyState === WebSocket.OPEN) {
+//       clients.send(JSON.stringify({ type: 'notification', message }));
+//     }
+
+//     return res.json({ success: true, message: `Notification sent to clientId: ${clientId}` });
+//   } catch (error) {
+//     console.error('Error sending message:', error);
+//     return res.status(500).json({ error: 'Failed to send message' });
+//   }
+// });
+
+// Add new endpoint for notifications
+app.post('/notify', (req, res) => {
+  const { clientId, action, id, stickyNote } = req.body;
+  
+  if (!clientId) {
+    return res.status(400).json({ error: 'clientId is required' });
   }
 
-  // Find the WebSocket connections for the clientId
-  const clients = connectedClients[clientId];
-
-  if (!clients || (Array.isArray(clients) && clients.length === 0)) {
-    return res.status(404).json({ error: `No connected client found for clientId: ${clientId}` });
-  }
-
-  // Send the message to all connected clients for this clientId
   try {
-    if (Array.isArray(clients)) {
-      clients.forEach((ws) => {
-        if (ws.readyState === WebSocket.OPEN) {
-          ws.send(JSON.stringify({ type: 'notification', message }));
-        }
-      });
-    } else if (clients.readyState === WebSocket.OPEN) {
-      clients.send(JSON.stringify({ type: 'notification', message }));
+    // Check client connection
+    const clientWsList = connectedClients[clientId];
+    if (!clientWsList || clientWsList.length === 0) {
+      return res.status(404).json({ error: `No connected client found for clientId: ${clientId}` });
     }
 
-    return res.json({ success: true, message: `Notification sent to clientId: ${clientId}` });
+    // Send message using existing function
+    sendMessageToClient(clientId, action, stickyNote, id);
+    
+    return res.json({ 
+      success: true, 
+      message: `Notification sent to clientId: ${clientId}`
+    });
+
   } catch (error) {
-    console.error('Error sending message:', error);
-    return res.status(500).json({ error: 'Failed to send message' });
+    console.error('Error in notify:', error);
+    return res.status(500).json({ error: 'Failed to send notification' });
+  }
+});
+
+// Add test device endpoint
+app.post('/test-device', (req, res) => {
+  const { clientId, action = "add", testId = "100" } = req.body;
+
+  if (!clientId) {
+    return res.status(400).json({ error: 'clientId is required' });
+  }
+
+  try {
+    // Test sticky note data
+    const testStickyNote = {
+      title: "Test Device Connection",
+      content: "",
+      notificationSoundID: 1,
+      instructions: [],
+      lightCategoryId: 3
+    };
+
+    // Create message based on action
+    const message = {
+      action: action,
+      id: testId,
+      lightCategoryId: action === "add" ? 3 : 0,
+      msg: action === "add" ? {
+        title: testStickyNote.title,
+        content: testStickyNote.content,
+        notificationSoundID: testStickyNote.notificationSoundID,
+        instructions: testStickyNote.instructions
+      } : null
+    };
+
+    // Check if client is connected
+    const clientWsList = connectedClients[clientId];
+    if (!clientWsList || clientWsList.length === 0) {
+      return res.status(404).json({ error: `No connected client found for clientId: ${clientId}` });
+    }
+
+    // Send test message
+    sendMessageToClient(clientId, action, testStickyNote, testId);
+    
+    return res.json({ 
+      success: true, 
+      message: `Test message sent to ${clientId}`,
+      clientConnected: true,
+      messageDetails: message
+    });
+
+  } catch (error) {
+    console.error('Error in test-device:', error);
+    return res.status(500).json({ error: 'Failed to send test message' });
   }
 });
 
@@ -2378,5 +2460,9 @@ server.on('upgrade', (request, socket, head) => {
     wss.emit('connection', ws, request);
   });
 });
+
+// Example usage:
+// testSendMessageToDevice("home123", "add", "100");
+// testSendMessageToDevice("home123", "remove", "200");
 
 module.exports = { server, app };

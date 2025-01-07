@@ -4,6 +4,9 @@ node_modules/
 # Logs and temp files
 *.log
 *.tmp
+datastore_transfer.log
+logs/
+tmp/
 
 # MacOS system files
 .DS_Store
@@ -44,6 +47,7 @@ DerivedData/
 # Dependency directories and files
 /Server_node/node_modules
 /Webapp/ai-caring-interface/node_modules
+/Middleware/node_modules/
 /package-lock.json
 
 # Server-specific files
@@ -60,3 +64,37 @@ DerivedData/
 
 # Ignore the deployments folder
 Deployments/
+Scripts/
+rso_shift_bot/
+Evaluation-set/
+Fine-tunning/
+bots/.converage
+
+# Python
+__pycache__/
+*/__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+*/.pytest_cache/
+.coverage
+*/.coverage
+
+# Dataset and evaluation files
+Datastore/
+Dataset/
+
+# Deployment and scripts
+deploy*.sh
+
+# Generated files
+conversation_store.xlsx
+compare.json
+
+# Oracle runtime files
+
+# Test and Coverage
+bots/tests/test_data/*.json
+htmlcov/
+.tox/

@@ -1,20 +1,20 @@
 {
-  "21e4c47b-e0a0-43db-89ad-d83bc5a84e88": {
-    "userId": "123",
+  "d5bd426e-9259-419d-9fcc-c1db6eee2f0c": {
+    "userId": "47a568ca-21da-423a-8ca4-5f98e10fc2c6",
     "state_machines": [
       {
-        "stateMachineId": "82e97ae3-2801-417c-8418-b4a5105f2edb",
-        "date": "2024-11-07",
+        "stateMachineId": "48a1ca03-1b3d-4eca-8a1b-92dea1168527",
+        "date": "2024-12-25",
         "conversation_summary": {
           "content": {
-            "task": "Wash dishes",
-            "date": "tomorrow",
+            "task": "Do laundry",
+            "date": null,
             "time": {
               "exact_time": {
-                "start_time": null,
-                "end_time": null
+                "start_time": "18:00",
+                "end_time": "22:00"
               },
-              "time_inferred": "after dinner"
+              "time_inferred": "after Dinner"
             },
             "recurrence": {
               "type": "once",
@@ -26,14 +26,170 @@
             "priority": "medium"
           }
         },
-        "generated_code": "```python\ndef should_trigger_reminder(time=None, activity_data=None, state_data=None, blackboard=None):\n    # Check if the reminder is based on time\n    if time:\n        from datetime import datetime\n        current_time = datetime.fromisoformat(time)\n        # Assuming \"after dinner\" is around 7 PM to 9 PM\n        if current_time.hour >= 19 and current_time.hour < 21:\n            return True\n        else:\n            return False\n\n    # Check if the reminder is based on activity\n    if activity_data:\n        if activity_data.get('activity') == 'Eating' and activity_data.get('activity_status') == 'end':\n            return True\n        else:\n            return False\n\n    # Check if the reminder is based on state data (sensors)\n    if state_data:\n        # Example: Check if the kitchen motion sensor is triggered\n        if state_data.get('kitchen_motion_sensor') == 'motionDetected':\n            return True\n        else:\n            return False\n\n    # If no relevant conditions are met, return False\n    return False\n```\n",
+        "generated_code": "def reminder_74631935_e807_4afe_bb9a_5deca905fe02(time=None, activity_data=None, sensor_data=None, blackboard=None):\n    return activity_data.get('activity') == \"Eating\" and activity_data.get('status') == \"end\"",
+        "analysed_data": {
+          "sensors": {},
+          "activities": [
+            {
+              "activity": "Eating",
+              "status": "end"
+            }
+          ]
+        },
+        "execution_history": [
+          {
+            "timestamp": "2024-12-25T21:09:12.442727",
+            "activity": {
+              "activity": "Eating",
+              "status": "end"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "test_session": {
+    "userId": "test_user",
+    "state_machines": [
+      {
+        "stateMachineId": "5fbe90ea-1cf2-4586-b1ba-36df04f77456",
+        "date": "2025-01-03",
+        "conversation_summary": {
+          "content": {
+            "task": "Remind me when the microwave is on and after I finish preparing meal",
+            "time_inferred": null,
+            "recurrence": {
+              "type": "once",
+              "details": {
+                "days": null,
+                "occurrence_frequency": "once"
+              }
+            },
+            "priority": "medium"
+          }
+        },
+        "generated_code": "def reminder_748758d7_0d84_45de_a5e2_ff0a839e0f3f(time=None, activity_data=None, sensor_data=None, blackboard=None):\n    return activity_data.get('activity') == \"Meal_Preparation\" and activity_data.get('status') == \"end\" and sensor_data.get('microwave_door_entry_sensor', {}).get('status', 'closed') == \"open\"",
         "analysed_data": {
           "sensors": {
-            "kitchen_motion_sensor": true
+            "microwave_door_entry_sensor": true
           },
           "activities": [
             {
-              "activity_type": "Eating",
+              "activity": "Meal_Preparation",
+              "status": "end"
+            }
+          ]
+        }
+      },
+      {
+        "stateMachineId": "39dfbaa5-3134-4e9a-af60-1e2a5d91b4e6",
+        "date": "2025-01-03",
+        "conversation_summary": {
+          "content": {
+            "task": "Remind me when the microwave is on and after I finish preparing meal",
+            "time_inferred": null,
+            "recurrence": {
+              "type": "once",
+              "details": {
+                "days": null,
+                "occurrence_frequency": "once"
+              }
+            },
+            "priority": "medium"
+          }
+        },
+        "generated_code": "def reminder_985a06e3_d357_49d7_8204_dca62a461270(time=None, activity_data=None, sensor_data=None, blackboard=None):\n    return activity_data.get('activity') == \"Meal_Preparation\" and activity_data.get('status') == \"end\" and sensor_data.get('microwave_door_entry_sensor', {}).get('status', 'closed') == 'open'",
+        "analysed_data": {
+          "sensors": {
+            "microwave_door_entry_sensor": true
+          },
+          "activities": [
+            {
+              "activity": "Meal_Preparation",
+              "status": "end"
+            }
+          ]
+        }
+      },
+      {
+        "stateMachineId": "4ff9d9cd-3576-4e79-af57-c84afb45cea6",
+        "date": "2025-01-03",
+        "conversation_summary": {
+          "content": {
+            "task": "Do laundry",
+            "time_inferred": "after Dinner",
+            "recurrence": {
+              "type": "once",
+              "details": {
+                "days": null,
+                "occurrence_frequency": "once"
+              }
+            },
+            "priority": "medium"
+          }
+        },
+        "generated_code": "def reminder_4dbd44de_5051_48b7_8699_62b75bdb3432(time=None, activity_data=None, sensor_data=None, blackboard=None):\n    return activity_data.get('activity') == \"Eating\" and activity_data.get('status') == \"end\"",
+        "analysed_data": {
+          "sensors": {},
+          "activities": [
+            {
+              "activity": "Eating",
+              "status": "end"
+            }
+          ]
+        }
+      },
+      {
+        "stateMachineId": "2281f074-8fdd-45d3-a47e-e7e70463e1db",
+        "date": "2025-01-03",
+        "conversation_summary": {
+          "content": {
+            "task": "Do laundry",
+            "time_inferred": "after Dinner",
+            "recurrence": {
+              "type": "once",
+              "details": {
+                "days": null,
+                "occurrence_frequency": "once"
+              }
+            },
+            "priority": "medium"
+          }
+        },
+        "generated_code": "def reminder_65aa8adc_816b_4167_897a_747655dee477(time=None, activity_data=None, sensor_data=None, blackboard=None):\n    return activity_data.get('activity') == \"Eating\" and activity_data.get('status') == \"end\"",
+        "analysed_data": {
+          "sensors": {},
+          "activities": [
+            {
+              "activity": "Eating",
+              "status": "end"
+            }
+          ]
+        }
+      },
+      {
+        "stateMachineId": "a1f8525d-6727-4b2d-8c64-f59c8d190f3a",
+        "date": "2025-01-03",
+        "conversation_summary": {
+          "content": {
+            "task": "Do laundry",
+            "time_inferred": "after Dinner",
+            "recurrence": {
+              "type": "once",
+              "details": {
+                "days": null,
+                "occurrence_frequency": "once"
+              }
+            },
+            "priority": "medium"
+          }
+        },
+        "generated_code": "def reminder_2814633b_84b7_4168_917f_bbe16c7d4703(time=None, activity_data=None, sensor_data=None, blackboard=None):\n    return activity_data.get('activity') == \"Eating\" and activity_data.get('status') == \"end\"",
+        "analysed_data": {
+          "sensors": {},
+          "activities": [
+            {
+              "activity": "Eating",
               "status": "end"
             }
           ]
@@ -41,23 +197,16 @@
       }
     ]
   },
-  "8e81bb75-335b-44ca-9c23-45afb54d14f7": {
-    "userId": "47a568ca-21da-423a-8ca4-5f98e10fc2c6",
+  "test-session": {
+    "userId": "test-user",
     "state_machines": [
       {
-        "stateMachineId": "3433a889-2626-4637-bbac-d704a116a53a",
-        "date": "2024-11-14",
+        "stateMachineId": "ea2c4ac8-da51-4ba8-8dec-893cbd36758e",
+        "date": "2025-01-03",
         "conversation_summary": {
           "content": {
-            "task": "Close the door",
-            "date": null,
-            "time": {
-              "exact_time": {
-                "start_time": null,
-                "end_time": null
-              },
-              "time_inferred": "when I leave the house"
-            },
+            "task": "Do laundry",
+            "time_inferred": "after Dinner",
             "recurrence": {
               "type": "once",
               "details": {
@@ -68,377 +217,13 @@
             "priority": "medium"
           }
         },
-        "generated_code": "```python\ndef should_trigger_reminder(time=None, activity_data=None, state_data=None, blackboard=None):\n    # Check if the reminder is based on leaving home activity\n    if activity_data and activity_data.get('activity') == 'Leave_Home' and activity_data.get('activity_status') == 'start':\n        # Check if the main door is open\n        if state_data and state_data.get('main_door_entry_sensor') == 'open':\n            return True\n        else:\n            return False\n    else:\n        return False\n```",
-        "analysed_data": {
-          "sensors": {
-            "main_door_entry_sensor": true
-          },
-          "activities": [
-            {
-              "activity_type": "Leave_Home",
-              "status": "start"
-            }
-          ]
-        }
-      }
-    ]
-  },
-  "750c878c-7c72-4a17-82b5-200075532f52": {
-    "userId": "47a568ca-21da-423a-8ca4-5f98e10fc2c6",
-    "state_machines": [
-      {
-        "stateMachineId": "cf9082c8-9c78-4143-a3bb-11baf063e8b6",
-        "date": "2024-11-14",
-        "conversation_summary": {
-          "content": {
-            "task": "Close the door when I leave the house",
-            "date": null,
-            "time": {
-              "exact_time": {
-                "start_time": null,
-                "end_time": null
-              },
-              "time_inferred": null
-            },
-            "recurrence": {
-              "type": "once",
-              "details": {
-                "days": null,
-                "occurrence_frequency": "once"
-              }
-            },
-            "priority": "medium"
-          }
-        },
-        "generated_code": "```python\ndef should_trigger_reminder(time=None, activity_data=None, state_data=None, blackboard=None):\n    # Check if the reminder is based on leaving home and closing the door\n    if activity_data and activity_data.get('activity') == 'Leave_Home' and activity_data.get('activity_status') == 'start':\n        # Check if the main door is closed after leaving\n        if state_data and state_data.get('main_door_entry_sensor') == 'closed':\n            return True\n        else:\n            return False\n    else:\n        return False\n```",
-        "analysed_data": {
-          "sensors": {
-            "main_door_entry_sensor": true
-          },
-          "activities": [
-            {
-              "activity_type": "Leave_Home",
-              "status": "start"
-            }
-          ]
-        }
-      }
-    ]
-  },
-  "0450adc2-8c33-401c-99b4-e740944bd197": {
-    "userId": "123",
-    "state_machines": [
-      {
-        "stateMachineId": "f2803e9f-7dde-4e97-aa08-3bce3d327095",
-        "date": "2024-11-15",
-        "conversation_summary": {
-          "content": {
-            "task": "Put out the trash",
-            "date": "tomorrow",
-            "time": {
-              "exact_time": {
-                "start_time": "8 AM",
-                "end_time": "8 AM"
-              },
-              "time_inferred": "morning"
-            },
-            "recurrence": {
-              "type": "once",
-              "details": {
-                "days": null,
-                "occurrence_frequency": "once"
-              }
-            },
-            "priority": "medium"
-          }
-        },
-        "generated_code": "```python\ndef should_trigger_reminder(time=None, activity_data=None, state_data=None, blackboard=None):\n    # Check if the reminder is time-based and if the current time is in the morning\n    if time:\n        from datetime import datetime\n        current_time = datetime.fromisoformat(time)\n        if 5 <= current_time.hour < 12:  # Morning time range\n            return True\n        else:\n            return False\n\n    # Check if the reminder is activity-based and if the activity is Meal_Preparation\n    if activity_data:\n        if activity_data.get('activity') == 'Meal_Preparation' and activity_data.get('activity_status') == 'start':\n            return True\n        else:\n            return False\n\n    # Check if the reminder is sensor-based and if any relevant kitchen sensor is triggered\n    if state_data:\n        kitchen_sensors = [\n            'microwave_smart_cable', 'kitchen_motion_sensor', 'fridge_entry_sensor',\n            'silverware_drawer_entry_sensor', 'microwave_door_entry_sensor', 'stove_temp_humidity_sensor'\n        ]\n        for sensor in kitchen_sensors:\n            if state_data.get(sensor) == 'On':\n                return True\n        return False\n\n    # If no relevant conditions are met, return False\n    return False\n```\n",
-        "analysed_data": {
-          "sensors": {
-            "microwave_smart_cable": true,
-            "kitchen_motion_sensor": true,
-            "fridge_entry_sensor": true,
-            "silverware_drawer_entry_sensor": true,
-            "microwave_door_entry_sensor": true,
-            "stove_temp_humidity_sensor": true
-          },
-          "activities": [
-            {
-              "activity_type": "Meal_Preparation",
-              "status": "start"
-            }
-          ]
-        }
-      }
-    ]
-  },
-  "5b70aafd-ccad-4dd9-8ec1-93752471eb2d": {
-    "userId": "47a568ca-21da-423a-8ca4-5f98e10fc2c6",
-    "state_machines": [
-      {
-        "stateMachineId": "ce9d6f07-c6d5-4bba-ab26-08a412c2bb61",
-        "date": "2024-11-24",
-        "conversation_summary": {
-          "content": {
-            "task": "Sing",
-            "date": "tomorrow",
-            "time": {
-              "exact_time": {
-                "start_time": null,
-                "end_time": null
-              },
-              "time_inferred": "after dinner"
-            },
-            "recurrence": {
-              "type": "once",
-              "details": {
-                "days": null,
-                "occurrence_frequency": "once"
-              }
-            },
-            "priority": "medium"
-          }
-        },
-        "generated_code": "```python\ndef should_trigger_reminder(time=None, activity_data=None, state_data=None, blackboard=None):\n    # Check if the reminder is time-based\n    if time:\n        from datetime import datetime\n        current_time = datetime.fromisoformat(time)\n        # Assuming \"morning\" is between 6 AM and 12 PM\n        if 6 <= current_time.hour < 12:\n            return True\n        else:\n            return False\n\n    # Check if the reminder is activity-based\n    if activity_data:\n        if activity_data.get('activity') == 'Meal_Preparation' and activity_data.get('activity_status') == 'start':\n            return True\n        else:\n            return False\n\n    # Check if the reminder is sensor-based\n    if state_data:\n        # Check if any relevant kitchen sensor is triggered\n        kitchen_sensors = [\n            'microwave_smart_cable', 'kitchen_motion_sensor', 'fridge_entry_sensor',\n            'silverware_drawer_entry_sensor', 'microwave_door_entry_sensor', 'stove_temp_humidity_sensor'\n        ]\n        for sensor in kitchen_sensors:\n            if state_data.get(sensor) == 'On':\n                return True\n        return False\n\n    # If no relevant conditions are met, return False\n    return False\n```",
-        "analysed_data": {
-          "sensors": {
-            "microwave_smart_cable": true,
-            "kitchen_motion_sensor": true,
-            "fridge_entry_sensor": true,
-            "silverware_drawer_entry_sensor": true,
-            "microwave_door_entry_sensor": true,
-            "stove_temp_humidity_sensor": true
-          },
-          "activities": [
-            {
-              "activity_type": "Meal_Preparation",
-              "status": "start"
-            }
-          ]
-        }
-      }
-    ]
-  },
-  "20e388e3-4818-486c-b0be-57e79ef110e3": {
-    "userId": "47a568ca-21da-423a-8ca4-5f98e10fc2c6",
-    "state_machines": [
-      {
-        "stateMachineId": "cc33b86e-34c6-4237-bf78-de6344b20004",
-        "date": "2024-11-24",
-        "conversation_summary": {
-          "content": {
-            "task": "Sing",
-            "date": "tomorrow",
-            "time": {
-              "exact_time": {
-                "start_time": null,
-                "end_time": null
-              },
-              "time_inferred": "after dinner"
-            },
-            "recurrence": {
-              "type": "once",
-              "details": {
-                "days": null,
-                "occurrence_frequency": "once"
-              }
-            },
-            "priority": "medium"
-          }
-        },
-        "generated_code": "```python\ndef should_trigger_reminder(time=None, activity_data=None, state_data=None, blackboard=None):\n    # Check if the reminder is based on time\n    if time:\n        from datetime import datetime\n        current_time = datetime.fromisoformat(time)\n        # Assuming \"morning\" is between 6 AM and 12 PM\n        if 6 <= current_time.hour < 12:\n            return True\n        else:\n            return False\n\n    # Check if the reminder is based on activity\n    if activity_data:\n        activity = activity_data.get('activity')\n        activity_status = activity_data.get('activity_status')\n        if activity == 'Meal_Preparation' and activity_status == 'start':\n            return True\n        else:\n            return False\n\n    # Check if the reminder is based on state data (sensors)\n    if state_data:\n        # Check for motion in the kitchen\n        if state_data.get('kitchen_motion_sensor') == 'On':\n            return True\n        # Check for entry in the kitchen\n        if state_data.get('fridge_entry_sensor') == 'On' or state_data.get('microwave_door_entry_sensor') == 'On':\n            return True\n        # Check for smart cable usage in the kitchen\n        if state_data.get('microwave_smart_cable') == 'On':\n            return True\n        return False\n\n    # If no relevant conditions are met, return False\n    return False\n```",
-        "analysed_data": {
-          "sensors": {
-            "kitchen_motion_sensor": true,
-            "fridge_entry_sensor": true,
-            "microwave_door_entry_sensor": true,
-            "microwave_smart_cable": true
-          },
-          "activities": [
-            {
-              "activity_type": "Meal_Preparation",
-              "status": "start"
-            }
-          ]
-        }
-      }
-    ]
-  },
-  "74010f8b-83fc-429f-9135-572043359a93": {
-    "userId": "47a568ca-21da-423a-8ca4-5f98e10fc2c6",
-    "state_machines": [
-      {
-        "stateMachineId": "d1df1a33-bf51-41a0-912a-6510815fcf4e",
-        "date": "2024-11-24",
-        "conversation_summary": {
-          "content": {
-            "task": "Sing",
-            "date": "tomorrow",
-            "time": {
-              "exact_time": {
-                "start_time": null,
-                "end_time": null
-              },
-              "time_inferred": "after dinner"
-            },
-            "recurrence": {
-              "type": "once",
-              "details": {
-                "days": null,
-                "occurrence_frequency": "once"
-              }
-            },
-            "priority": "medium"
-          }
-        },
-        "generated_code": "```python\ndef should_trigger_reminder(time=None, activity_data=None, state_data=None, blackboard=None):\n    # Check if the reminder is time-based\n    if time:\n        # Parse the time to check if it is in the morning\n        from datetime import datetime\n        current_time = datetime.fromisoformat(time)\n        if 6 <= current_time.hour < 12:\n            return True\n        else:\n            return False\n\n    # Check if the reminder is activity-based\n    if activity_data:\n        if activity_data.get('activity') == 'Meal_Preparation' and activity_data.get('activity_status') == 'start':\n            return True\n        else:\n            return False\n\n    # Check if the reminder is sensor-based\n    if state_data:\n        # Check if any relevant kitchen sensor is triggered\n        kitchen_sensors = [\n            'microwave_smart_cable', 'kitchen_motion_sensor', 'fridge_entry_sensor',\n            'silverware_drawer_entry_sensor', 'microwave_door_entry_sensor', 'stove_temp_humidity_sensor'\n        ]\n        for sensor in kitchen_sensors:\n            if state_data.get(sensor) == 'On':\n                return True\n        return False\n\n    # If no relevant conditions are met, return False\n    return False\n```\n",
-        "analysed_data": {
-          "sensors": {
-            "microwave_smart_cable": true,
-            "kitchen_motion_sensor": true,
-            "fridge_entry_sensor": true,
-            "silverware_drawer_entry_sensor": true,
-            "microwave_door_entry_sensor": true,
-            "stove_temp_humidity_sensor": true
-          },
-          "activities": [
-            {
-              "activity_type": "Meal_Preparation",
-              "status": "start"
-            }
-          ]
-        }
-      }
-    ]
-  },
-  "5ee368a4-fe34-499b-92fc-0d835142922a": {
-    "userId": "47a568ca-21da-423a-8ca4-5f98e10fc2c6",
-    "state_machines": [
-      {
-        "stateMachineId": "97d27eda-3f07-4cdf-b405-9048664b451e",
-        "date": "2024-11-24",
-        "conversation_summary": {
-          "content": {
-            "task": "Sing",
-            "date": "tomorrow",
-            "time": {
-              "exact_time": {
-                "start_time": null,
-                "end_time": null
-              },
-              "time_inferred": "after dinner"
-            },
-            "recurrence": {
-              "type": "once",
-              "details": {
-                "days": null,
-                "occurrence_frequency": "once"
-              }
-            },
-            "priority": "medium"
-          }
-        },
-        "generated_code": "```python\ndef should_trigger_reminder(time=None, activity_data=None, state_data=None, blackboard=None):\n    # Check if the reminder is time-based and the current time is in the morning\n    if time:\n        from datetime import datetime\n        current_time = datetime.fromisoformat(time)\n        if 5 <= current_time.hour < 12:  # Morning time range\n            return True\n        else:\n            return False\n\n    # Check if the reminder is activity-based and the activity is 'Meal_Preparation' with 'start' status\n    if activity_data:\n        if activity_data.get('activity') == 'Meal_Preparation' and activity_data.get('activity_status') == 'start':\n            return True\n        else:\n            return False\n\n    # Check if the reminder is sensor-based and any relevant kitchen sensor is triggered\n    if state_data:\n        kitchen_sensors = [\n            'microwave_smart_cable', 'kitchen_motion_sensor', 'fridge_entry_sensor',\n            'silverware_drawer_entry_sensor', 'microwave_door_entry_sensor', 'stove_temp_humidity_sensor'\n        ]\n        for sensor in kitchen_sensors:\n            if state_data.get(sensor) == 'On':\n                return True\n        return False\n\n    # If no relevant conditions are met, return False\n    return False\n```\n",
-        "analysed_data": {
-          "sensors": {
-            "microwave_smart_cable": true,
-            "kitchen_motion_sensor": true,
-            "fridge_entry_sensor": true,
-            "silverware_drawer_entry_sensor": true,
-            "microwave_door_entry_sensor": true,
-            "stove_temp_humidity_sensor": true
-          },
-          "activities": [
-            {
-              "activity_type": "Meal_Preparation",
-              "status": "start"
-            }
-          ]
-        }
-      }
-    ]
-  },
-  "037e184f-7114-49e3-b94e-bd2cb117ca72": {
-    "userId": "47a568ca-21da-423a-8ca4-5f98e10fc2c6",
-    "state_machines": [
-      {
-        "stateMachineId": "64be5faa-413e-4045-8903-2b9a4c66b5d1",
-        "date": "2024-11-26",
-        "conversation_summary": {
-          "content": {
-            "task": "Go for a walk after having dinner",
-            "date": "tomorrow",
-            "time": {
-              "exact_time": {
-                "start_time": null,
-                "end_time": null
-              },
-              "time_inferred": "evening"
-            },
-            "recurrence": {
-              "type": "once",
-              "details": {
-                "days": null,
-                "occurrence_frequency": "once"
-              }
-            },
-            "priority": "medium"
-          }
-        },
-        "generated_code": "```python\ndef should_trigger_reminder(time=None, activity_data=None, state_data=None, blackboard=None):\n    # Check if the reminder is based on time\n    if time:\n        from datetime import datetime\n        current_time = datetime.fromisoformat(time)\n        # Assuming \"evening\" is between 18:00 and 21:00\n        if not (18 <= current_time.hour < 21):\n            return False\n\n    # Check if the reminder is based on activity\n    if activity_data:\n        activity = activity_data.get('activity')\n        activity_status = activity_data.get('activity_status')\n        if not (activity == 'Eating' and activity_status == 'start'):\n            return False\n\n    # Check if the reminder is based on state data (sensors)\n    if state_data:\n        # For this reminder, we are not using any specific sensor data\n        pass\n\n    # If all relevant conditions are met, trigger the reminder\n    return True\n```",
+        "generated_code": "def reminder_4959bf7d_72c3_4bd1_a667_44d82c4592b4(time=None, activity_data=None, sensor_data=None, blackboard=None):\n    return activity_data.get('activity') == \"Eating\" and activity_data.get('status') == \"end\"",
         "analysed_data": {
           "sensors": {},
           "activities": [
             {
-              "activity_type": "Eating",
-              "status": "start"
-            }
-          ]
-        }
-      }
-    ]
-  },
-  "a23535ff-747b-4187-83fa-22526006653b": {
-    "userId": "47a568ca-21da-423a-8ca4-5f98e10fc2c6",
-    "state_machines": [
-      {
-        "stateMachineId": "07e37ddc-bc17-48c9-9779-2c4a39bacaf9",
-        "date": "2024-11-26",
-        "conversation_summary": {
-          "content": {
-            "task": "Sing",
-            "date": "tomorrow",
-            "time": {
-              "exact_time": {
-                "start_time": null,
-                "end_time": null
-              },
-              "time_inferred": "after dinner"
-            },
-            "recurrence": {
-              "type": "daily",
-              "details": {
-                "days": null,
-                "occurrence_frequency": "once"
-              }
-            },
-            "priority": "medium"
-          }
-        },
-        "generated_code": "```python\ndef should_trigger_reminder(time=None, activity_data=None, state_data=None, blackboard=None):\n    # Check if the reminder is time-based and the time is inferred as \"morning\"\n    if time:\n        from datetime import datetime\n        current_time = datetime.fromisoformat(time)\n        if 6 <= current_time.hour < 12:  # Morning time range\n            return True\n        else:\n            return False\n\n    # Check if the reminder is activity-based and the activity is \"Meal_Preparation\" with status \"start\"\n    if activity_data:\n        if activity_data.get('activity') == 'Meal_Preparation' and activity_data.get('activity_status') == 'start':\n            return True\n        else:\n            return False\n\n    # Check if the reminder is sensor-based and any relevant kitchen sensor is triggered\n    if state_data:\n        kitchen_sensors = [\n            'microwave_smart_cable', 'kitchen_motion_sensor', 'fridge_entry_sensor',\n            'silverware_drawer_entry_sensor', 'microwave_door_entry_sensor', 'stove_temp_humidity_sensor'\n        ]\n        for sensor in kitchen_sensors:\n            if state_data.get(sensor) == 'On':\n                return True\n        return False\n\n    # If no relevant conditions are met, return False\n    return False\n```",
-        "analysed_data": {
-          "sensors": {
-            "microwave_smart_cable": true,
-            "kitchen_motion_sensor": true,
-            "fridge_entry_sensor": true,
-            "silverware_drawer_entry_sensor": true,
-            "microwave_door_entry_sensor": true,
-            "stove_temp_humidity_sensor": true
-          },
-          "activities": [
-            {
-              "activity_type": "Meal_Preparation",
-              "status": "start"
+              "activity": "Eating",
+              "status": "end"
             }
           ]
         }

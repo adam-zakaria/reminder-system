@@ -1,0 +1,11 @@
+{
+    "activities": {
+        "Relax": "living_room",
+        "Meal_Preparation": "kitchen",
+        "Leave_Home": "entrance",
+        "Sleeping": "bedroom",
+        "Eating": "dining_room",
+        "Bed_To_Toilet": "bathroom",
+        "Enter_Home": "entrance"
+    }
+}

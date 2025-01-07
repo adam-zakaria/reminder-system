@@ -1,0 +1,52 @@
+{
+    "general_periods": {
+        "morning": {
+            "start_time": "06:00",
+            "end_time": "12:00"
+        },
+        "afternoon": {
+            "start_time": "12:00",
+            "end_time": "18:00"
+        },
+        "evening": {
+            "start_time": "18:00",
+            "end_time": "21:00"
+        },
+        "night": {
+            "start_time": "21:00",
+            "end_time": "24:00"
+        }
+    },
+    "meal_times": {
+        "after_dinner": {
+            "start_time": "19:00",
+            "end_time": "21:00"
+        },
+        "before_bedtime": {
+            "start_time": "20:00",
+            "end_time": "22:00"
+        },
+        "after_lunch": {
+            "start_time": "13:00",
+            "end_time": "14:00"
+        },
+        "after_breakfast": {
+            "start_time": "09:00",
+            "end_time": "10:00"
+        },
+        "before_dinner": {
+            "start_time": "17:00",
+            "end_time": "19:00"
+        }
+    },
+    "natural_periods": {
+        "sunrise": {
+            "start_time": "06:00",
+            "end_time": "07:00"
+        },
+        "sunset": {
+            "start_time": "18:00",
+            "end_time": "19:00"
+        }
+    }
+}

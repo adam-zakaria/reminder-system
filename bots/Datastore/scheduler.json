@@ -1,0 +1,16 @@
+{
+  "a2064b78-a821-46d2-a956-427c63fbcc69": {
+    "function_name": "persist_test",
+    "date": "today",
+    "start_time": "12:00",
+    "end_time": "13:00",
+    "recurrence": "once",
+    "occurrence": "once",
+    "args": null,
+    "days": null,
+    "status": "scheduled",
+    "last_run": null,
+    "next_run": "2025-01-03T12:00:00",
+    "schedule_job": null
+  }
+}

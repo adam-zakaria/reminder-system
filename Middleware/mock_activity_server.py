@@ -12,7 +12,7 @@ logging.basicConfig(filename='activity.log', level=logging.INFO, format='%(ascti
 SERVER_URL = "http://localhost:4005/activity/"
 
 # Load activity data from the JSON file
-with open('activity_demo_sequence.json') as f:
+with open('test_data.json') as f:
     activities = json.load(f)
     logging.info('Loaded activities from activity.json')
 

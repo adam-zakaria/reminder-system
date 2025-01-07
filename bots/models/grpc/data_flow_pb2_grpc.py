@@ -3,7 +3,7 @@
 import grpc
 import warnings
 
-import data_flow_pb2 as data__flow__pb2
+import models.grpc.data_flow_pb2 as data__flow__pb2
 
 GRPC_GENERATED_VERSION = '1.67.1'
 GRPC_VERSION = grpc.__version__

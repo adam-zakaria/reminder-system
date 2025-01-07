@@ -1,79 +1,110 @@
-from langchain_openai import ChatOpenAI
-from sujendraPromptTemplate import SujendraPromptTemplate
-from langchain.chains import LLMChain
-import config  # Ensure config.py contains OPENAI_API_KEY
+import ast
 import json
+from typing import Dict, Any, Set
+import os
 
-# Define prompt template for Code Analysis LLM
-code_analysis_prompt_template = """
-You are tasked with analyzing a Python function to identify specific sensors and activities used within a state machine setup. I need you to output only the following elements, in JSON format, so I can filter state machines based on their sensor and activity usage.
+# Define the activities
+ACTIVITIES = [
+    'Relax', 'Meal_Preparation', 'Leave_Home', 'Sleeping', 'Eating', 'Bed_To_Toilet', 'Enter_Home'
+]
 
-1. **Sensors**: List each sensor name directly referenced in the function.
-2. **Activities**: Identify any activity types and statuses referenced in the function.
+def load_sensor_mappings(file_path: str) -> Dict[str, str]:
+    """
+    Load sensor mappings from a JSON file.
+    """
+    with open(file_path, 'r') as file:
+        sensor_mappings = json.load(file)
+    return sensor_mappings
 
-Please avoid any additional explanations, interpretations, or assumptions. Only output the sensor names and activity types exactly as they appear in the code.
+# Update the path to be relative to the script location
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+SENSOR_MAPPING_FILE = os.path.join(BASE_DIR, 'Datastore', 'sensor_mapping.json')
 
-Format your response precisely in the following JSON structure:
+# Load sensor mappings
+sensor_mappings = load_sensor_mappings(SENSOR_MAPPING_FILE)
 
-{
-    "sensors": [
-        "microwave_smart_cable", "kitchen_motion_sensor", "fridge_entry_sensor", "microwave_door_entry_sensor"
-    ],
-    "activities": [
-        {
-            "activity_type": "Meal_Preparation",
-            "status": "start"
-        }
-    ]
-}
+class CodeAnalyser(ast.NodeVisitor):
+    VALID_STATUSES = {"begin", "end"}
+    
+    def __init__(self, sensor_mappings: Dict[str, str], activities: Set[str]):
+        self.sensor_mappings = sensor_mappings
+        self.activities = activities
+        self.sensors_used = set()
+        self.activities_used = []
+    
+    def visit_Compare(self, node):
+        """Visit comparison nodes to find activity and status references"""
+        activity = None
+        status = None
 
-**Function Code to Analyze:**
+        # Check left side of comparison
+        if isinstance(node.left, ast.Call):
+            if isinstance(node.left.func, ast.Attribute) and node.left.func.attr == 'get':
+                if len(node.left.args) > 0 and isinstance(node.left.args[0], ast.Str):
+                    key_name = node.left.args[0].s
+                    if key_name == 'activity':
+                        # Get the activity value
+                        comparator = node.comparators[0]
+                        if isinstance(comparator, ast.Str) and comparator.s in self.activities:
+                            activity = comparator.s
+                            print(f"Detected activity: {activity}")
+                    elif key_name == 'status':
+                        comparator = node.comparators[0]
+                        if isinstance(comparator, ast.Str) and comparator.s in self.VALID_STATUSES:
+                            status = comparator.s
+                            print(f"Detected status: {status}")
 
-```python
-{function_code}
-```
-"""
+        # Add or update activities_used
+        if activity:
+            self.activities_used.append({
+                "activity": activity,
+                "status": None
+            })
+        if status and self.activities_used:
+            self.activities_used[-1]["status"] = status
 
-# Define Code Analyser LLM function
-def get_code_analyser_chain():
-    code_analyser_prompt = SujendraPromptTemplate.from_json_template(
-        input_variables=["function_code"],
-        template=code_analysis_prompt_template
-    )
-    code_analyser_llm = ChatOpenAI(
-        api_key=config.OPENAI_API_KEY,
-        model="gpt-4o",  # Adjust the model name as needed
-        temperature=0  # Set the temperature to 0 for deterministic outputs
-    )
-    return LLMChain(llm=code_analyser_llm, prompt=code_analyser_prompt)
+        self.generic_visit(node)
+    
+    def visit_Str(self, node):
+        # Check for direct usage of sensor variable names
+        if node.s in self.sensor_mappings.values():
+            self.sensors_used.add(node.s)
+            print(f"Detected sensor: {node.s}")
+        self.generic_visit(node)
+    
+    def visit_Name(self, node):
+        # Check for sensor variable usages
+        if node.id in self.sensor_mappings.values():
+            self.sensors_used.add(node.id)
+            print(f"Detected sensor: {node.id}")
+        self.generic_visit(node)
 
-def analyse_code(function_code):
+def analyse_code(code: str) -> Dict[str, Any]:
+    """Analyze code for activities and sensors"""
     try:
-        print(function_code, "function")
-        chain = get_code_analyser_chain()
+        print(f"Analyzing code:\n{code}")
+        tree = ast.parse(code)
+        analyzer = CodeAnalyser(sensor_mappings, set(ACTIVITIES))
+        analyzer.visit(tree)
         
-        print("inside analyse code")
-        # Invoke the chain with the function code to analyze
-        analysed_output = chain.invoke({"function_code": function_code})
+        result = {
+            "sensors": list(analyzer.sensors_used),
+            "activities": [
+                activity for activity in analyzer.activities_used 
+                if activity["activity"] in ACTIVITIES
+            ]
+        }
+        print(f"Analysis result: {result}")
+        return result
         
-        # Check if the response is empty or lacks "text"
-        if not analysed_output or "text" not in analysed_output or not analysed_output["text"].strip():
-            print("Error: Empty or invalid response from code analysis.")
-            return {"error": "Empty or invalid response from code analysis"}
-        
-        # Clean up backticks or markdown formatting in the response
-        clean_text = analysed_output["text"].strip().replace("```json", "").replace("```", "")
-        
-        print("Cleaned output:", clean_text)
-        
-        # Parse and return the output as a dictionary
-        parsed_output = json.loads(clean_text)
-        return parsed_output
+    except SyntaxError as e:
+        print(f"Syntax error while parsing: {e}")
+        return {"sensors": [], "activities": []}
 
-    except json.JSONDecodeError as json_error:
-        print(f"JSON parsing error: {json_error}")
-        print("Raw output that caused error:", analysed_output.get("text", "No 'text' key found"))
-        return {"error": "Invalid JSON format in code analysis output"}
-    except Exception as e:
-        print(f"General error analyzing code: {str(e)}")
-        return {"error": str(e)}
+# # Test the analyzer
+# if __name__ == '__main__':
+#     test_code = '''
+# def reminder(time=None, activity_data=None, sensor_data=None, blackboard=None):
+#     return activity_data.get('activity') == "Eating" and activity_data.get('activity_status') == "end"
+# '''
+#     analyse_code(test_code)
