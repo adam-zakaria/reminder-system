@@ -1,27 +1,26 @@
 # Meal Prep Reminder System
 
-## Overview
-A context-aware kitchen assistant that integrates sensor data and activity recognition with LLMs to provide intelligent reminders.
-
 ## System Architecture
 
 ### Core Components
 
 1. **Bot Service (LLM Backend)**
-   - Natural language understanding
-   - Code generation *engine*
-   - Reminder scheduling system
+   - [`ChatAssistant`](bots/chat_assistant.py) for natural language processing
+   - [`CodeGenerator`](bots/code_generation.py) for reminder logic
+   - [`SchedulerService`](bots/util/scheduler.py) for task management
+   - [`StateMachineExecutor`](bots/state_machine_executor.py) for runtime validation
 
-2. **Event Processing**
-   - Activity recognition handler
-   - Sensor data processor
-   - State machine executor
+2. **Data Processing Pipeline**
+   - MQTT subscription for sensor/activity data
+   - [`grpc_client.py`](Middleware/grpc_client.py) for data streaming
+   - [`grpc_server.py`](bots/grpc_server.py) for data reception
+   - JSON-based state persistence in [`Datastore/`](Datastore/)
 
-3. **Web Interface**
-   - User authentication
-   - Chat interface
-   - Reminder management
-   - Device connectivity (e.g., iPad)
+3. **Web Application Stack**
+   - Node.js backend with Express ([`server_node/`](Server_node/))
+   - React-based admin interface ([`Webapp/ai-caring-interface/`](Webapp/ai-caring-interface/))
+   - WebSocket integration for real-time updates
+   - User authentication and reminder management
 
 ### Data Flow
 ```mermaid
