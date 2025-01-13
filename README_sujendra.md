@@ -26,11 +26,47 @@ A context-aware kitchen assistant that integrates sensor data and activity recog
 ### Data Flow
 ```mermaid
 graph TD
-    A[Sensors & Activities] --> B[Event Processor]
-    B --> C[State Machine]
-    C --> D[Reminder System]
-    D --> E[User Interface]
+    A[Sensors & Activities Data Sources] --> B[MQTT Subscription]
+    B[MQTT Subscription] --> |Raw Data| C[Middleware Processing]
+    C --> |Structured Data| D[GRPC Client]
+    D --> |Streaming| E[GRPC Server]
+    E --> |Filtered Data| F[State Machine Executor]
+    F --> |Active Window Check| G[Scheduler]
+    G --> |Execution Result| H[Notification System]
+    H --> |Alert| I[iPad Interface]
+
+    subgraph "Data Processing"
+    B --> C --> D
+    end
+
+    subgraph "Bot Service"
+    E --> F --> G
+    end
+
+    subgraph "User Interface"
+    H --> I
+    end
 ```
+
+## Detailed Data Flow
+
+### 1. Data Collection (MQTT)
+- Subscribes to MQTT topics for:
+  - Sensor data (e.g., microwave, stove)
+  - Activity data (e.g., cooking, eating)
+
+### 2. Data Processing
+- Middleware formats received data
+- GRPC client streams to bot service
+
+### 3. Bot Service Processing
+- State machine executor filters data
+- Scheduler checks time windows
+- Executes matching state machines
+
+### 4. Notification Delivery
+- Successful matches trigger alerts
+- Notifications sent to iPad interface
 
 #### Reminder Creation and Processing Flow
 1. **User Interaction**
@@ -197,3 +233,12 @@ NODE_PORT=7628
 ## Missing Components 
 - A centralized database for reminders, providing a unified storage solution accessible to both the Node.js backend and the state machine. This would enable reminders to be logged and viewed seamlessly within the web interface for reminder history.
 - An enhanced prompt or dedicated LLM layer that evaluates the feasibility of reminders by checking sensor availability and activity requirements, offering users immediate feedback when certain reminders are not currently supported.
+
+## Testing (`/bots`)
+
+### Working Tests
+- `test_pipeline.py`
+- `test_scheduler.py`
+
+### Work in Progress
+- Other tests are currently being developed.
