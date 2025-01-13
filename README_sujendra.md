@@ -26,25 +26,31 @@ A context-aware kitchen assistant that integrates sensor data and activity recog
 ### Data Flow
 ```mermaid
 graph TD
-    A[Sensors & Activities Data Sources] --> B[MQTT Subscription]
-    B[MQTT Subscription] --> |Raw Data| C[Middleware Processing]
-    C --> |Structured Data| D[GRPC Client]
-    D --> |Streaming| E[GRPC Server]
-    E --> |Filtered Data| F[State Machine Executor]
-    F --> |Active Window Check| G[Scheduler]
-    G --> |Execution Result| H[Notification System]
-    H --> |Alert| I[iPad Interface]
-
-    subgraph "Data Processing"
-    B --> C --> D
+    A[Sensors & Activities] --> |MQTT| B[MQTT Subscription]
+    B --> |Raw JSON| C[Middleware]
+    C --> |Protocol Buffers| D[GRPC Client]
+    D --> |Stream| E[GRPC Server]
+    E --> |Parsed Data| F[StateMachineExecutor]
+    
+    subgraph "Data Processing Layer"
+        B --> C --> D
+        C1[Sensor Data] --> C
+        C2[Activity Data] --> C
     end
 
-    subgraph "Bot Service"
-    E --> F --> G
+    subgraph "Bot Service Layer" 
+        E --> F
+        F --> |Check Conditions| G[Pattern Matching]
+        G --> |Match Found| H[Execute State Machine]
+        H --> |True| I[SchedulerService]
+        F --> |Load/Save| J[(JSON Storage)]
+        J --> |State Machines| F
+        J --> |Blackboard| F
     end
 
-    subgraph "User Interface"
-    H --> I
+    subgraph "Notification Layer"
+        I --> |HTTP POST| K[Node.js Server]
+        K --> |WebSocket| L[iPad Interface]
     end
 ```
 
@@ -60,9 +66,44 @@ graph TD
 - GRPC client streams to bot service
 
 ### 3. Bot Service Processing
-- State machine executor filters data
-- Scheduler checks time windows
-- Executes matching state machines
+
+#### State Machine Executor
+- Filters incoming data through pattern matching
+- Maintains blackboard for partial matches
+- Checks required sensors and activities
+- Manages state machine lifecycle
+
+#### Scheduler Service
+- Validates time windows for reminders
+- Handles reminder activation/deactivation
+- Manages recurring reminders
+- Processes date-time configurations
+
+#### Execution Flow
+1. **State Machine Loading**
+   - Loads state machines from JSON storage
+   - Initializes blackboard data
+   - Prepares execution environment
+
+2. **Data Processing**
+   - Receives sensor/activity data from GRPC
+   - Filters relevant state machines
+   - Updates blackboard with current state
+
+3. **Pattern Matching**
+   - Checks activity patterns
+   - Validates sensor requirements 
+   - Evaluates state machine conditions
+
+4. **Time Window Check**
+   - Verifies scheduled time windows
+   - Checks for active reminders
+   - Validates execution timing
+
+5. **State Machine Execution**
+   - Executes matched state machines
+   - Updates execution history
+   - Sends notifications if conditions met
 
 ### 4. Notification Delivery
 - Successful matches trigger alerts
