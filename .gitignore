@@ -82,19 +82,14 @@ __pycache__/
 */.coverage
 
 # Dataset and evaluation files
-Datastore/
-Dataset/
+Fine-tunning
 
 # Deployment and scripts
 deploy*.sh
 
-# Generated files
-conversation_store.xlsx
-compare.json
-
-# Oracle runtime files
-
 # Test and Coverage
-bots/tests/test_data/*.json
 htmlcov/
 .tox/
+
+# Zip files
+*.zip
