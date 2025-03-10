@@ -1,7 +1,10 @@
 # summarization.py
 
-from langchain_openai import ChatOpenAI
+#from langchain_openai import ChatOpenAI
+from langchain.chat_models import ChatOpenAI
+
 from langchain.chains import LLMChain
+
 from sujendraPromptTemplate import SujendraPromptTemplate
 from datetime import datetime
 import logging
