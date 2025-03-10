@@ -194,6 +194,120 @@
             }
           ]
         }
+      },
+      {
+        "stateMachineId": "f9e311a6-4b69-4236-b728-5f4fc31036a5",
+        "date": "2025-03-10",
+        "conversation_summary": {
+          "content": {
+            "task": "Take medicine after breakfast",
+            "time": {
+              "time_inferred": "after breakfast"
+            },
+            "recurrence": {
+              "type": "once",
+              "details": {
+                "occurrence_frequency": "once"
+              }
+            }
+          }
+        },
+        "generated_code": "def reminder_4a373055_e342_4a8e_b44d_593cdf4368ce(time=None, activity_data=None, sensor_data=None, blackboard=None):\n    return time and blackboard and activity_data.get('activity') == \"Eating\" and activity_data.get('status') == \"end\" and (blackboard.setdefault('breakfast_end_time', time) or True) and (datetime.now() - datetime.fromisoformat(blackboard['breakfast_end_time']) >= timedelta(minutes=10))",
+        "analysed_data": {
+          "sensors": {
+            "medicine_cabinet": true
+          },
+          "activities": [
+            {
+              "activity": "Eating",
+              "status": "end"
+            }
+          ]
+        }
+      },
+      {
+        "stateMachineId": "af52bd5f-7063-4d03-b521-8b386001fbea",
+        "date": "2024-01-01",
+        "conversation_summary": {
+          "content": {
+            "task": "Take medicine after breakfast",
+            "time": {
+              "exact_time": {
+                "start_time": "09:00",
+                "end_time": "10:00"
+              },
+              "time_inferred": "after breakfast"
+            },
+            "recurrence": {
+              "type": "once",
+              "details": {
+                "occurrence_frequency": "once"
+              }
+            }
+          }
+        },
+        "generated_code": "def reminder_079288f2_d47d_431d_98fd_fcc1a53d839b(time=None, activity_data=None, sensor_data=None, blackboard=None):\n    return time and blackboard.get('medicine_time') and datetime.fromisoformat(time) >= datetime.fromisoformat(blackboard['medicine_time'])",
+        "analysed_data": {
+          "sensors": {
+            "medicine_cabinet": true
+          },
+          "activities": [
+            {
+              "activity": "Eating",
+              "status": "end"
+            }
+          ]
+        }
+      },
+      {
+        "stateMachineId": "02ad49b6-1e40-4245-9098-13d2bfe68f12",
+        "date": "2024-01-01",
+        "conversation_summary": {
+          "content": {
+            "task": "Take medicine after breakfast",
+            "time": {
+              "exact_time": {
+                "start_time": "09:00",
+                "end_time": "10:00"
+              },
+              "time_inferred": "morning"
+            },
+            "date": "today",
+            "recurrence": {
+              "type": "once",
+              "details": {
+                "occurrence_frequency": "once"
+              }
+            }
+          }
+        },
+        "generated_code": "def reminder_edd18079_d86b_4a6d_ba7d_f61ca153e446(): return True",
+        "analysed_data": {
+          "sensors": {
+            "medicine_cabinet": true
+          },
+          "activities": [
+            {
+              "activity": "Eating",
+              "status": "end"
+            }
+          ]
+        },
+        "active": true
+      },
+      {
+        "stateMachineId": "1baa32d7-a8ee-4350-8a69-66ad0bc3302e",
+        "date": "2025-03-10",
+        "conversation_summary": {
+          "content": {
+            "task": "Test task"
+          }
+        },
+        "generated_code": "def reminder_e5e2f231_3e71_4ad4_9682_1dd3608544eb(): return True",
+        "analysed_data": {
+          "sensors": {},
+          "activities": []
+        }
       }
     ]
   },
@@ -218,6 +332,46 @@
           }
         },
         "generated_code": "def reminder_4959bf7d_72c3_4bd1_a667_44d82c4592b4(time=None, activity_data=None, sensor_data=None, blackboard=None):\n    return activity_data.get('activity') == \"Eating\" and activity_data.get('status') == \"end\"",
+        "analysed_data": {
+          "sensors": {},
+          "activities": [
+            {
+              "activity": "Eating",
+              "status": "end"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "3589071e-dd20-4fae-a014-6aaad301d227": {
+    "userId": "be05c0cc-3f0b-4338-9557-a21b64abe4cb",
+    "state_machines": [
+      {
+        "stateMachineId": "d8831d92-ca6b-4325-b096-7c79ffd23efd",
+        "date": "2025-03-10",
+        "conversation_summary": {
+          "content": {
+            "task": "Take out the trash",
+            "date": "today",
+            "time": {
+              "exact_time": {
+                "start_time": "13:00",
+                "end_time": "14:00"
+              },
+              "time_inferred": "after lunch"
+            },
+            "recurrence": {
+              "type": "daily",
+              "details": {
+                "days": null,
+                "occurrence_frequency": "once"
+              }
+            },
+            "priority": "medium"
+          }
+        },
+        "generated_code": "def reminder_b68e8967_155f_4e24_a222_ac709d8b85e0(time=None, activity_data=None, sensor_data=None, blackboard=None):\n    return activity_data.get('activity') == \"Eating\" and activity_data.get('status') == \"end\"",
         "analysed_data": {
           "sensors": {},
           "activities": [

@@ -1,5 +1,5 @@
 {
-  "a2064b78-a821-46d2-a956-427c63fbcc69": {
+  "848f31eb-29cb-4b2a-951f-be0816a5ee10": {
     "function_name": "persist_test",
     "date": "today",
     "start_time": "12:00",
@@ -10,7 +10,55 @@
     "days": null,
     "status": "scheduled",
     "last_run": null,
-    "next_run": "2025-01-03T12:00:00",
+    "next_run": "2025-03-10T12:00:00",
+    "schedule_job": null
+  },
+  "17936024-3a97-4daf-ab0f-5c307ca10244": {
+    "function_name": "activate_state_machine",
+    "date": "today",
+    "start_time": "12:19",
+    "end_time": null,
+    "recurrence": "once",
+    "occurrence": "once",
+    "args": [
+      "test_id"
+    ],
+    "days": null,
+    "status": "scheduled",
+    "last_run": null,
+    "next_run": "2025-03-10T12:19:00",
+    "schedule_job": null
+  },
+  "6a7ac39c-c61e-46c8-8f74-84360465850e": {
+    "function_name": "activate_state_machine",
+    "date": "tomorrow",
+    "start_time": "13:00",
+    "end_time": "14:00",
+    "recurrence": "daily",
+    "occurrence": "once",
+    "args": [
+      "d8831d92-ca6b-4325-b096-7c79ffd23efd"
+    ],
+    "days": null,
+    "status": "scheduled",
+    "last_run": null,
+    "next_run": "2025-03-11T13:00:00",
+    "schedule_job": null
+  },
+  "469cfa12-518a-42ec-b6ea-bb7906421ce1": {
+    "function_name": "deactivate_state_machine",
+    "date": "tomorrow",
+    "start_time": "14:00",
+    "end_time": null,
+    "recurrence": "daily",
+    "occurrence": "once",
+    "args": [
+      "d8831d92-ca6b-4325-b096-7c79ffd23efd"
+    ],
+    "days": null,
+    "status": "scheduled",
+    "last_run": null,
+    "next_run": "2025-03-11T14:00:00",
     "schedule_job": null
   }
 }

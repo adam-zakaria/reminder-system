@@ -11,10 +11,11 @@ grpcio = "*"
 grpcio-tools = "*"
 schedule = "*"
 openpyxl = "*"
-langchain = "*"
 pytest-cov = "*"
 python-dotenv = "*"
 freezegun = "*"
+langchain = "*"
+langchain-community = "*"
 
 [dev-packages]
 pytest = "*"
