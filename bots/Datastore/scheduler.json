@@ -60,5 +60,37 @@
     "last_run": null,
     "next_run": "2025-03-11T14:00:00",
     "schedule_job": null
+  },
+  "ecad1b4b-48b5-463b-b39f-1a9748cb50a2": {
+    "function_name": "activate_state_machine",
+    "date": "today",
+    "start_time": "22:00",
+    "end_time": "22:00",
+    "recurrence": "daily",
+    "occurrence": "once",
+    "args": [
+      "10001b52-1c1d-41bd-8ea8-d2cfed9f5aa9"
+    ],
+    "days": null,
+    "status": "scheduled",
+    "last_run": null,
+    "next_run": "2025-03-11T22:00:00",
+    "schedule_job": null
+  },
+  "cbd76b26-e9c9-49d6-b5c4-1ee93a4613df": {
+    "function_name": "deactivate_state_machine",
+    "date": "today",
+    "start_time": "22:00",
+    "end_time": null,
+    "recurrence": "daily",
+    "occurrence": "once",
+    "args": [
+      "10001b52-1c1d-41bd-8ea8-d2cfed9f5aa9"
+    ],
+    "days": null,
+    "status": "scheduled",
+    "last_run": null,
+    "next_run": "2025-03-11T22:00:00",
+    "schedule_job": null
   }
 }

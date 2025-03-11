@@ -383,5 +383,40 @@
         }
       }
     ]
+  },
+  "046296d5-5131-43e6-9fe2-b39cce47c2c6": {
+    "userId": "be05c0cc-3f0b-4338-9557-a21b64abe4cb",
+    "state_machines": [
+      {
+        "stateMachineId": "10001b52-1c1d-41bd-8ea8-d2cfed9f5aa9",
+        "date": "2025-03-11",
+        "conversation_summary": {
+          "content": {
+            "task": "Think about what you might need to be reminded of",
+            "date": "today",
+            "time": {
+              "exact_time": {
+                "start_time": "22:00",
+                "end_time": "22:00"
+              },
+              "time_inferred": null
+            },
+            "recurrence": {
+              "type": "daily",
+              "details": {
+                "days": null,
+                "occurrence_frequency": "once"
+              }
+            },
+            "priority": "medium"
+          }
+        },
+        "generated_code": "def reminder_4c77084a_2795_443b_aa8c_1070d1cabc17(time=None, activity_data=None, sensor_data=None, blackboard=None):\n    return time and datetime.fromisoformat(time) >= datetime.now() + timedelta(minutes=10)",
+        "analysed_data": {
+          "sensors": {},
+          "activities": []
+        }
+      }
+    ]
   }
 }

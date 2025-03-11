@@ -191,7 +191,7 @@ python grpc_client.py
 
 ### 3. Web Application
 ```bash
-cd server_node
+cd Server_node
 npm install
 npm start
 ```
