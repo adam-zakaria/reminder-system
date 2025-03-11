@@ -217,13 +217,21 @@ class ChatAssistant:
             
             print(formatted_history)
             response = chat_chain.invoke(prompt_variables)
-            
+
             assistant_response = response["text"]
+
+            # Dump prompt_variables to 'prompt.txt' using json.dump
+            with open("prompt.txt", "w") as prompt_file:
+                json.dump(prompt_variables, prompt_file, indent=4)
+            # Write the LLM response to a file called "conversation.txt"
+            with open("conversation.txt", "w") as file:
+                file.write("LLM Response:\n")
+                file.write(assistant_response)
+
             cls.conversation_store[session_id].append({
                 "role": "assistant",
                 "content": assistant_response
             })
-
             conversation_str = "\n".join(
                 f"{msg['role']}: {msg['content']}" 
                 for msg in cls.conversation_store[session_id]

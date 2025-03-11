@@ -418,5 +418,80 @@
         }
       }
     ]
+  },
+  "0c3327d3-7342-47f3-b3c5-a6b276e87233": {
+    "userId": "be05c0cc-3f0b-4338-9557-a21b64abe4cb",
+    "state_machines": [
+      {
+        "stateMachineId": "8e86d458-bc89-4746-8d41-76d265b6336b",
+        "date": "2025-03-11",
+        "conversation_summary": {
+          "content": {
+            "task": "Eat after I wake up",
+            "date": "today",
+            "time": {
+              "exact_time": {
+                "start_time": null,
+                "end_time": null
+              },
+              "time_inferred": "after I wake up"
+            },
+            "recurrence": {
+              "type": "daily",
+              "details": {
+                "days": null,
+                "occurrence_frequency": "once"
+              }
+            },
+            "priority": "medium"
+          }
+        },
+        "generated_code": "def reminder_a570815c_a12f_4ace_a585_6f46625c1802(time=None, activity_data=None, sensor_data=None, blackboard=None):\n    return activity_data.get('activity') == \"Sleeping\" and activity_data.get('status') == \"end\"",
+        "analysed_data": {
+          "sensors": {},
+          "activities": [
+            {
+              "activity": "Sleeping",
+              "status": "end"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "789c9091-8112-449c-9586-59fe1d5ef8e9": {
+    "userId": "be05c0cc-3f0b-4338-9557-a21b64abe4cb",
+    "state_machines": [
+      {
+        "stateMachineId": "b24a7daa-fa38-4411-a9ba-9b10cd8fdba6",
+        "date": "2025-03-11",
+        "conversation_summary": {
+          "content": {
+            "task": "Bring in my cactus",
+            "date": "today",
+            "time": {
+              "exact_time": {
+                "start_time": null,
+                "end_time": null
+              },
+              "time_inferred": "when it starts raining"
+            },
+            "recurrence": {
+              "type": "daily",
+              "details": {
+                "days": null,
+                "occurrence_frequency": "once"
+              }
+            },
+            "priority": "medium"
+          }
+        },
+        "generated_code": "def reminder_01319b42_55f4_4e9b_9b9c_9701e1064bb4(time=None, activity_data=None, sensor_data=None, blackboard=None):\n    return sensor_data.get('rain_sensor', {}).get('status', False)",
+        "analysed_data": {
+          "sensors": {},
+          "activities": []
+        }
+      }
+    ]
   }
 }
