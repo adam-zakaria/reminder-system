@@ -4,6 +4,10 @@ node_modules/
 Datastore/state_machines.json
 bots/Datastore/scheduler.json
 bots/conversation_store.xlsx
+docs
+
+bots/conversation.txt
+bots/prompt.txt
 
 test/login_credentials.txt
 
