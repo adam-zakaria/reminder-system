@@ -31,7 +31,9 @@ class ExternalDataManager: WebSocketConnectionDelegate, ObservableObject {
     var stickyData: StickyData
     var bleManager = BLEManager()
     
-    init(stickyData: StickyData, socketURL: URL? = URL(string: "https://gateway.parcs.northeastern.edu/ai-caring/api/")) {
+    // init(stickyData: StickyData, socketURL: URL? = URL(string: "https://gateway.parcs.northeastern.edu/ai-caring/api/")) {
+    //init(stickyData: StickyData, socketURL: URL? = URL(string: "http://localhost:7628")) {
+    init(stickyData: StickyData, socketURL: URL? = URL(string: "ws://localhost:7628")){
         self.stickyData = stickyData
         self.socketURL = socketURL
         self.socket = NWWebSocket(url: self.socketURL!)

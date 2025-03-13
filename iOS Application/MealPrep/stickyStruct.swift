@@ -57,6 +57,7 @@ class StickyData: ObservableObject {
 
     init() {
         print("init struct list")
+        /*
         self.active_stickyNotes = [
             Sticky(title: "Fridge!", content: "Remember to close the fridge."),
             Sticky(title: "Stove!", content: "Remember to turn off the stove.", instructions: [
@@ -65,6 +66,8 @@ class StickyData: ObservableObject {
             ]),
             Sticky(title: "Watch Game @ 7pm", content: "Watch soccer game on ESPN at 7pm.")
         ]
+         */
+        
 
         self.archive_stickyNotes = []
     }

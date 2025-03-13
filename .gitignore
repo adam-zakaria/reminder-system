@@ -1,6 +1,12 @@
 # Node modules
 node_modules/
 
+Datastore/state_machines.json
+bots/Datastore/scheduler.json
+bots/conversation_store.xlsx
+
+test/login_credentials.txt
+
 # Logs and temp files
 *.log
 *.tmp
