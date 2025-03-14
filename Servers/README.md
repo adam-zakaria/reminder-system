@@ -1,1 +1,0 @@
-`uvicorn people_power_server:app --reload --port 9976`
