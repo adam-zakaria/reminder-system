@@ -4,15 +4,15 @@ import datetime
 
 # Load credentials from the .login_credentials file
 try:
-    with open('.login_credentials', 'r') as cred_file:
+    with open('login_credentials.txt', 'r') as cred_file:
         credentials = json.load(cred_file)
 except Exception as e:
-    print("Error reading .login_credentials file:", e)
+    print("Error reading login_credentials.txt file:", e)
     exit(1)
 
 # Validate that the credentials file contains the required keys
 if 'email' not in credentials or 'password' not in credentials:
-    print("The .login_credentials file must contain 'email' and 'password' keys.")
+    print("The login_credentials.txt file must contain 'email' and 'password' keys.")
     exit(1)
 
 # === Step 1: Log in to Obtain JWT Token ===
@@ -37,7 +37,7 @@ reminder_url = "http://localhost:7628/reminders"
 
 # Calculate a future time (10 seconds from now, in UTC) using timezone-aware datetime
 now = datetime.datetime.now(datetime.timezone.utc)
-future_time = now + datetime.timedelta(seconds=10)
+future_time = now + datetime.timedelta(seconds=60)
 future_time_iso = future_time.isoformat()  # e.g., "2025-03-11T19:02:10+00:00"
 
 # Build the reminder payload for a time-based reminder

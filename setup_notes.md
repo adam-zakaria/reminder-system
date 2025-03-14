@@ -100,3 +100,19 @@ npm run start
 Once the web app is navigated to it errors, but it works after this:
 npm install --legacy-peer-deps
 npm run start
+
+
+For some reason - GRPC Server: 50051
+50051 does not show up anywhere in the repo 
+Well...in grpc_server.py and grpc_client.py the default is 50052, so perhaps the docs are not up to date
+However, grpc_client and 50052 is not referenced elsewhere which questions whether it is used.
+
+# Run in background
+pyenv shell
+cd bots
+pm2 start 'uvicorn app:app --reload --port 4005' --name 'bot_backend'
+pm2 start 'python grpc_server' --name 'grpc_server'
+cd ../node_backend
+pm2 start 'npm start' --name 'node_backend'
+cd ../frontend
+pm2 logs 'npm run start' --name 'frontend'

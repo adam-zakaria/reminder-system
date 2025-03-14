@@ -212,6 +212,7 @@ const authenticate = async (req, res, next) => {
 };
 
 function determineReminderType(utilityName, components, time, activity) {
+  components = components || [];
   if (activity && activity.trim() !== '') {
     return 'activity-based';
   } else if (utilityName && components.length > 1) {
