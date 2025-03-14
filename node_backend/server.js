@@ -1535,8 +1535,12 @@ app.post('/reminders', authenticate, async (req, res) => {
     // If the reminder is non-dependent, schedule it to be sent at the specified time
     if (type === 'non-dependent') {
       const timeDateObject = new Date(time);
-      const cronExpression = `${timeDateObject.getUTCMinutes()} ${timeDateObject.getUTCHours()} * * *`;
+      const cronExpression = `${timeDateObject.getMinutes()} ${timeDateObject.getHours()} * * *`;  // ✅ Local time
+
+      console.log("cronExpression:")
+      console.log(cronExpression)
       cron.schedule(cronExpression, () => {
+        console.log("Cron job triggered at", new Date().toISOString());
         const stickyNoteUpdate = {
           action: "add",
           id: savedReminder.id.toString() + "00",
