@@ -97,9 +97,16 @@ npm install
 npm run build
 npm run start
 
-Once the web app is navigated to it errors, but it works after this:
+Once the web app is navigated to it errors, complaining about react-refresh, use the fix at the bottom of this page:
+https://github.com/facebook/create-react-app/issues/11810
+rm -rf node_modules package-lock.json
+npm i -g react-refresh
+add to package.json:
+"overrides": {
+    "react-refresh": "0.11.0"
+}
+and for me npm install did not work, needed
 npm install --legacy-peer-deps
-npm run start
 
 
 For some reason - GRPC Server: 50051
