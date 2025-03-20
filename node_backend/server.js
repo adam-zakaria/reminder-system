@@ -379,6 +379,7 @@ function logConnectedClients() {
 //handling multiple client with same home key
 function sendMessageToClient(clientId, action, stickyNote, id) {
   const clientWsList = connectedClients[clientId];
+  console.log("Currently connected WebSocket clients:", Object.keys(connectedClients));
   if (clientWsList && clientWsList.length > 0) {
     let message;
     if (action === "add") {
@@ -1552,7 +1553,15 @@ app.post('/reminders', authenticate, async (req, res) => {
             instructions: []
           }
         };
+        console.log('**************')
+        console.log(stickyNoteUpdate)
+        console.log('**************')
 
+        /*
+        console.log('********************************************')
+        console.log(sti)
+        console.log('********************************************')
+        */
         sendMessageToClient(targetClientId, stickyNoteUpdate.action, stickyNoteUpdate.stickyNote, stickyNoteUpdate.id);
       });
     }
