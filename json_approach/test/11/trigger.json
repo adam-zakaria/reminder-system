@@ -1,0 +1,66 @@
+{
+"reminder": {
+  "prompt": "If I leave food in the microwave for 1 minute, remind me to take it out",
+  "sequential_conditions": true,
+  "Conditions": [
+    {
+      "sensor": "microwave_smart_cable",
+      "value": 42,
+      "comparison": "greater_than",
+      "met": false,
+      "time_met": null,
+      "removal_condition": false
+    },
+    {
+      "sensor": "microwave_smart_cable",
+      "value": 0,
+      "comparison": "equals",
+      "met": false,
+      "time_met": null,
+      "removal_condition": false
+    },
+    {
+      "sensor": "",
+      "Time_elapsed": "60",
+      "value": 0,
+      "comparison": "equals",
+      "met": false,
+      "time_met": null,
+      "removal_condition": false
+    },
+    {
+      "sensor": "microwave_door_entry_sensor",
+      "value": "open",
+      "comparison": "equals",
+      "met": false,
+      "time_met": null,
+      "removal_condition": false
+    },
+    {
+      "sensor": "microwave_door_entry_sensor",
+      "value": "open",
+      "comparison": "equals",
+      "met": false,
+      "time_met": null,
+      "removal_condition": true
+    }
+  ]
+},
+"sensor_updates": [
+  {
+    "sensor": "microwave_smart_cable",
+    "value": 42,
+    "timestamp": "2021-01-01T00:00:00Z"
+  },
+  {
+    "sensor": "microwave_smart_cable",
+    "value": 0,
+    "timestamp": "2021-01-01T00:00:00Z"
+  },
+  {
+    "sensor": "microwave_smart_cable",
+    "value": 0,
+    "timestamp": "2021-01-01T00:00:00Z"
+  }
+]
+}
