@@ -8,7 +8,15 @@ reminders = test['reminders']
 for sensor_update in sensor_updates: # process sensor data as it arrives
   for reminder in reminders: # process reminders every time a sensor update arrives
     if reminder['sequential_conditions'] == True:
-      for condition in reminder['Conditions']:
+      ### Evaluate Conditions ###
+      # 1) Check removal conditions - removing reminders as necessary
+      for condition in reminder['conditions']:
+        if condition['removal_condition'] == True:
+          if condition['met'] == True:
+            reminders.remove(reminder)
+            break
+      # 2) Check (regular) conditions
+      for condition in reminder['conditions']:
         # simple case - comparison
         if condition['comparison'] == 'equals':
           if sensor_update['value'] == condition['value']:
@@ -26,3 +34,8 @@ for sensor_update in sensor_updates: # process sensor data as it arrives
           if sensor_update['value'] >= condition['value']:
             condition['met'] = True
             condition['time_met'] = datetime.now()
+        # 3) Check if all conditions are met
+        if all(condition['met'] for condition in reminder['conditions']):
+          # If so, trigger the reminder
+          print(reminder['prompt'])
+          break
