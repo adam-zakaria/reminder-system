@@ -1,46 +1,46 @@
 {
-"reminder": {
-  "prompt": "If I leave food in the microwave for 1 minute, remind me to take it out",
-  "sequential_conditions": true,
-  "reset_conditions": [
-    {
-      "sensor": "microwave_smart_cable",
-      "value": 0,
-      "comparison": "equals"
-    }
-  ],
-  "conditions": [
-    {
-      "sensor": "microwave_smart_cable",
-      "value": 42,
-      "comparison": "greater_than",
-      "met": false,
-      "time_met": null
-    },
-    {
-      "sensor": "microwave_smart_cable",
-      "value": 0,
-      "comparison": "equals",
-      "met": false,
-      "time_met": null
-    },
-    {
-      "sensor": "",
-      "time_elapsed": "60",
-      "value": 0,
-      "comparison": "equals",
-      "met": false,
-      "time_met": null
-    },
-    {
-      "sensor": "microwave_door_entry_sensor",
-      "value": "open",
-      "comparison": "equals",
-      "met": false,
-      "time_met": null
-    }
-  ]
-},
+  "reminders": [{
+    "prompt": "If I leave food in the microwave for 1 minute, remind me to take it out",
+    "sequential_conditions": true,
+    "reset_conditions": [
+      {
+        "sensor": "microwave_smart_cable",
+        "value": 0,
+        "comparison": "equals"
+      }
+    ],
+    "conditions": [
+      {
+        "sensor": "microwave_smart_cable",
+        "value": 42,
+        "comparison": "greater_than",
+        "met": false,
+        "time_met": null
+      },
+      {
+        "sensor": "microwave_smart_cable",
+        "value": 0,
+        "comparison": "equals",
+        "met": false,
+        "time_met": null
+      },
+      {
+        "sensor": "",
+        "time_elapsed": "60",
+        "value": 0,
+        "comparison": "equals",
+        "met": false,
+        "time_met": null
+      },
+      {
+        "sensor": "microwave_door_entry_sensor",
+        "value": "open",
+        "comparison": "equals",
+        "met": false,
+        "time_met": null
+      }
+    ]
+  }],
 "sensor_updates": [
   {
     "sensor": "microwave_smart_cable",
