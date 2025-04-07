@@ -289,7 +289,8 @@ def test_pipeline_end_to_end(chat_assistant, code_generator, state_machine_execu
     namespace = {}
     exec(renamed_code, namespace)
     result = namespace[new_name](
-        current_time=datetime.now(),
+        #current_time=datetime.now(),
+        time=datetime.now(),
         activity_data=activity_data
     )
     assert result is True

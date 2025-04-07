@@ -1,6 +1,9 @@
+bots/tests/output
+
 # Node modules
 node_modules/
 
+Datastore
 Datastore/state_machines.json
 bots/Datastore/scheduler.json
 bots/conversation_store.xlsx
