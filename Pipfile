@@ -9,6 +9,8 @@ grpcio = "*"
 protobuf = "*"
 googleapis-common-protos = "*"
 bcrypt = "*"
+langchain-community = "*"
+openai = "*"
 
 [dev-packages]
 
