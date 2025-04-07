@@ -277,22 +277,35 @@ def test_pipeline_end_to_end(chat_assistant, code_generator, state_machine_execu
         "recurrence": {"type": "once", "details": {"occurrence_frequency": "once"}}
     }
     code = code_generator.generate_code(summary)
+    print('--------------------------------')
+    print('code')
+    print(code)
+    print('--------------------------------')
     
     # 3. Clean and validate
     cleaned_code = state_machine_executor.clean_generated_code(code)
     new_name = state_machine_executor.generate_valid_function_name()
     renamed_code = state_machine_executor.rename_function_in_code(cleaned_code, new_name)
     assert state_machine_executor.validate_code(renamed_code)
+    print('--------------------------------')
+    print('renamed_code')
+    print(renamed_code)
+    print('--------------------------------')
     
     # 4. Execute
-    activity_data = {"activity": "Eating", "activity_status": "end"}
+    # This code generation pattern is just creating that function definition as a string, then using exec to turn it into a callable function.
     namespace = {}
-    exec(renamed_code, namespace)
+    exec(renamed_code, {'datetime': datetime, 'timedelta': timedelta}, namespace) # defines a function in the namespace, including imports
     result = namespace[new_name](
-        #current_time=datetime.now(),
-        time=datetime.now(),
-        activity_data=activity_data
-    )
+        time=datetime.now().isoformat(),
+        activity_data={"activity": "Eating", "status": "end"},
+        sensor_data=None,
+        blackboard={'breakfast_end_time': (datetime.now() - timedelta(hours=2, minutes=5)).isoformat()}
+    )  # calls the function in the namespace
+    print('--------------------------------')
+    print('result')
+    print(result)
+    print('--------------------------------')
     assert result is True
 
 def test_wash_hands_after_cooking(state_machine_executor, sample_reminder_codes):

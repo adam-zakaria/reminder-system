@@ -16,6 +16,7 @@ python-dotenv = "*"
 freezegun = "*"
 langchain = "*"
 langchain-community = "*"
+ipdb = "*"
 
 [dev-packages]
 pytest = "*"
