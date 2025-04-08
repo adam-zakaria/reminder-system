@@ -171,6 +171,7 @@ def test_sensor_trigger_reminder(pipeline_fixture):
     assert result is True
 
 def test_full_execution_pipeline(pipeline_fixture):
+    """Original test for backward compatibility"""
     conversation = "Please remind me to clean the house in 15 minutes after breakfast."
     summarization = pipeline_fixture["summarizer"].summarize_conversation(conversation)
     transformed_summary = pipeline_fixture["assistant"].transform_summary_for_code_generation(summarization["content"])
