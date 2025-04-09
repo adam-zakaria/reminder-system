@@ -195,4 +195,7 @@ def test_full_execution_pipeline(pipeline_fixture):
         {"update": {"home_utilities": []}},
         {}
     )
+    print('--------------------------------')
+    print(result)
+    print('--------------------------------')
     assert result is not None

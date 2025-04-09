@@ -25,7 +25,14 @@ NODE_PORT=7628
 OPENAI_API_KEY= <REPLACE_WITH_YOUR_KEY>
 ```
 
-# Run
+# Run reminder system
+This script is actually broken - the commands work, but must be run manually.
 ```
 ./start.sh
 ```
+
+# Run iOS app
+In XCode open:
+`/Users/azakaria/Code/neu/reminder-system/iOS Application/MealPrep.xcodeproj`
+* Select iPad 10th generation in the top middle bar.
+* Press run icon.

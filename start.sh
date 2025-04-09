@@ -1,3 +1,4 @@
+# This script breaks because pipenv shell spawns a subshell
 cd bots
 pipenv shell
 pm2 start 'uvicorn app:app --reload --port 4005' --name 'bot_backend'
