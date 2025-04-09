@@ -1,0 +1,82 @@
+{
+  "location": {
+    "homeId": "aicaring-home-132"
+  },
+  "microwave_smart_cable": {
+    "power": "1400",
+    "location": "kitchen"
+  },
+  "microwave_door_entry_sensor": {
+    "doorStatus": "1",
+    "status": true,
+    "location": "kitchen"
+  },
+  "kitchen_motion_sensor": {
+    "motion": true,
+    "last_motion": "2024-01-15T08:30:45.123Z",
+    "location": "kitchen"
+  },
+  "living_room_motion_sensor": {
+    "motion": false,
+    "location": "living_room"
+  },
+  "dining_room_motion_sensor": {
+    "motion": true,
+    "location": "dining_room"
+  },
+  "master_bedroom_motion_sensor": {
+    "motion": false,
+    "location": "master_bedroom"
+  },
+  "stove_temp_humidity_sensor": {
+    "temp": 60,
+    "humidity": 45,
+    "location": "kitchen"
+  },
+  "living_room_temp_humidity_sensor": {
+    "temp": 22.5,
+    "humidity": 40,
+    "location": "living_room"
+  },
+  "fridge_entry_sensor": {
+    "status": true,
+    "location": "kitchen"
+  },
+  "main_door_entry_sensor": {
+    "status": false,
+    "location": "entrance"
+  },
+  "silverware_drawer_entry_sensor": {
+    "status": true,
+    "location": "kitchen"
+  },
+  "living_room_smart_cable": {
+    "power": true,
+    "watts": "75",
+    "location": "living_room"
+  },
+  "bedroom_extension_cable": {
+    "power": false,
+    "location": "bedroom"
+  },
+  "bathroom_toilet_vibration_sensor": {
+    "vibration": true,
+    "location": "bathroom"
+  },
+  "master_bedroom_bed_sensor": {
+    "presence": true,
+    "restlessness": 0.45,
+    "location": "master_bedroom"
+  },
+  "master_bedroom_uwb_sensor": {
+    "presence": true,
+    "location": "master_bedroom",
+    "coordinates": [3.2, 4.5, 1.1]
+  },
+  "medicine_cabinet": {
+    "last_opened": "2024-01-15T19:22:10.543Z",
+    "status": false,
+    "location": "bathroom"
+  },
+  "kitchen_occupancy": true
+}

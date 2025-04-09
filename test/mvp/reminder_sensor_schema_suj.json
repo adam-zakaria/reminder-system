@@ -1,0 +1,63 @@
+
+{
+  "microwave_smart_cable": {
+    "power": "1400"
+  },
+  "microwave_door_entry_sensor": {
+    "doorStatus": "1",
+    "status": true
+  },
+  "kitchen_motion_sensor": {
+    "motion": true,
+    "last_motion": "2024-01-15T08:30:45.123Z"
+  },
+  "living_room_motion_sensor": {
+    "motion": false
+  },
+  "dining_room_motion_sensor": {
+    "motion": true
+  },
+  "master_bedroom_motion_sensor": {
+    "motion": false
+  },
+  "stove_temp_humidity_sensor": {
+    "temp": 60,
+    "humidity": 45
+  },
+  "living_room_temp_humidity_sensor": {
+    "temp": 22.5,
+    "humidity": 40
+  },
+  "fridge_entry_sensor": {
+    "status": true
+  },
+  "main_door_entry_sensor": {
+    "status": false
+  },
+  "silverware_drawer_entry_sensor": {
+    "status": true
+  },
+  "living_room_smart_cable": {
+    "power": true,
+    "watts": "75"
+  },
+  "bedroom_extension_cable": {
+    "power": false
+  },
+  "bathroom_toilet_vibration_sensor": {
+    "vibration": true
+  },
+  "master_bedroom_bed_sensor": {
+    "presence": true,
+    "restlessness": 0.45
+  },
+  "master_bedroom_uwb_sensor": {
+    "presence": true,
+    "location": [3.2, 4.5, 1.1]
+  },
+  "medicine_cabinet": {
+    "last_opened": "2024-01-15T19:22:10.543Z",
+    "status": false
+  },
+  "kitchen_occupancy": true
+}
