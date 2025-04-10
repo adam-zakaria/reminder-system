@@ -78,6 +78,16 @@ def test_full_execution_pipeline():
     )
     return result
 
+def process_sensor_updates(sensor_updates_generator):
+    """
+    For each sensor update, process each reminder
+    """
+    for sensor_update in sensor_updates_generator:
+        # process_reminders
+        print(f"Processing sensor update: {sensor_update}")
+    
+    return False
+
 if __name__ == "__main__":
   results = []
   for i in range(10):

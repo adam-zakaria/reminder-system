@@ -1,4 +1,5 @@
 # Run
+The node server and iOS app must be running.
 `python test_notify_endpoint.py`
 
 # Todo
