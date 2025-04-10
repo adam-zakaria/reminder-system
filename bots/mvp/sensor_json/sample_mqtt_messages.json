@@ -1,0 +1,152 @@
+[
+  {
+    "messageId": "orcatech:d9311aa4-e82a-4a70-aabf-9826f4c24233",
+    "timestamp": "2024-09-15T08:30:45.123Z",
+    "sourceType": "orcatech",
+    "homeId": "aicaring-home-132",
+    "metadata": {
+      "location": "/home/kitchen",
+      "dataSchema": {
+        "name": "com.orcatech.zigbee.zone.status",
+        "version": "0.0.1"
+      },
+      "type": "zone_status",
+      "subtype": "motion",
+      "value": 1,
+      "decoded": [
+        {
+          "movement": true,
+          "contact": false,
+          "tamper": false,
+          "low_battery": false,
+          "supervision_reports": true,
+          "restore_repots": true
+        }
+      ]
+    },
+    "senderId": "000D6F000E303F50",
+    "isObservationSource": true,
+    "payload": {
+      "uuid": "123",
+      "stamp": "2024-09-15T08:30:45.123Z",
+      "data": {
+        "zigbeeCoordinatorEUI": "000D6F000ED282B5",
+        "zigbeePANMember": {
+          "EUI": "000D6F000E303F50"
+        }
+      },
+      "hubItemID": 132
+    }
+  },
+  {
+    "messageId": "orcatech:838f4f63-179f-48ad-80fa-ad301735cc4b",
+    "timestamp": "2024-09-15T08:31:15.456Z",
+    "sourceType": "orcatech",
+    "homeId": "aicaring-home-132",
+    "metadata": {
+      "location": "/home/kitchen/microwave",
+      "dataSchema": {
+        "name": "com.orcatech.zigbee.attribute.report",
+        "version": "0.0.1"
+      },
+      "type": "attribute_report",
+      "subtype": "contact",
+      "value": 1,
+      "decoded": [
+        {
+          "contact": true
+        }
+      ]
+    },
+    "senderId": "286D97000114BE67",
+    "isObservationSource": true,
+    "payload": {
+      "uuid": "124",
+      "stamp": "2024-09-15T08:31:15.456Z",
+      "data": {
+        "zigbeeCoordinatorEUI": "84B4DBFFFE967035"
+      },
+      "hubItemID": 132
+    }
+  },
+  {
+    "messageId": "orcatech:32c11c5e-119e-4c66-98e4-56a6c0694843",
+    "timestamp": "2024-09-15T08:32:30.789Z",
+    "sourceType": "orcatech",
+    "homeId": "aicaring-home-132",
+    "metadata": {
+      "location": "/home/living_room",
+      "dataSchema": {
+        "name": "com.orcatech.zigbee.attribute.report",
+        "version": "0.0.1"
+      },
+      "type": "attribute_report",
+      "subtype": "temperature",
+      "value": 22.5,
+      "units": "°C"
+    },
+    "senderId": "000D6F000E303F51",
+    "isObservationSource": true,
+    "payload": {
+      "uuid": "125",
+      "stamp": "2024-09-15T08:32:30.789Z",
+      "data": {
+        "zigbeeCoordinatorEUI": "000D6F000ED282B5"
+      },
+      "hubItemID": 132
+    }
+  },
+  {
+    "messageId": "orcatech:32c11c5e-119e-4c66-98e4-56a6c0694844",
+    "timestamp": "2024-09-15T08:32:31.789Z",
+    "sourceType": "orcatech",
+    "homeId": "aicaring-home-132",
+    "metadata": {
+      "location": "/home/living_room",
+      "dataSchema": {
+        "name": "com.orcatech.zigbee.attribute.report",
+        "version": "0.0.1"
+      },
+      "type": "attribute_report",
+      "subtype": "humidity",
+      "value": 40,
+      "units": "%"
+    },
+    "senderId": "000D6F000E303F51",
+    "isObservationSource": true,
+    "payload": {
+      "uuid": "126",
+      "stamp": "2024-09-15T08:32:31.789Z",
+      "data": {
+        "zigbeeCoordinatorEUI": "000D6F000ED282B5"
+      },
+      "hubItemID": 132
+    }
+  },
+  {
+    "messageId": "orcatech:32c11c5e-119e-4c66-98e4-56a6c0694845",
+    "timestamp": "2024-09-15T08:33:15.123Z",
+    "sourceType": "orcatech",
+    "homeId": "aicaring-home-132",
+    "metadata": {
+      "location": "/home/bedroom/master/bed",
+      "dataSchema": {
+        "name": "com.orcatech.zigbee.attribute.report",
+        "version": "0.0.1"
+      },
+      "type": "attribute_report",
+      "subtype": "presence",
+      "value": 1
+    },
+    "senderId": "000D6F000E303F52",
+    "isObservationSource": true,
+    "payload": {
+      "uuid": "127",
+      "stamp": "2024-09-15T08:33:15.123Z",
+      "data": {
+        "zigbeeCoordinatorEUI": "000D6F000ED282B5"
+      },
+      "hubItemID": 132
+    }
+  }
+] 
