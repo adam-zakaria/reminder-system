@@ -162,7 +162,6 @@ class CodeGenerator:
             generated_code = chain.invoke({"reminder_json": reminder_json})
             
             # Extract and return the generated code from the result
-            breakpoint()
             return generated_code["text"]
         
         except Exception as e:

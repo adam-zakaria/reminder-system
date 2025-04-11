@@ -44,6 +44,7 @@ def summarize_conversation(conversation):
         }
     }
 
+
 def test_full_execution_pipeline():
     """Original test for backward compatibility"""
     conversation = "Please remind me to clean the house in 15 minutes after breakfast."
@@ -78,6 +79,46 @@ def test_full_execution_pipeline():
     )
     return result
 
+
+state_machines = []
+def create_reminder(conversation):
+    # i.e. "Please remind me to look at the sticky notes when I'm in the office"
+    # summarization = summarize_conversation(conversation)
+    summarization_bot = SummarizationBot()
+    summarization = summarization_bot.summarize_conversation(conversation)
+    transformed_summary = ChatAssistant.transform_summary_for_code_generation(summarization["content"])
+    code_output = CodeGenerator.generate_code(transformed_summary)
+
+    # Create an instance of StateMachineExecutor
+    executor = StateMachineExecutor()
+    cleaned_code = executor.clean_generated_code(code_output)
+    renamed_code = executor.rename_function_in_code(cleaned_code, "mvp_function")       
+    # If the same level of validation is desired as internally in the StateMachineExecutor
+    # valid = executor.validate_code(renamed_code)  # This step is missing in your test
+    
+    # Create complete state machine object
+    state_machine = {
+        "stateMachineId": str(uuid.uuid4()),
+        "sessionId": "test-session",
+        "generated_code": renamed_code,
+        "analysed_data": analyse_code(renamed_code)
+    }
+    breakpoint()
+    state_machines.append(state_machine)
+
+def process_sensor_update(state_machine, sensor_update):
+    current_time = datetime.now()
+    executor = StateMachineExecutor()
+    result = executor.execute_generated_code(
+        state_machine,
+        current_time,
+        {"activity": "Eating", "activity_status": "end"},
+        {"update": {"home_utilities": []}},
+        {}
+    )
+    return result
+
+
 def process_sensor_updates(sensor_updates_generator):
     """
     For each sensor update, process each reminder
@@ -85,7 +126,9 @@ def process_sensor_updates(sensor_updates_generator):
     for sensor_update in sensor_updates_generator:
         # process_reminders
         print(f"Processing sensor update: {sensor_update}")
-    
+        result = process_sensor_update(sensor_update)
+        if result:
+           print(f"Reminder triggered: {result}")
     return False
 
 if __name__ == "__main__":
