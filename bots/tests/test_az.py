@@ -101,26 +101,78 @@ def create_reminder(conversation):
         "stateMachineId": str(uuid.uuid4()),
         "sessionId": "test-session",
         "generated_code": renamed_code,
-        "analysed_data": analyse_code(renamed_code)
+        "analysed_data": analyse_code(renamed_code),
+        "conversation": conversation,
     }
     state_machines.append(state_machine)
 
-def process_sensor_update(sensor_update):
+def send_notification(title, content, client_id="ep6", notification_sound_id=1, light_category_id=1):
+    """
+    Send a sticky note notification to the websocket server.
+    
+    Args:
+        title (str): Title of the sticky note
+        content (str): Content of the sticky note
+        client_id (str): Client ID to send the notification to
+        notification_sound_id (int): Sound ID for the notification
+        light_category_id (int): Light category ID
+        
+    Returns:
+        bool: True if notification was sent successfully, False otherwise
+    """
+    import requests
+    
+    # Define the server URL
+    url = "http://localhost:7628/notify"
+    
+    # Create a unique ID for this reminder
+    notification_id = f"reminder_{uuid.uuid4()}"
+    
+    # Define the payload
+    payload = {
+        "clientId": client_id,
+        "action": "add",
+        "id": notification_id,
+        "stickyNote": {
+            "title": title,
+            "content": content,
+            "notificationSoundID": notification_sound_id,
+            "instructions": [],
+            "lightCategoryId": light_category_id
+        }
+    }
+    
+    try:
+        # Send the request
+        response = requests.post(url, json=payload)
+        print(f"Notification sent - Status Code: {response.status_code}")
+        return response.status_code == 200
+    except Exception as e:
+        print(f"Failed to send notification: {e}")
+        return False
+
+def process_sensor_update(state_machine, sensor_update):
     current_time = datetime.now()
     executor = StateMachineExecutor()
-    # TESTING: A single state machine
-    for state_machine in state_machines:
-        result = executor.execute_generated_code(
-            state_machine,
-            current_time,
+    result = executor.execute_generated_code(
+        state_machine,
+        current_time,
         {"activity": "Eating", "activity_status": "end"},
-        #{"update": {"home_utilities": []}},
         sensor_update,
         {}
     )
-    print('--------------------------------')
-    print(result)
-    print('--------------------------------')
+    
+    # If reminder triggered, send sticky note notification
+    if result is True:
+        # Get the original conversation as the reminder text
+        reminder_text = state_machine.get("conversation", "Reminder triggered")
+        
+        # Send notification with the original conversation as content
+        send_notification(
+            title="Reminder",
+            content=state_machine["conversation"]
+        )
+    
     return result
 
 
@@ -131,9 +183,12 @@ def process_sensor_updates(sensor_updates_generator):
     for sensor_update in sensor_updates_generator:
         # process_reminders
         print(f"Processing sensor update: {sensor_update}")
-        result = process_sensor_update(sensor_update)
-        if result:
-           print(f"Reminder triggered: {result}")
+        
+        # Process each state machine with this sensor update
+        for state_machine in state_machines:
+            result = process_sensor_update(state_machine, sensor_update)
+            if result:
+                print(f"Reminder triggered: {result}")
     return False
 
 if __name__ == "__main__":
