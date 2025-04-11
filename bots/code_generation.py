@@ -66,6 +66,7 @@ class CodeGenerator:
          - `dining_room_motion_sensor`
          - `master_bedroom_motion_sensor`
        - Example check: `sensor_data.get('kitchen_motion_sensor', {}).get('motion') == True`
+       - **IMPORTANT**: Motion sensors are the primary way to detect presence in a room
 
     2. **Entry/Contact Sensors**:
        - `main_door_entry_sensor` (for main doors)
@@ -87,9 +88,6 @@ class CodeGenerator:
        - `master_bedroom_bed_sensor` (for bed presence)
          - Properties: `presence` (boolean), `location` (string)
          - Example check: `sensor_data.get('master_bedroom_bed_sensor', {}).get('presence') == True`
-       - Room occupancy (format: `{room_name}_occupancy`):
-         - Direct boolean value
-         - Example check: `sensor_data.get('living_room_occupancy') == True`
 
     5. **Power Monitoring**:
        - `microwave_smart_cable` (for microwave power usage)
@@ -97,6 +95,16 @@ class CodeGenerator:
        - `living_room_smart_cable` (for living room devices)
        - Properties: `power` (number)
        - Example check: `sensor_data.get('microwave_smart_cable', {}).get('power') > 0`
+       
+    ## Sample Room-Specific Checks:
+    1. To check if someone is in the kitchen:
+       `sensor_data.get('kitchen_motion_sensor', {}).get('motion') == True`
+       
+    2. To check if someone is in the living room:
+       `sensor_data.get('living_room_motion_sensor', {}).get('motion') == True`
+       
+    3. To check if someone is in bed:
+       `sensor_data.get('master_bedroom_bed_sensor', {}).get('presence') == True`
 
     ### Function Requirements:
     1. **Handle the reminder conditions**: The function should dynamically parse and check the provided inputs such as task description, activity data, state data, or delay to determine if the reminder should be triggered.

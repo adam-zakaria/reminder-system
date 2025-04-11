@@ -103,19 +103,24 @@ def create_reminder(conversation):
         "generated_code": renamed_code,
         "analysed_data": analyse_code(renamed_code)
     }
-    breakpoint()
     state_machines.append(state_machine)
 
-def process_sensor_update(state_machine, sensor_update):
+def process_sensor_update(sensor_update):
     current_time = datetime.now()
     executor = StateMachineExecutor()
-    result = executor.execute_generated_code(
-        state_machine,
-        current_time,
+    # TESTING: A single state machine
+    for state_machine in state_machines:
+        result = executor.execute_generated_code(
+            state_machine,
+            current_time,
         {"activity": "Eating", "activity_status": "end"},
-        {"update": {"home_utilities": []}},
+        #{"update": {"home_utilities": []}},
+        sensor_update,
         {}
     )
+    print('--------------------------------')
+    print(result)
+    print('--------------------------------')
     return result
 
 
