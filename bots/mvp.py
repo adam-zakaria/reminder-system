@@ -12,7 +12,8 @@ def main():
     args = parser.parse_args()
 
     # (0) Create the reminder (state machine)
-    conversation = "Please remind me to look at the sticky notes when I'm in the office"
+    #conversation = "Please remind me to look at the sticky notes when I'm in the office"
+    conversation = "Remind me to water the plants when I'm in the kitchen"
     test_az.create_reminder(conversation)
     
     try:
