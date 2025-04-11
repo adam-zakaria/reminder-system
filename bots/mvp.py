@@ -3,7 +3,7 @@ import json
 import sys
 import os
 from mvp.mqtt_client.subscribe import subscribe_to_sensors
-from tests import test_az
+from tests import helpers
 
 def main():
     # Parse command line arguments
@@ -14,7 +14,7 @@ def main():
     # (0) Create the reminder (state machine)
     #conversation = "Please remind me to look at the sticky notes when I'm in the office"
     conversation = "Remind me to water the plants when I'm in the kitchen"
-    test_az.create_reminder(conversation)
+    helpers.create_reminder(conversation)
     
     try:
         # (1) Get the sensor updates
@@ -27,7 +27,7 @@ def main():
         
         # (2) Process the sensor updates
         print("Starting to process sensor updates...")
-        test_az.process_sensor_updates(updates)
+        helpers.process_sensor_updates(updates)
     except KeyboardInterrupt:
         print("\nReminder system stopped by user")
         sys.exit(0)
