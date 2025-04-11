@@ -50,11 +50,53 @@ class CodeGenerator:
 
     Use this reminder summary to understand the logic and design of the function. The reminder does not include activity or sensor inputs, but explicitly mentions a delay.
 
-    ### Sensor Information (Minimal):
-    The function should use the following sensors only if necessary to trigger reminders:
-    - **Entry Sensors**:
-      - `microwave_door_entry_sensor` (Microwave Door Entry, kitchen)
-      - `main_door_entry_sensor` (Main Door Entry)
+    ### Sensor Information:
+    You are generating code to work with a reminder system that receives sensor data from smart home devices. Your function will receive translated sensor data in the `sensor_data` parameter.
+
+    ## Available Sensors and How to Access Them
+
+    The translation logic creates the following sensor structures. Check sensors using this pattern:
+    `sensor_data.get('sensor_name', {}).get('property')`
+
+    1. **Motion Sensors** (format: `{room}_motion_sensor`):
+       - Properties: `motion` (boolean), `last_motion` (timestamp), `location` (string)
+       - Examples:
+         - `kitchen_motion_sensor`
+         - `living_room_motion_sensor`
+         - `dining_room_motion_sensor`
+         - `master_bedroom_motion_sensor`
+       - Example check: `sensor_data.get('kitchen_motion_sensor', {}).get('motion') == True`
+
+    2. **Entry/Contact Sensors**:
+       - `main_door_entry_sensor` (for main doors)
+       - `microwave_door_entry_sensor` (for microwave)
+       - `fridge_entry_sensor` (for refrigerator)
+       - `{room}_entry_sensor` (general format)
+       - Properties: `status` (boolean), `location` (string)
+       - Example check: `sensor_data.get('microwave_door_entry_sensor', {}).get('status') == True`
+
+    3. **Temperature/Humidity Sensors** (format: `{room}_temp_humidity_sensor`):
+       - Properties: `temp` (number), `humidity` (number), `location` (string)
+       - Examples:
+         - `living_room_temp_humidity_sensor`
+         - `stove_temp_humidity_sensor`
+       - Example temperature check: `sensor_data.get('living_room_temp_humidity_sensor', {}).get('temp') > 20`
+       - Example humidity check: `sensor_data.get('living_room_temp_humidity_sensor', {}).get('humidity') < 50`
+
+    4. **Presence Sensors**:
+       - `master_bedroom_bed_sensor` (for bed presence)
+         - Properties: `presence` (boolean), `location` (string)
+         - Example check: `sensor_data.get('master_bedroom_bed_sensor', {}).get('presence') == True`
+       - Room occupancy (format: `{room_name}_occupancy`):
+         - Direct boolean value
+         - Example check: `sensor_data.get('living_room_occupancy') == True`
+
+    5. **Power Monitoring**:
+       - `microwave_smart_cable` (for microwave power usage)
+       - `bedroom_extension_cable` (for bedroom devices)
+       - `living_room_smart_cable` (for living room devices)
+       - Properties: `power` (number)
+       - Example check: `sensor_data.get('microwave_smart_cable', {}).get('power') > 0`
 
     ### Function Requirements:
     1. **Handle the reminder conditions**: The function should dynamically parse and check the provided inputs such as task description, activity data, state data, or delay to determine if the reminder should be triggered.
@@ -69,8 +111,7 @@ class CodeGenerator:
          - `'Eating'`
          - `'Bed_To_Toilet'`
          - `'Enter_Home'`
-       - **State Data (Sensors)**: Use minimal state data from entry sensors if required. For example:
-         - **Entry Detected**: Trigger if a specific door or cabinet is opened.
+       - **State Data (Sensors)**: Use sensor data structure described above to check for relevant conditions.
 
     3. **Handle Delays Using `current_time`**:
        - Use the provided `current_time` argument (a Python `datetime` object) to calculate delays **only when explicitly mentioned in the task description** (e.g., `"10 minutes after breakfast"` implies a delay). 
@@ -90,11 +131,11 @@ class CodeGenerator:
     ### Function Inputs:
     - `current_time`: (Required) A `datetime` object representing the current time.
     - `activity_data`: (Optional) A dictionary containing human activity recognition. The `activity` can be one of the following: `'Relax'`, `'Meal_Preparation'`, `'Leave_Home'`, `'Sleeping'`, `'Eating'`, `'Bed_To_Toilet'`, or `'Enter_Home'`, and `activity_status` should be `'start'` or `'end'`.
-    - `state_data`: (Optional) A dictionary containing minimal sensor values identified by their **sensor names** (e.g., `doorStatus`).
+    - `sensor_data`: (Optional) A dictionary containing sensor values identified by their **sensor names** as described in the Sensor Information section.
     - `blackboard`: (Optional) A dictionary used to track and store state information in **state machine logic**.
 
     ### Expected Behavior:
-    - The function should dynamically parse the inputs (current time, activity data, state data) to determine if the reminder should be triggered.
+    - The function should dynamically parse the inputs (current time, activity data, sensor data) to determine if the reminder should be triggered.
     - The function should return `True` **only if all relevant conditions** for triggering the reminder are met; otherwise, return `False`.
     - The function should work even if some inputs are not provided or are not needed.
     - The **blackboard** should only be used for state machine tracking. It should be ignored in non-state machine scenarios.
