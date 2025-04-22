@@ -20,10 +20,13 @@ state_machines = []
 def create_reminder(conversation):
     # i.e. "Please remind me to look at the sticky notes when I'm in the office"
     # summarization = summarize_conversation(conversation)
-    summarization_bot = SummarizationBot()
-    summarization = summarization_bot.summarize_conversation(conversation)
-    transformed_summary = ChatAssistant.transform_summary_for_code_generation(summarization["content"])
-    code_output = CodeGenerator.generate_code(transformed_summary)
+
+    # Don't use the summarization bot for now
+    #summarization_bot = SummarizationBot()
+    #summarization = summarization_bot.summarize_conversation(conversation)
+    #transformed_summary = ChatAssistant.transform_summary_for_code_generation(summarization["content"])
+
+    code_output = CodeGenerator.generate_code(conversation)
 
     # Create an instance of StateMachineExecutor
     executor = StateMachineExecutor()
@@ -116,16 +119,24 @@ def process_sensor_updates(sensor_updates_generator):
     """
     For each sensor update, process each reminder
     """
+    print("process_sensor_updates()")
     start_time = time.time()
-    # Time ensures that the sensor updates are processed at least every 10 seconds 
-    if (time.time() - start_time >= 10) or (not sensor_update_queue.empty()):
-        sensor_update = sensor_update_queue.get()
-        print(f"Processing sensor update: {sensor_update}")
+    while True:
+        # Time ensures that the sensor updates are processed at least every 10 seconds 
+        print(f"start_time: {start_time} ---- time.time(): {time.time()}")
+        if ((time.time() - start_time) >= 10) or (not sensor_update_queue.empty()):
+            print("Time initiated processing")
+            try:
+                sensor_update = sensor_update_queue.get(timeout=0.1)
+                print('Got sensor update')
+            except Exception as e:
+                print(f"Queue empty or error getting sensor update: {e}")
+                sensor_update = None
 
-        # Process each state machine with this sensor update
-        for state_machine in state_machines:
-            result = process_sensor_update(state_machine, sensor_update)
-            if result:
-                print(f"Reminder triggered: {result}")
-        start_time = time.time()
-    return False
+            # Process each state machine with this sensor update
+            for state_machine in state_machines:
+                print("process_sensor_update()")
+                result = process_sensor_update(state_machine, sensor_update)
+                if result:
+                    print(f"Reminder triggered: {result}")
+            start_time = time.time()

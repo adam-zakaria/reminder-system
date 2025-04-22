@@ -312,6 +312,8 @@ class StateMachineExecutor:
             state_machine_logger.debug(f"Function name: {func_name}")
             
             func = locals()[func_name]
+            print(generated_code)
+            breakpoint()
             result = func(time=time, activity_data=activity_data, sensor_data=sensor_data, blackboard=blackboard)
             state_machine_logger.debug(f"Execution result: {result}")
             return result
