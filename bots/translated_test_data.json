@@ -1,0 +1,664 @@
+{
+  "location": {
+    "homeId": "aicaring-home-132"
+  },
+  "kitchen_motion_sensor": {
+    "motion": true,
+    "last_motion": "2024-09-15T08:30:45.123Z",
+    "location": "kitchen"
+  }
+},
+{
+  "location": {
+    "homeId": "aicaring-home-132"
+  },
+  "microwave_door_entry_sensor": {
+    "status": true,
+    "location": "microwave"
+  }
+},
+{
+  "location": {
+    "homeId": "aicaring-home-132"
+  },
+  "living_room_temp_humidity_sensor": {
+    "temp": 22.5,
+    "location": "living_room"
+  }
+},
+{
+  "location": {
+    "homeId": "aicaring-home-132"
+  },
+  "living_room_temp_humidity_sensor": {
+    "humidity": 40,
+    "location": "living_room"
+  }
+},
+{
+  "location": {
+    "homeId": "aicaring-home-132"
+  },
+  "master_bedroom_bed_sensor": {
+    "presence": true,
+    "location": "master_bedroom"
+  }
+},
+{
+  "location": {
+    "homeId": "aicaring-home-132"
+  },
+  "kitchen_motion_sensor": {
+    "motion": true,
+    "last_motion": "2024-09-15T08:30:45.123Z",
+    "location": "kitchen"
+  }
+},
+{
+  "location": {
+    "homeId": "aicaring-home-132"
+  },
+  "kitchen_motion_sensor": {
+    "motion": true,
+    "last_motion": "2024-09-15T08:30:45.123Z",
+    "location": "kitchen"
+  }
+},
+{
+  "location": {
+    "homeId": "aicaring-home-132"
+  },
+  "microwave_door_entry_sensor": {
+    "status": true,
+    "location": "microwave"
+  }
+},
+{
+  "location": {
+    "homeId": "aicaring-home-132"
+  },
+  "living_room_temp_humidity_sensor": {
+    "temp": 22.5,
+    "location": "living_room"
+  }
+},
+{
+  "location": {
+    "homeId": "aicaring-home-132"
+  },
+  "living_room_temp_humidity_sensor": {
+    "humidity": 40,
+    "location": "living_room"
+  }
+},
+{
+  "location": {
+    "homeId": "aicaring-home-132"
+  },
+  "master_bedroom_bed_sensor": {
+    "presence": true,
+    "location": "master_bedroom"
+  }
+},
+{
+  "location": {
+    "homeId": "aicaring-home-132"
+  },
+  "kitchen_motion_sensor": {
+    "motion": true,
+    "last_motion": "2024-09-15T08:30:45.123Z",
+    "location": "kitchen"
+  }
+},
+{
+  "location": {
+    "homeId": "aicaring-home-132"
+  },
+  "microwave_door_entry_sensor": {
+    "status": true,
+    "location": "microwave"
+  }
+},
+{
+  "location": {
+    "homeId": "aicaring-home-132"
+  },
+  "living_room_temp_humidity_sensor": {
+    "temp": 22.5,
+    "location": "living_room"
+  }
+},
+{
+  "location": {
+    "homeId": "aicaring-home-132"
+  },
+  "living_room_temp_humidity_sensor": {
+    "humidity": 40,
+    "location": "living_room"
+  }
+},
+{
+  "location": {
+    "homeId": "aicaring-home-132"
+  },
+  "master_bedroom_bed_sensor": {
+    "presence": true,
+    "location": "master_bedroom"
+  }
+},
+{
+  "location": {
+    "homeId": "aicaring-home-132"
+  },
+  "kitchen_motion_sensor": {
+    "motion": true,
+    "last_motion": "2024-09-15T08:30:45.123Z",
+    "location": "kitchen"
+  }
+},
+{
+  "location": {
+    "homeId": "aicaring-home-132"
+  },
+  "kitchen_motion_sensor": {
+    "motion": true,
+    "last_motion": "2024-09-15T08:30:45.123Z",
+    "location": "kitchen"
+  }
+},
+{
+  "location": {
+    "homeId": "aicaring-home-132"
+  },
+  "microwave_door_entry_sensor": {
+    "status": true,
+    "location": "microwave"
+  }
+},
+{
+  "location": {
+    "homeId": "aicaring-home-132"
+  },
+  "living_room_temp_humidity_sensor": {
+    "temp": 22.5,
+    "location": "living_room"
+  }
+},
+{
+  "location": {
+    "homeId": "aicaring-home-132"
+  },
+  "living_room_temp_humidity_sensor": {
+    "humidity": 40,
+    "location": "living_room"
+  }
+},
+{
+  "location": {
+    "homeId": "aicaring-home-132"
+  },
+  "master_bedroom_bed_sensor": {
+    "presence": true,
+    "location": "master_bedroom"
+  }
+},
+{
+  "location": {
+    "homeId": "aicaring-home-132"
+  },
+  "kitchen_motion_sensor": {
+    "motion": true,
+    "last_motion": "2024-09-15T08:30:45.123Z",
+    "location": "kitchen"
+  }
+},
+{
+  "location": {
+    "homeId": "aicaring-home-132"
+  },
+  "microwave_door_entry_sensor": {
+    "status": true,
+    "location": "microwave"
+  }
+},
+{
+  "location": {
+    "homeId": "aicaring-home-132"
+  },
+  "living_room_temp_humidity_sensor": {
+    "temp": 22.5,
+    "location": "living_room"
+  }
+},
+{
+  "location": {
+    "homeId": "aicaring-home-132"
+  },
+  "living_room_temp_humidity_sensor": {
+    "humidity": 40,
+    "location": "living_room"
+  }
+},
+{
+  "location": {
+    "homeId": "aicaring-home-132"
+  },
+  "master_bedroom_bed_sensor": {
+    "presence": true,
+    "location": "master_bedroom"
+  }
+},
+{
+  "location": {
+    "homeId": "aicaring-home-132"
+  },
+  "kitchen_motion_sensor": {
+    "motion": true,
+    "last_motion": "2024-09-15T08:30:45.123Z",
+    "location": "kitchen"
+  }
+},
+{
+  "location": {
+    "homeId": "aicaring-home-132"
+  },
+  "microwave_door_entry_sensor": {
+    "status": true,
+    "location": "microwave"
+  }
+},
+{
+  "location": {
+    "homeId": "aicaring-home-132"
+  },
+  "living_room_temp_humidity_sensor": {
+    "temp": 22.5,
+    "location": "living_room"
+  }
+},
+{
+  "location": {
+    "homeId": "aicaring-home-132"
+  },
+  "living_room_temp_humidity_sensor": {
+    "humidity": 40,
+    "location": "living_room"
+  }
+},
+{
+  "location": {
+    "homeId": "aicaring-home-132"
+  },
+  "master_bedroom_bed_sensor": {
+    "presence": true,
+    "location": "master_bedroom"
+  }
+},
+{
+  "location": {
+    "homeId": "aicaring-home-132"
+  },
+  "kitchen_motion_sensor": {
+    "motion": true,
+    "last_motion": "2024-09-15T08:30:45.123Z",
+    "location": "kitchen"
+  }
+},
+{
+  "location": {
+    "homeId": "aicaring-home-132"
+  },
+  "microwave_door_entry_sensor": {
+    "status": true,
+    "location": "microwave"
+  }
+},
+{
+  "location": {
+    "homeId": "aicaring-home-132"
+  },
+  "living_room_temp_humidity_sensor": {
+    "temp": 22.5,
+    "location": "living_room"
+  }
+},
+{
+  "location": {
+    "homeId": "aicaring-home-132"
+  },
+  "living_room_temp_humidity_sensor": {
+    "humidity": 40,
+    "location": "living_room"
+  }
+},
+{
+  "location": {
+    "homeId": "aicaring-home-132"
+  },
+  "master_bedroom_bed_sensor": {
+    "presence": true,
+    "location": "master_bedroom"
+  }
+},
+{
+  "location": {
+    "homeId": "aicaring-home-132"
+  },
+  "kitchen_motion_sensor": {
+    "motion": true,
+    "last_motion": "2024-09-15T08:30:45.123Z",
+    "location": "kitchen"
+  }
+},
+{
+  "location": {
+    "homeId": "aicaring-home-132"
+  },
+  "microwave_door_entry_sensor": {
+    "status": true,
+    "location": "microwave"
+  }
+},
+{
+  "location": {
+    "homeId": "aicaring-home-132"
+  },
+  "living_room_temp_humidity_sensor": {
+    "temp": 22.5,
+    "location": "living_room"
+  }
+},
+{
+  "location": {
+    "homeId": "aicaring-home-132"
+  },
+  "living_room_temp_humidity_sensor": {
+    "humidity": 40,
+    "location": "living_room"
+  }
+},
+{
+  "location": {
+    "homeId": "aicaring-home-132"
+  },
+  "master_bedroom_bed_sensor": {
+    "presence": true,
+    "location": "master_bedroom"
+  }
+},
+{
+  "location": {
+    "homeId": "aicaring-home-132"
+  },
+  "kitchen_motion_sensor": {
+    "motion": true,
+    "last_motion": "2024-09-15T08:30:45.123Z",
+    "location": "kitchen"
+  }
+},
+{
+  "location": {
+    "homeId": "aicaring-home-132"
+  },
+  "microwave_door_entry_sensor": {
+    "status": true,
+    "location": "microwave"
+  }
+},
+{
+  "location": {
+    "homeId": "aicaring-home-132"
+  },
+  "living_room_temp_humidity_sensor": {
+    "temp": 22.5,
+    "location": "living_room"
+  }
+},
+{
+  "location": {
+    "homeId": "aicaring-home-132"
+  },
+  "living_room_temp_humidity_sensor": {
+    "humidity": 40,
+    "location": "living_room"
+  }
+},
+{
+  "location": {
+    "homeId": "aicaring-home-132"
+  },
+  "master_bedroom_bed_sensor": {
+    "presence": true,
+    "location": "master_bedroom"
+  }
+},
+{
+  "location": {
+    "homeId": "aicaring-home-132"
+  },
+  "kitchen_motion_sensor": {
+    "motion": true,
+    "last_motion": "2024-09-15T08:30:45.123Z",
+    "location": "kitchen"
+  }
+},
+{
+  "location": {
+    "homeId": "aicaring-home-132"
+  },
+  "microwave_door_entry_sensor": {
+    "status": true,
+    "location": "microwave"
+  }
+},
+{
+  "location": {
+    "homeId": "aicaring-home-132"
+  },
+  "living_room_temp_humidity_sensor": {
+    "temp": 22.5,
+    "location": "living_room"
+  }
+},
+{
+  "location": {
+    "homeId": "aicaring-home-132"
+  },
+  "living_room_temp_humidity_sensor": {
+    "humidity": 40,
+    "location": "living_room"
+  }
+},
+{
+  "location": {
+    "homeId": "aicaring-home-132"
+  },
+  "master_bedroom_bed_sensor": {
+    "presence": true,
+    "location": "master_bedroom"
+  }
+},
+{
+  "location": {
+    "homeId": "aicaring-home-132"
+  },
+  "kitchen_motion_sensor": {
+    "motion": true,
+    "last_motion": "2024-09-15T08:30:45.123Z",
+    "location": "kitchen"
+  }
+},
+{
+  "location": {
+    "homeId": "aicaring-home-132"
+  },
+  "microwave_door_entry_sensor": {
+    "status": true,
+    "location": "microwave"
+  }
+},
+{
+  "location": {
+    "homeId": "aicaring-home-132"
+  },
+  "living_room_temp_humidity_sensor": {
+    "temp": 22.5,
+    "location": "living_room"
+  }
+},
+{
+  "location": {
+    "homeId": "aicaring-home-132"
+  },
+  "living_room_temp_humidity_sensor": {
+    "humidity": 40,
+    "location": "living_room"
+  }
+},
+{
+  "location": {
+    "homeId": "aicaring-home-132"
+  },
+  "master_bedroom_bed_sensor": {
+    "presence": true,
+    "location": "master_bedroom"
+  }
+},
+{
+  "location": {
+    "homeId": "aicaring-home-132"
+  },
+  "kitchen_motion_sensor": {
+    "motion": true,
+    "last_motion": "2024-09-15T08:30:45.123Z",
+    "location": "kitchen"
+  }
+},
+{
+  "location": {
+    "homeId": "aicaring-home-132"
+  },
+  "microwave_door_entry_sensor": {
+    "status": true,
+    "location": "microwave"
+  }
+},
+{
+  "location": {
+    "homeId": "aicaring-home-132"
+  },
+  "living_room_temp_humidity_sensor": {
+    "temp": 22.5,
+    "location": "living_room"
+  }
+},
+{
+  "location": {
+    "homeId": "aicaring-home-132"
+  },
+  "living_room_temp_humidity_sensor": {
+    "humidity": 40,
+    "location": "living_room"
+  }
+},
+{
+  "location": {
+    "homeId": "aicaring-home-132"
+  },
+  "master_bedroom_bed_sensor": {
+    "presence": true,
+    "location": "master_bedroom"
+  }
+},
+{
+  "location": {
+    "homeId": "aicaring-home-132"
+  },
+  "kitchen_motion_sensor": {
+    "motion": true,
+    "last_motion": "2024-09-15T08:30:45.123Z",
+    "location": "kitchen"
+  }
+},
+{
+  "location": {
+    "homeId": "aicaring-home-132"
+  },
+  "microwave_door_entry_sensor": {
+    "status": true,
+    "location": "microwave"
+  }
+},
+{
+  "location": {
+    "homeId": "aicaring-home-132"
+  },
+  "living_room_temp_humidity_sensor": {
+    "temp": 22.5,
+    "location": "living_room"
+  }
+},
+{
+  "location": {
+    "homeId": "aicaring-home-132"
+  },
+  "living_room_temp_humidity_sensor": {
+    "humidity": 40,
+    "location": "living_room"
+  }
+},
+{
+  "location": {
+    "homeId": "aicaring-home-132"
+  },
+  "master_bedroom_bed_sensor": {
+    "presence": true,
+    "location": "master_bedroom"
+  }
+},
+{
+  "location": {
+    "homeId": "aicaring-home-132"
+  },
+  "kitchen_motion_sensor": {
+    "motion": true,
+    "last_motion": "2024-09-15T08:30:45.123Z",
+    "location": "kitchen"
+  }
+},
+{
+  "location": {
+    "homeId": "aicaring-home-132"
+  },
+  "microwave_door_entry_sensor": {
+    "status": true,
+    "location": "microwave"
+  }
+},
+{
+  "location": {
+    "homeId": "aicaring-home-132"
+  },
+  "living_room_temp_humidity_sensor": {
+    "temp": 22.5,
+    "location": "living_room"
+  }
+},
+{
+  "location": {
+    "homeId": "aicaring-home-132"
+  },
+  "living_room_temp_humidity_sensor": {
+    "humidity": 40,
+    "location": "living_room"
+  }
+},
+{
+  "location": {
+    "homeId": "aicaring-home-132"
+  },
+  "master_bedroom_bed_sensor": {
+    "presence": true,
+    "location": "master_bedroom"
+  }
+},
