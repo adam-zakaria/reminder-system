@@ -313,8 +313,8 @@ class StateMachineExecutor:
             
             func = locals()[func_name]
             print(generated_code)
-            breakpoint()
-            result = func(time=time, activity_data=activity_data, sensor_data=sensor_data, blackboard=blackboard)
+            #result = func(time=time, activity_data=activity_data, sensor_data=sensor_data, blackboard=blackboard)
+            result = func(sensor_data=sensor_data)
             state_machine_logger.debug(f"Execution result: {result}")
             return result
         except Exception as e:

@@ -221,7 +221,6 @@ class CodeGenerator:
         Returns:
         - str: The generated code.
         """
-        breakpoint()
         # Include error message in the prompt if provided
         if error_message:
             prompt = f"""

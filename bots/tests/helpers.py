@@ -119,7 +119,7 @@ def process_sensor_updates(sensor_updates_generator):
     start_time = time.time()
     while True:
         # Time ensures that the sensor updates are processed at least every 10 seconds 
-        print(f"start_time: {start_time} ---- time.time(): {time.time()}")
+        # print(f"start_time: {start_time} ---- time.time(): {time.time()}")
         if ((time.time() - start_time) >= 10) or (not sensor_update_queue.empty()):
             print("Time initiated processing")
             try:

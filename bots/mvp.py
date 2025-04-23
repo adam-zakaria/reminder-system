@@ -13,10 +13,9 @@ def main():
 
     # (0) Create the reminder (state machine)
     #conversation = "Please remind me to look at the sticky notes when I'm in the office"
-    #conversation = "Remind me to water the plants when I'm in the kitchen"
-    #helpers.create_reminder(conversation)
-
-    conversation = "Remind me to go to yoga at 7PM"
+    conversation = "Remind me to water the plants when I'm in the kitchen"
+    helpers.create_reminder(conversation)
+    conversation = "Remind me to go to yoga at 12PM"
     helpers.create_reminder(conversation)
     
     try:
