@@ -1,30 +1,17 @@
-You are tasked with generating a Python function that handles reminders based on user activity recognition and optional delays. The function should prioritize activity-based reminders when provided, but also be able to handle reminders with no activity or sensor data, relying only on explicitly mentioned delays or specific times. The function should calculate and handle delays using the provided `time` argument, which is a Python `datetime` object, **only when delays or specific times are explicitly mentioned in the task description**. If no delay is mentioned, the function should trigger the reminder immediately.
+You are working with a reminder system where a user issues a 'reminder prompt'. Reminders may be:
 
-The reminder summary is provided **only for context to design the function**. Use the information in the summary to understand the structure and behavior of the function, but the summary itself will not be an input to the function. Instead, the function inputs will include `time`, `activity_data`, `sensor_data`, and `blackboard`.
+1) Time based
+For example: "Remind to go to yoga at 7PM" 
+2) Sensor based
+For example: "Remind me to water the plants when in the kitchen".
 
-The function should check **only the necessary inputs** (activity data, sensor data, time, or delay) to trigger the reminder. If an input is not relevant for the reminder, it should be **ignored**, and **no conditions should be created** for it. Additionally, the **blackboard** should only be used when tracking states in **state machine logic**. All functionality must be implemented inside **one single function** using only `if` and `else` statements.
+You must generate a Python function which will decide whether or not a reminder should be triggered.
 
-**Special Requirements:**
-1. Design the function based on the context provided in the reminder summary, but do not use the summary as an input.
-2. Avoid hardcoding any values (e.g., "10 minutes"). Instead, dynamically extract and compute conditions from the provided inputs.
-3. Write clear and concise logic that directly addresses the requirements while avoiding unnecessary complexity or over-engineering.
-4. Ensure the function operates correctly for any combination of inputs, including cases where only a delay is provided or where activity and sensor data are included.
-5. Use the `time` argument (a Python `datetime` object) to calculate delays dynamically and handle reminder triggering.
-6. For specific time-based reminders (e.g., "at 7PM"), properly check if the current time matches or exceeds the target time.
-7. Verify that the function fulfills all requirements without introducing errors.
-
-**Special Rules**:
-1. If the word "after" or any similar term is used before an activity in the task description, it usually indicates the end of the activity. Handle such cases accordingly by interpreting the condition as occurring after the activity ends.
-2. If no activity or sensor data is provided, and the reminder only specifies a delay, calculate the delay from `time` and trigger the reminder after the specified time.
-3. Incorporate delays **only when explicitly mentioned in the task description**. If no delay is explicitly mentioned, the function should not introduce any delay and should trigger the reminder immediately.
-4. For specific time-based reminders (e.g., "at 7PM"), check if the current time has reached or passed the specified time.
-
-### Sensor Information:
-You are generating code to work with a reminder system that receives sensor data from smart home devices. Your function will receive translated sensor data in the `sensor_data` parameter.
+The reminder system receives sensor data from smart home devices. Your function must receive sensor data in the `sensor_data` parameter.
 
 ## Available Sensors and How to Access Them
 
-The translation logic creates the following sensor structures. Check sensors using this pattern:
+Check sensors using this pattern:
 `sensor_data.get('sensor_name', {}).get('property')`
 
 1. **Motion Sensors** (format: `{room}_motion_sensor`):
@@ -76,55 +63,36 @@ The translation logic creates the following sensor structures. Check sensors usi
     `sensor_data.get('master_bedroom_bed_sensor', {}).get('presence') == True`
 
 ### Function Requirements:
-1. **Handle the reminder conditions**: The function should dynamically parse and check the provided inputs such as task description, activity data, sensor data, or time to determine if the reminder should be triggered.
-    - For reminders with no activity or sensor data, use the task description to determine if this is a time-based reminder:
+1. **Handle the reminder conditions**: The function should check the appropriate conditions (time or sensor data) to determine if the reminder should be triggered.
+    - For time-based reminders:
         - For specific times (e.g., "at 7PM"), check if the current time has reached or passed the specified time.
-        - For delays (e.g., "in 10 minutes"), calculate the target time from the `time` argument.
+        - For delays (e.g., "in 10 minutes"), calculate the target time from the current time.
 
-2. **Check activity and minimal state data**:
-    - **Activity Data**: Trigger the reminder if a specified activity starts or ends (e.g., `'Meal_Preparation'` with `activity_status == 'start'` or inferred end conditions). Detectable activities are:
-        - `'Relax'`
-        - `'Meal_Preparation'`
-        - `'Leave_Home'`
-        - `'Sleeping'`
-        - `'Eating'`
-        - `'Bed_To_Toilet'`
-        - `'Enter_Home'`
-    - **State Data (Sensors)**: Use sensor data structure described above to check for relevant conditions.
+2. **Handle Time-Based Reminders**:
+    - **Specific Times**: For reminders at specific times (e.g., "at 7PM"), check if the current time has reached or passed the target time. The time could be in hours:minutes format (e.g., "7:00" or "19:00").
+    - **Delays**: For reminders with delays (e.g., "in 10 minutes"), calculate the target time by adding the specified delay to the current time.
+    - Use `datetime.now().time()` to get the current time, not a passed-in time parameter.
 
-3. **Handle Time-Based Reminders**:
-    - **Specific Times**: For reminders at specific times (e.g., "at 7PM"), check if the `time` argument has reached or passed the target time. The time could be in hours:minutes format (e.g., "7:00" or "19:00").
-    - **Delays**: For reminders with delays (e.g., "in 10 minutes"), use the `time` argument to calculate the target time by adding the specified delay.
-    - Both types should trigger the reminder when the condition is met (current time >= target time).
+3. **Trigger the reminder**: The function should return `True` **only if all relevant conditions are met** (time or sensor data). If any condition fails, it should return `False`.
 
-4. **Blackboard Use for State Machines Only**: The **blackboard** should only be used to track states in **state machine scenarios**. For non-state machine scenarios, the blackboard should be ignored.
+4. **Write simple, correct code**: Avoid unnecessary complexity, and ensure the function is easy to understand and maintain.
 
-5. **Trigger the reminder**: The function should return `True` **only if all relevant conditions are met** (parsed reminder details, activity, state data, or time). If any condition fails, it should return `False`.
-
-6. **Handle missing inputs**: The function should work with any combination of inputs, including cases where only a time or delay is provided or where activity and sensor data are included.
-
-7. **Write simple, correct code**: Avoid unnecessary complexity, and ensure the function is easy to understand and maintain.
-
-8. The entire functionality must be implemented inside **one single function** using only `if` and `else` statements.
+5. The entire functionality must be implemented inside **one single function** using only `if` and `else` statements.
 
 ### Function Inputs:
-- `time`: (Required) A `datetime` object representing the current time.
-- `activity_data`: (Optional) A dictionary containing human activity recognition. The `activity` can be one of the following: `'Relax'`, `'Meal_Preparation'`, `'Leave_Home'`, `'Sleeping'`, `'Eating'`, `'Bed_To_Toilet'`, or `'Enter_Home'`, and `activity_status` should be `'start'` or `'end'`.
 - `sensor_data`: (Optional) A dictionary containing sensor values identified by their **sensor names** as described in the Sensor Information section.
-- `blackboard`: (Optional) A dictionary used to track and store state information in **state machine logic**.
 
 ### Expected Behavior:
-- The function should dynamically parse the inputs (current time, activity data, sensor data) to determine if the reminder should be triggered.
-- For time-based reminders, check if the current time has reached or exceeded the specified time.
+- The function should check the appropriate conditions (time or sensor data) to determine if the reminder should be triggered.
+- For time-based reminders, the function should calculate the current time using `datetime.now().time()` and check if it has reached or exceeded the specified time.
 - The function should return `True` **only if all relevant conditions** for triggering the reminder are met; otherwise, return `False`.
 - The function should work even if some inputs are not provided or are not needed.
-- The **blackboard** should only be used for state machine tracking. It should be ignored in non-state machine scenarios.
 - The entire functionality must be implemented inside **one function** using only `if` and `else` statements.
 
 ### Sample Time-Based Reminder Implementation:
 For a reminder like "Remind me to go to yoga at 7PM", the function should check if the current time is at or after 7PM. Example logic:
 ```python
-def reminder(time=None, activity_data=None, sensor_data=None, blackboard=None):
+def reminder(sensor_data=None):
     # Check if the current time has reached or passed 7:00 PM (19:00)
     from datetime import datetime, time
     if datetime.now().time() >= time(19, 0):
@@ -136,7 +104,7 @@ def reminder(time=None, activity_data=None, sensor_data=None, blackboard=None):
 
 1. For a reminder like "Remind me to take my medication at 7:45 PM":
 ```python
-def reminder(time=None, activity_data=None, sensor_data=None, blackboard=None):
+def reminder(sensor_data=None):
     from datetime import datetime, time
     # 7:45 PM
     if datetime.now().time() >= time(19, 45):
@@ -146,7 +114,7 @@ def reminder(time=None, activity_data=None, sensor_data=None, blackboard=None):
 
 2. For a reminder like "Remind me to have lunch between noon and 1 PM":
 ```python
-def reminder(time=None, activity_data=None, sensor_data=None, blackboard=None):
+def reminder(sensor_data=None):
     from datetime import datetime, time
     # Check if current time is between noon and 1 PM
     current_time = datetime.now().time()
@@ -157,7 +125,7 @@ def reminder(time=None, activity_data=None, sensor_data=None, blackboard=None):
 
 3. For a reminder like "Remind me to take my evening medication after 10 PM":
 ```python
-def reminder(time=None, activity_data=None, sensor_data=None, blackboard=None):
+def reminder(sensor_data=None):
     from datetime import datetime, time
     # For "Remind me to take medication after 10PM"
     if datetime.now().time() >= time(22, 0):  # 10:00 PM
@@ -165,8 +133,52 @@ def reminder(time=None, activity_data=None, sensor_data=None, blackboard=None):
     return False
 ```
 
+### Sample Sensor-Based Reminder Implementation:
+For a reminder like "Remind me to water the plants when I'm in the kitchen", the function should check if the person is in the kitchen:
+```python
+def reminder(sensor_data=None):
+    # Check if person is in the kitchen
+    if sensor_data and sensor_data.get('kitchen_motion_sensor', {}).get('motion') == True:
+        return True
+    return False
+```
+
+### Additional Sensor-Based Reminder Examples:
+
+1. For a reminder like "Remind me to turn off the lights when I leave the living room":
+```python
+def reminder(sensor_data=None):
+    # Check if the person is not in the living room (motion is False)
+    if sensor_data and sensor_data.get('living_room_motion_sensor', {}).get('motion') == False:
+        return True
+    return False
+```
+
+2. For a reminder like "Remind me to check the food in the microwave when it's done":
+```python
+def reminder(sensor_data=None):
+    # Check if microwave power is off but was recently on
+    if sensor_data and sensor_data.get('microwave_smart_cable', {}).get('power') == 0:
+        return True
+    return False
+```
+
+3. For a reminder like "Remind me to take my medicine when I get out of bed in the morning":
+```python
+def reminder(sensor_data=None):
+    from datetime import datetime, time
+    # Check if it's morning (between 5 AM and 10 AM) and person is not in bed
+    current_time = datetime.now().time()
+    morning_time = current_time >= time(5, 0) and current_time <= time(10, 0)
+    out_of_bed = sensor_data and sensor_data.get('master_bedroom_bed_sensor', {}).get('presence') == False
+    
+    if morning_time and out_of_bed:
+        return True
+    return False
+```
+
 ### Task:
-Generate **only the Python code** for this function based on the inputs and behavior described above. The function must handle time-based reminders by checking the `time` argument. **Do not include any text, explanations, or comments in the output—just the Python code.**
+Generate **only the Python code** for this function based on the inputs and behavior described above. **Do not include any text, explanations, or comments in the output—just the Python code.**
 
 Request Summary Json:
 {reminder_json} 
