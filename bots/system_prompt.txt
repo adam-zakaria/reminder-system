@@ -126,42 +126,43 @@ For a reminder like "Remind me to go to yoga at 7PM", the function should check 
 ```python
 def reminder(time=None, activity_data=None, sensor_data=None, blackboard=None):
     # Check if the current time has reached or passed 7:00 PM (19:00)
-    from datetime import datetime, time as datetime_time
-    if time and time.time() >= datetime_time(19, 0):
+    from datetime import datetime, time
+    if datetime.now().time() >= time(19, 0):
         return True
     return False
 ```
 
 ### Additional Time-Based Reminder Examples:
 
-1. For "at or after" time comparison (most common for reminders):
+1. For a reminder like "Remind me to take my medication at 7:45 PM":
 ```python
 def reminder(time=None, activity_data=None, sensor_data=None, blackboard=None):
-    from datetime import datetime, time as datetime_time
-    target_time = datetime_time(19, 45)  # 7:45 PM
-    # Trigger if current time is at or after target time
-    return time and time.time() >= target_time
+    from datetime import datetime, time
+    # 7:45 PM
+    if datetime.now().time() >= time(19, 45):
+        return True
+    return False
 ```
 
-2. For checking within a time window:
+2. For a reminder like "Remind me to have lunch between noon and 1 PM":
 ```python
 def reminder(time=None, activity_data=None, sensor_data=None, blackboard=None):
-    from datetime import datetime, time as datetime_time
-    start_time = datetime_time(12, 0)  # Noon
-    end_time = datetime_time(13, 0)    # 1 PM
-    current = time.time()
-    # Trigger if current time is between start and end time (inclusive)
-    return time and current >= start_time and current <= end_time
+    from datetime import datetime, time
+    # Check if current time is between noon and 1 PM
+    current_time = datetime.now().time()
+    if current_time >= time(12, 0) and current_time <= time(13, 0):
+        return True
+    return False
 ```
 
-3. For handling time correctly across day boundaries (e.g., "after 10PM"):
+3. For a reminder like "Remind me to take my evening medication after 10 PM":
 ```python
 def reminder(time=None, activity_data=None, sensor_data=None, blackboard=None):
-    from datetime import datetime, time as datetime_time
+    from datetime import datetime, time
     # For "Remind me to take medication after 10PM"
-    target_time = datetime_time(22, 0)  # 10:00 PM
-    # Trigger if current time is at or after 10PM
-    return time and time.time() >= target_time
+    if datetime.now().time() >= time(22, 0):  # 10:00 PM
+        return True
+    return False
 ```
 
 ### Task:
