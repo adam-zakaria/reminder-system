@@ -4,38 +4,32 @@ import sys
 import os
 from unittest.mock import MagicMock
 import uuid
-# Add the parent directory to the Python path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import time
-
 from state_machine_executor import StateMachineExecutor
-from summarization import SummarizationBot
-from code_generation import CodeGenerator
 from code_analyser import analyse_code
-from chat_assistant import ChatAssistant
 sys.path.append('/Users/azakaria/Code/neu/reminder-system/bots/mvp/mqtt_client')
 from subscribe import sensor_update_queue
+import openai
+
+# Configure OpenAI
+openai_api_key = os.environ.get("OPENAI_API_KEY")
+client = openai.OpenAI(api_key=openai_api_key)
 
 state_machines = []
+
 def create_reminder(conversation):
-    # i.e. "Please remind me to look at the sticky notes when I'm in the office"
-    # summarization = summarize_conversation(conversation)
+    # generate reminder code AKA state machine code
+    code_output = client.responses.create(
+        model="gpt-4o-2024-11-20",
+        instructions=open('system_prompt.txt', 'r').read(),
+        input=conversation,
+    ).output_text
 
-    # Don't use the summarization bot for now
-    #summarization_bot = SummarizationBot()
-    #summarization = summarization_bot.summarize_conversation(conversation)
-    #transformed_summary = ChatAssistant.transform_summary_for_code_generation(summarization["content"])
-
-    code_output = CodeGenerator.generate_code(conversation)
-
-    # Create an instance of StateMachineExecutor
+    # Create state machine object (includes metadata)
     executor = StateMachineExecutor()
     cleaned_code = executor.clean_generated_code(code_output)
     renamed_code = executor.rename_function_in_code(cleaned_code, "mvp_function")       
-    # If the same level of validation is desired as internally in the StateMachineExecutor
-    # valid = executor.validate_code(renamed_code)  # This step is missing in your test
-    
-    # Create complete state machine object
     state_machine = {
         "stateMachineId": str(uuid.uuid4()),
         "sessionId": "test-session",
@@ -43,6 +37,8 @@ def create_reminder(conversation):
         "analysed_data": analyse_code(renamed_code),
         "conversation": conversation,
     }
+
+    # add state machine to list of state machines
     state_machines.append(state_machine)
 
 def send_notification(title, content, client_id="ep6", notification_sound_id=1, light_category_id=1):
