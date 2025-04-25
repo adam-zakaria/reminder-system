@@ -36,3 +36,16 @@ In XCode open:
 `/Users/azakaria/Code/neu/reminder-system/iOS Application/MealPrep.xcodeproj`
 * Select iPad 10th generation in the top middle bar.
 * Press run icon.
+
+
+# AWS Installation
+## Copy the bashrc
+
+## Install python reqs
+sudo apt update && sudo apt install -y build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev curl llvm libncurses5-dev libncursesw5-dev xz-utils tk-dev libffi-dev liblzma-dev python3-openssl
+
+pyenv install 3.11
+source ~/.bashrc
+pyenv global 3.11
+python -m pip install pipenv
+
