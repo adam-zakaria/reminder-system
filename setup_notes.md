@@ -74,6 +74,7 @@ npm install
 npm start
 Errors with complaints about user postgres not existing, so it needs to be created:
 
+# replace azakaria with instance user
 psql -U azakaria -d postgres
 CREATE ROLE postgres WITH LOGIN SUPERUSER PASSWORD 'your_password';
 

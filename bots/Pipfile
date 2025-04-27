@@ -5,6 +5,7 @@ name = "pypi"
 
 [packages]
 fastapi = "*"
+bcrypt = "*"
 pydantic = "*"
 langchain-openai = "*"
 grpcio = "*"
@@ -18,6 +19,13 @@ langchain = "*"
 langchain-community = "*"
 ipdb = "*"
 awsiotsdk="1.22.2"
+uvicorn="*"
+
+# grpc
+grpcio="*"
+requests="*"
+schedule="*"
+googleapis-common-protos="*"
 
 [dev-packages]
 pytest = "*"

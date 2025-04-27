@@ -39,7 +39,14 @@ In XCode open:
 
 
 # AWS Installation
+
+## copy .ssh for git stuff
+
+rsync /Users/azakaria/.ssh gt:~/.ssh
+
 ## Copy the bashrc
+rsync /Users/azakaria/Code/dot_files/bashrc gt:~/.bashrc 
+
 
 ## Install python reqs
 sudo apt update && sudo apt install -y build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev curl llvm libncurses5-dev libncursesw5-dev xz-utils tk-dev libffi-dev liblzma-dev python3-openssl
@@ -49,3 +56,36 @@ source ~/.bashrc
 pyenv global 3.11
 python -m pip install pipenv
 
+Create a .env with the following:
+```
+GRPC_PORT=50051
+NODE_PORT=7628
+OPENAI_API_KEY= <REPLACE_WITH_YOUR_KEY>
+```
+
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+
+npm i -g pm2
+
+# follow these instructions
+./start.sh
+setup_nodes.md also has some helpful details
+
+# Install postgres
+sudo apt update && sudo apt install -y postgresql postgresql-contrib
+
+
+
+# From Sujendra.md
+## Start services in the following order:
+PostgreSQL Database
+Bot Service (LLM Backend)
+GRPC Server
+Node.js Backend
+AI Caring Interface
+
+## Port Configuration
+Bot Service: 4005
+GRPC Server: 50051
+Node.js Backend: 7628
+AI Caring Interface: 3000
