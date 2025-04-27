@@ -130,9 +130,12 @@ def process_sensor_updates(sensor_updates_generator):
                 sensor_update = None
 
             # Process each state machine with this sensor update
-            for state_machine in state_machines:
+            for state_machine in state_machines[:]:  # Create a copy of the list for safe iteration
                 print("process_sensor_update()")
                 result = process_sensor_update(state_machine, sensor_update)
                 if result:
                     print(f"Reminder triggered: {result}")
+                    # Remove the triggered state machine from the list
+                    state_machines.remove(state_machine)
+                    print(f"State machine removed. {len(state_machines)} remaining.")
             start_time = time.time()

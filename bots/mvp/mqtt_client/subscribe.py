@@ -32,16 +32,6 @@ TOPIC = "aichome/aicaring-home-" + TOPIC_HOME_ID + "/source_mqtt/orcatech"
 # Global message queue for the generator
 sensor_update_queue = queue.Queue()
 
-# Generator function that yields new sensor updates as they arrive
-def sensor_updates():
-    while True:
-        # Wait for a message to be available in the queue
-        sensor_update = sensor_update_queue.get()
-        # Return the message to the consumer
-        yield sensor_update
-        # Mark the task as done
-        sensor_update_queue.task_done()
-
 # event_loop_group = io.EventLoopGroup(1)
 # host_resolver = io.DefaultHostResolver(event_loop_group)
 # client_bootstrap = io.ClientBootstrap(event_loop_group, host_resolver)
@@ -343,7 +333,16 @@ def subscribe_to_sensors(test=False, test_file=None):
         thread = threading.Thread(target=keep_alive_thread, daemon=True)
         thread.start()
     
-    # Return the generator that yields sensor updates
+    # Generator function that yields new sensor updates as they arrive
+    def sensor_updates():
+        while True:
+            # Wait for a message to be available in the queue, --test and normal will put messages in the queue
+            sensor_update = sensor_update_queue.get()
+            # Return the message to the consumer
+            yield sensor_update
+            # Mark the task as done
+            sensor_update_queue.task_done()
+
     return sensor_updates()
 
 if __name__ == '__main__':

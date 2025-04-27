@@ -19,6 +19,7 @@ langchain = "*"
 langchain-community = "*"
 ipdb = "*"
 awsiotsdk="1.22.2"
+openai="*"
 uvicorn="*"
 
 # grpc
