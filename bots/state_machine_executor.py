@@ -6,7 +6,6 @@ from threading import Timer
 import requests
 import re
 from inspect import signature, isfunction
-from util.scheduler import SchedulerService  # Scheduler integration
 from loggers.state_machine_logging import state_machine_logger
 
 
@@ -24,9 +23,6 @@ with open(SENSOR_MAPPING_FILE, 'r') as f:
     SENSOR_MAPPING = json.load(f)
 state_machine_logger.info("Loaded SENSOR_MAPPING: %s", SENSOR_MAPPING)
 
-# Scheduler instance for time-based state machines
-scheduler = SchedulerService()
-scheduler.start()
 
 class StateMachineExecutor:
     def __init__(self, test_mode=False):
