@@ -1,3 +1,6 @@
+# Current time based
+* time based reminders are getting pushed to the ipad on localhost, sensor based are not
+
 # Install packages
 pipenv shell
 pipenv install
