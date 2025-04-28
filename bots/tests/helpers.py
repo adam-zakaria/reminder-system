@@ -20,9 +20,10 @@ state_machines = []
 
 def create_reminder(conversation):
     # generate reminder code AKA state machine code
+    breakpoint()
     code_output = client.responses.create(
         model="gpt-4o-2024-11-20",
-        instructions=open('system_prompt.txt', 'r').read(),
+        instructions=open('system_prompt.txt', 'r').read(), # system_prompt.txt is in project root, this will probably break
         input=conversation,
     ).output_text
 
