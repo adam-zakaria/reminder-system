@@ -5,6 +5,7 @@ name = "pypi"
 
 [packages]
 fastapi = "*"
+python-dotenv="*"
 bcrypt = "*"
 pydantic = "*"
 langchain-openai = "*"

@@ -2,6 +2,8 @@ import argparse
 import json
 import sys
 import os
+# Import config to load environment variables
+import config
 from mvp.mqtt_client.subscribe import subscribe_to_sensors
 from tests import helpers
 

@@ -8,7 +8,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import time
 from state_machine_executor import StateMachineExecutor
 from code_analyser import analyse_code
-sys.path.append('/Users/azakaria/Code/neu/reminder-system/bots/mvp/mqtt_client')
+sys.path.append('../bots/mvp/mqtt_client')
 from subscribe import sensor_update_queue
 import openai
 
