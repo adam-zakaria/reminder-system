@@ -21,7 +21,6 @@ PARTIAL_MATCH_TIMEOUT = timedelta(minutes=5)
 # Load the sensor mapping once at startup
 with open(SENSOR_MAPPING_FILE, 'r') as f:
     SENSOR_MAPPING = json.load(f)
-state_machine_logger.info("Loaded SENSOR_MAPPING: %s", SENSOR_MAPPING)
 
 
 class StateMachineExecutor:
@@ -308,7 +307,7 @@ class StateMachineExecutor:
             state_machine_logger.debug(f"Function name: {func_name}")
             
             func = locals()[func_name]
-            print(generated_code)
+            #print(generated_code)
             #result = func(time=time, activity_data=activity_data, sensor_data=sensor_data, blackboard=blackboard)
             result = func(sensor_data=sensor_data)
             state_machine_logger.debug(f"Execution result: {result}")

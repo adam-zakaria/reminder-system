@@ -237,7 +237,6 @@ def run_test_mode(test_file):
     Args:
         test_file (str): Path to the JSON file with test messages
     """
-    print(f"Running in test mode using file: {test_file}")
     
     # Load test data
     test_messages = load_test_data(test_file)
@@ -245,11 +244,9 @@ def run_test_mode(test_file):
         print("No test messages found or error loading file")
         return
     
-    print(f"Loaded {len(test_messages)} test messages")
-    
     # Process each message
     for i, message in enumerate(test_messages):
-        print(f"Processing test message {i+1}/{len(test_messages)}")
+        print(f"Receiving sensor message {i+1}/{len(test_messages)}")
         
         # Translate the message to reminder system format
         translated_data = translate_to_reminder_format(message)
@@ -265,7 +262,7 @@ def run_test_mode(test_file):
         # Pause between messages for realistic simulation
         time.sleep(0.5)
     
-    print("Test mode completed")
+    print("All sensor messages have been queued")
 
 def subscribe_to_sensors(test=False, test_file=None):
     """
@@ -282,6 +279,8 @@ def subscribe_to_sensors(test=False, test_file=None):
         if not test_file:
             raise ValueError("test_file must be specified when test=True")
         # Run test mode in a thread so it doesn't block
+
+        print(f"Running test mode in thread, reading from: {test_file}")
         thread = threading.Thread(target=run_test_mode, args=(test_file,), daemon=True)
         thread.start()
     else:

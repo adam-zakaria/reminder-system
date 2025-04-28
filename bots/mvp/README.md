@@ -1,5 +1,7 @@
 # Current time based
 * time based reminders are getting pushed to the ipad on localhost, sensor based are not
+* Something is broken running this on ec2 - the state machine is for kitchen motion is not returning true when it is expected.
+Also, state machines should be cleared each run.
 
 # Install packages
 pipenv shell

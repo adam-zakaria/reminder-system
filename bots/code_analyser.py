@@ -69,20 +69,20 @@ class CodeAnalyser(ast.NodeVisitor):
         # Check for direct usage of sensor variable names
         if node.s in self.sensor_mappings.values():
             self.sensors_used.add(node.s)
-            print(f"Detected sensor: {node.s}")
+            #print(f"Detected sensor: {node.s}")
         self.generic_visit(node)
     
     def visit_Name(self, node):
         # Check for sensor variable usages
         if node.id in self.sensor_mappings.values():
             self.sensors_used.add(node.id)
-            print(f"Detected sensor: {node.id}")
+            #print(f"Detected sensor: {node.id}")
         self.generic_visit(node)
 
 def analyse_code(code: str) -> Dict[str, Any]:
     """Analyze code for activities and sensors"""
     try:
-        print(f"Analyzing code:\n{code}")
+        #print(f"Analyzing code:\n{code}")
         tree = ast.parse(code)
         analyzer = CodeAnalyser(sensor_mappings, set(ACTIVITIES))
         analyzer.visit(tree)
@@ -94,7 +94,7 @@ def analyse_code(code: str) -> Dict[str, Any]:
                 if activity["activity"] in ACTIVITIES
             ]
         }
-        print(f"Analysis result: {result}")
+        #print(f"Analysis result: {result}")
         return result
         
     except SyntaxError as e:
