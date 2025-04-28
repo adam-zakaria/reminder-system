@@ -1352,6 +1352,7 @@
     "location": "master_bedroom"
   }
 },
+<<<<<<< HEAD
 {
   "location": {
     "homeId": "aicaring-home-132"
@@ -1582,3 +1583,5 @@
     "location": "master_bedroom"
   }
 },
+=======
+>>>>>>> 2925922f93d457acbe8af2924cfd4a21391d761b
