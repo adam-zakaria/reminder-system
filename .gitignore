@@ -1,10 +1,10 @@
+**/__pycache__/
 bots/tests/output
+bots/__pycache__/
 
 # Node modules
 node_modules/
 
-Datastore
-Datastore/state_machines.json
 bots/Datastore/scheduler.json
 bots/conversation_store.xlsx
 docs
@@ -83,16 +83,11 @@ Evaluation-set/
 Fine-tunning/
 bots/.converage
 
-# Python
+# Python cache files
+bots/__pycache__/
 __pycache__/
-*/__pycache__/
 *.py[cod]
 *$py.class
-*.so
-.pytest_cache/
-*/.pytest_cache/
-.coverage
-*/.coverage
 
 # Dataset and evaluation files
 Fine-tunning
