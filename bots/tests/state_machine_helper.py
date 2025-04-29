@@ -85,8 +85,6 @@ def send_notification(title, content, client_id="ep6", notification_sound_id=1, 
         return False
 
 def execute_state_machine(state_machine, sensor_update):
-
-    breakpoint()
     current_time = datetime.now()
     executor = StateMachineExecutor()
     result = executor.execute_generated_code(
