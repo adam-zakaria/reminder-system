@@ -1,5 +1,4 @@
 import argparse
-import json
 import sys
 import os
 # Import config to load environment variables
@@ -13,25 +12,24 @@ def main():
     parser.add_argument('--test', type=str, help='Run in test mode with the specified JSON file')
     args = parser.parse_args()
 
-    # (0) Create the reminder (state machine)
-    #conversation = "Please remind me to look at the sticky notes when I'm in the office"
+    # (0) Create the reminders (state machines)
     conversation = "Remind me to water the plants when I'm in the kitchen"
+    # state_machines global is scoped to helpers.py - it works but is not good practice
     helpers.create_reminder(conversation)
     conversation = "Remind me to go to yoga at 12PM"
     helpers.create_reminder(conversation)
     
     try:
-        # (1) Get the sensor updates
+        # (1) Subscribe to sensor updates
         if args.test:
-            print(f"Running in test mode using file: {args.test}")
-            updates = subscribe_to_sensors(test=True, test_file=args.test)
+            print(f"Subscribing to sensors (test mode) in separate thread using test file: {args.test}")
+            sensor_update_queue = subscribe_to_sensors(test=True, test_file=args.test)
         else:
             print("Running in MQTT mode")
-            updates = subscribe_to_sensors(test=False)
+            sensor_update_queue = subscribe_to_sensors(test=False)
         
-        # (2) Process the sensor updates (infinte loop)
-        print("Starting to process sensor updates...")
-        helpers.process_sensor_updates(updates)
+        # (2) Execute state machines in an infinite loop
+        helpers.execute_state_machines(sensor_update_queue)
     except KeyboardInterrupt:
         print("\nReminder system stopped by user")
         sys.exit(0)

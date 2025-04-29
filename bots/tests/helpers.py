@@ -1,8 +1,6 @@
-import pytest
 from datetime import datetime
 import sys
 import os
-from unittest.mock import MagicMock
 import uuid
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import time
@@ -20,7 +18,6 @@ state_machines = []
 
 def create_reminder(conversation):
     # generate reminder code AKA state machine code
-    breakpoint()
     code_output = client.responses.create(
         model="gpt-4o-2024-11-20",
         instructions=open('system_prompt.txt', 'r').read(), # system_prompt.txt is in project root, this will probably break
@@ -87,7 +84,7 @@ def send_notification(title, content, client_id="ep6", notification_sound_id=1, 
         print(f"Failed to send notification: {e}")
         return False
 
-def process_sensor_update(state_machine, sensor_update):
+def execute_state_machine(state_machine, sensor_update):
     current_time = datetime.now()
     executor = StateMachineExecutor()
     result = executor.execute_generated_code(
@@ -111,29 +108,27 @@ def process_sensor_update(state_machine, sensor_update):
     
     return result
 
-
-def process_sensor_updates(sensor_updates_generator):
+def execute_state_machines(sensor_update_queue):
     """
     For each sensor update, process each reminder
+    
+    Args:
+        sensor_update_queue (queue.Queue): Queue containing sensor updates
     """
-    print("process_sensor_updates()")
     start_time = time.time()
     while True:
-        # Time ensures that the sensor updates are processed at least every 10 seconds 
-        # print(f"start_time: {start_time} ---- time.time(): {time.time()}")
-        if ((time.time() - start_time) >= 10) or (not sensor_update_queue.empty()):
-            print("Time initiated processing")
-            try:
+        # Execute state machines at least every 10 seconds or when there is a sensor update
+        time_update = ((time.time() - start_time) >= 10)
+        sensor_update = not sensor_update_queue.empty()
+        if time_update or sensor_update:
+            if sensor_update:
                 sensor_update = sensor_update_queue.get(timeout=0.1)
-                print('Got sensor update')
-            except Exception as e:
-                print(f"Queue empty or error getting sensor update: {e}")
-                sensor_update = None
+                print(f'Got sensor update. New queue size: {sensor_update_queue.qsize()}', flush=True)
 
-            # Process each state machine with this sensor update
+            # Execute all state machines
+            print("Executing state machines from the beginning", flush=True)
             for state_machine in state_machines[:]:  # Create a copy of the list for safe iteration
-                print("process_sensor_update()")
-                result = process_sensor_update(state_machine, sensor_update)
+                result = execute_state_machine(state_machine, sensor_update)
                 if result:
                     print(f"Reminder triggered: {result}")
                     # Remove the triggered state machine from the list

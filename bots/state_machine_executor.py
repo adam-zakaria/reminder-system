@@ -31,8 +31,8 @@ class StateMachineExecutor:
             self.__state_machine_file = os.path.join(test_dir, "test_state_machines.json")
         else:
             self.__state_machine_file = STATE_MACHINE_FILE
-        self.__state_machines: dict = self.load_state_machines()
-        self.__blackboard: dict = self.load_blackboard()
+        #self.__state_machines: dict = self.load_state_machines()
+        #self.__blackboard: dict = self.load_blackboard()
 
     @property
     def state_machines(self) -> dict:

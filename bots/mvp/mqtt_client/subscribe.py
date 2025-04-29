@@ -273,14 +273,12 @@ def subscribe_to_sensors(test=False, test_file=None):
         test_file (str): Path to the test file when running in test mode
         
     Returns:
-        generator: Generator function that yields sensor updates as they arrive
+        queue.Queue: Queue containing sensor updates
     """
     if test:
         if not test_file:
             raise ValueError("test_file must be specified when test=True")
         # Run test mode in a thread so it doesn't block
-
-        print(f"Running test mode in thread, reading from: {test_file}")
         thread = threading.Thread(target=run_test_mode, args=(test_file,), daemon=True)
         thread.start()
     else:
@@ -332,17 +330,7 @@ def subscribe_to_sensors(test=False, test_file=None):
         thread = threading.Thread(target=keep_alive_thread, daemon=True)
         thread.start()
     
-    # Generator function that yields new sensor updates as they arrive
-    def sensor_updates():
-        while True:
-            # Wait for a message to be available in the queue, --test and normal will put messages in the queue
-            sensor_update = sensor_update_queue.get()
-            # Return the message to the consumer
-            yield sensor_update
-            # Mark the task as done
-            sensor_update_queue.task_done()
-
-    return sensor_updates()
+    return sensor_update_queue
 
 if __name__ == '__main__':
     # Parse command line arguments
@@ -354,13 +342,9 @@ if __name__ == '__main__':
     try:
         if args.test:
             # Test mode with the specified file
-            updates = subscribe_to_sensors(test=True, test_file=args.test)
+            subscribe_to_sensors(test=True, test_file=args.test)
         else:
             # Normal MQTT mode
-            updates = subscribe_to_sensors(test=False)
-        
-        # Process updates in standalone mode
-        for update in updates:
-            print(f"Sensor update: {json.dumps(update, indent=2)}")
+            subscribe_to_sensors(test=False)
     except KeyboardInterrupt:
         print("Subscription stopped by user")
