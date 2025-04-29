@@ -16,7 +16,7 @@ def main():
     conversation = "Remind me to water the plants when I'm in the kitchen"
     # state_machines global is scoped to helpers.py - it works but is not good practice
     helpers.create_reminder(conversation)
-    conversation = "Remind me to go to yoga at 12PM"
+    conversation = "Remind me to go to yoga at 12AM"
     helpers.create_reminder(conversation)
     
     try:

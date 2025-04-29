@@ -85,6 +85,8 @@ def send_notification(title, content, client_id="ep6", notification_sound_id=1, 
         return False
 
 def execute_state_machine(state_machine, sensor_update):
+
+    breakpoint()
     current_time = datetime.now()
     executor = StateMachineExecutor()
     result = executor.execute_generated_code(
@@ -123,7 +125,6 @@ def execute_state_machines(sensor_update_queue):
         if time_update or sensor_update:
             if sensor_update:
                 sensor_update = sensor_update_queue.get(timeout=0.1)
-                print(f'Got sensor update. New queue size: {sensor_update_queue.qsize()}', flush=True)
 
             # Execute all state machines
             print("Executing state machines from the beginning", flush=True)
