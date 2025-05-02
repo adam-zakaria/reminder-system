@@ -41,7 +41,8 @@ def create_state_machine(conversation):
     }
 
     # add state machine to list of state machines
-    state_machines.append(state_machine)
+    #state_machines.append(state_machine)
+    return state_machine
 
 def send_notification(title, content, client_id="ep6", notification_sound_id=1, light_category_id=1):
     """
@@ -112,7 +113,7 @@ def execute_state_machine(state_machine, sensor_update):
     
     return result
 
-def execute_state_machines(sensor_update_queue):
+def execute_state_machines(state_machines, sensor_update_queue):
     """
     For each sensor update, process each reminder
     
