@@ -104,11 +104,18 @@ def execute_state_machine(state_machine, sensor_update):
     if result is True:
         # Get the original conversation as the reminder text
         reminder_text = state_machine.get("conversation", "Reminder triggered")
+
+        # Depending on mode, set sticky note content
+        # Sticky note content not currently implemented in automatic code generation
+        if state_machine.get("sticky_note"):
+            content = state_machine["sticky_note"]
+        else:
+            content = state_machine["conversation"]
         
         # Send notification with the original conversation as content
         send_notification(
             title="Reminder",
-            content=state_machine["conversation"]
+            content=content
         )
     
     return result
