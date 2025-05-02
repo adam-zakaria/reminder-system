@@ -24,15 +24,20 @@ with open(SENSOR_MAPPING_FILE, 'r') as f:
 
 
 class StateMachineExecutor:
-    def __init__(self, test_mode=False):
-        """Initialize with test mode option"""
+    def __init__(self, home_id: str = None, user_id: str = None, test_mode=False):
+        """Initialize with home_id, user_id and test mode option"""
+        self.home_id = home_id
+        self.user_id = user_id
         if test_mode:
             test_dir = os.path.join(os.path.dirname(__file__), "tests", "test_data")
             self.__state_machine_file = os.path.join(test_dir, "test_state_machines.json")
+            self.__sensor_mapping_file = os.path.join(test_dir, "test_sensor_mapping.json")
         else:
             self.__state_machine_file = STATE_MACHINE_FILE
-        #self.__state_machines: dict = self.load_state_machines()
-        #self.__blackboard: dict = self.load_blackboard()
+            self.__sensor_mapping_file = SENSOR_MAPPING_FILE
+        self.__state_machines = self.load_state_machines()
+        self.__blackboard = self.load_blackboard()
+        self.__sensor_mapping = self.load_sensor_mapping()
 
     @property
     def state_machines(self) -> dict:
@@ -56,12 +61,16 @@ class StateMachineExecutor:
             with open(STATE_MACHINE_FILE, 'r') as file:
                 try:
                     state_machine_logger.debug("Loading state machines...")
-                    return json.load(file)
+                    data = json.load(file)
+                    # Initialize structure if not exists
+                    if "homes" not in data:
+                        data = {"homes": {}}
+                    return data
                 except json.JSONDecodeError:
                     state_machine_logger.warning("JSON file corrupted. Resetting to empty dictionary.")
-                    return {}
+                    return {"homes": {}}
         state_machine_logger.info("No existing state machines found.")
-        return {}
+        return {"homes": {}}
 
     def save_state_machines(self) -> None:
         """Save state machines back to the JSON file."""
@@ -76,12 +85,16 @@ class StateMachineExecutor:
             with open(BLACKBOARD_FILE, 'r') as file:
                 try:
                     state_machine_logger.debug("Loading blackboard data...")
-                    return json.load(file)
+                    data = json.load(file)
+                    # Initialize structure if not exists
+                    if "homes" not in data:
+                        data = {"homes": {}}
+                    return data
                 except json.JSONDecodeError:
                     state_machine_logger.warning("Blackboard JSON file corrupted. Resetting to empty dictionary.")
-                    return {}
+                    return {"homes": {}}
         state_machine_logger.info("No existing blackboard data found.")
-        return {}
+        return {"homes": {}}
 
     def save_blackboard(self) -> None:
         """Save blackboard data to the JSON file."""
@@ -90,9 +103,53 @@ class StateMachineExecutor:
             json.dump(self.__blackboard, file, indent=2)
         state_machine_logger.info("Blackboard saved successfully.")
 
+    def load_sensor_mapping(self) -> dict:
+        """Load sensor mapping from the JSON file."""
+        if os.path.exists(self.__sensor_mapping_file) and os.path.getsize(self.__sensor_mapping_file) > 0:
+            with open(self.__sensor_mapping_file, 'r') as file:
+                try:
+                    state_machine_logger.debug("Loading sensor mapping...")
+                    data = json.load(file)
+                    # Initialize structure if not exists
+                    if "homes" not in data:
+                        data = {"homes": {}}
+                    return data
+                except json.JSONDecodeError:
+                    state_machine_logger.warning("Sensor mapping JSON file corrupted. Resetting to empty dictionary.")
+                    return {"homes": {}}
+        state_machine_logger.info("No existing sensor mapping found.")
+        return {"homes": {}}
+
+    def save_sensor_mapping(self) -> None:
+        """Save sensor mapping to the JSON file."""
+        os.makedirs(os.path.dirname(self.__sensor_mapping_file), exist_ok=True)
+        with open(self.__sensor_mapping_file, 'w') as file:
+            json.dump(self.__sensor_mapping, file, indent=2)
+        state_machine_logger.info("Sensor mapping saved successfully.")
+
+    def get_home_sensor_mapping(self) -> dict:
+        """Get sensor mapping for current home."""
+        if not self.home_id:
+            return {}
+        return self.__sensor_mapping.get("homes", {}).get(self.home_id, {})
+
+    def update_home_sensor_mapping(self, mapping: dict) -> None:
+        """Update sensor mapping for current home."""
+        if not self.home_id:
+            raise ValueError("home_id is required to update sensor mapping")
+        
+        if "homes" not in self.__sensor_mapping:
+            self.__sensor_mapping["homes"] = {}
+        self.__sensor_mapping["homes"][self.home_id] = mapping
+        self.save_sensor_mapping()
+
     def translate_sensor_data(self, sensor_data: dict) -> dict:
         """Translate external sensor names to internal names using the sensor mapping."""
-        translated = {SENSOR_MAPPING.get(sensor, sensor): value for sensor, value in sensor_data.items()}
+        if not self.home_id:
+            return sensor_data
+            
+        home_mapping = self.get_home_sensor_mapping()
+        translated = {home_mapping.get(sensor, sensor): value for sensor, value in sensor_data.items()}
         state_machine_logger.debug("Translated sensor data: %s", translated)
         return translated
 
@@ -238,12 +295,27 @@ class StateMachineExecutor:
                     self.save_state_machines()
                     state_machine_logger.info(f"Deactivated state machine {state_machine_id}")
 
+    def get_user_state_machines(self) -> list:
+        """Get state machines for current home and user."""
+        if not self.home_id or not self.user_id:
+            return []
+        return self.__state_machines.get("homes", {}).get(self.home_id, {}).get("users", {}).get(self.user_id, {}).get("state_machines", [])
+
+    def get_user_blackboard(self) -> dict:
+        """Get blackboard data for current home and user."""
+        if not self.home_id or not self.user_id:
+            return {}
+        return self.__blackboard.get("homes", {}).get(self.home_id, {}).get("users", {}).get(self.user_id, {})
+
     def save_state_machine_to_json(self, session_id: str, user_id: str, conversation_summary: dict, generated_code: str, analysed_data: dict = None) -> None:
         """
         Save a new state machine for a session to the JSON file with sensors stored in a hashmap structure.
         """
+        if not self.home_id:
+            raise ValueError("home_id is required to save state machine")
+
         __uuid = uuid.uuid4()
-        state_machine_id = str(__uuid)  # Generate a unique state machine ID
+        state_machine_id = str(__uuid)
 
         # Generate a unique name for the generated code
         generated_code_name = self.generate_valid_function_name()
@@ -272,24 +344,29 @@ class StateMachineExecutor:
                 "activities": analysed_data.get("activities", [])
             }
 
-        # Initialize session if it doesn't exist
-        if session_id not in self.__state_machines:
-            self.__state_machines[session_id] = {"userId": user_id, "state_machines": []}
+        # Initialize home and user structure if it doesn't exist
+        if "homes" not in self.__state_machines:
+            self.__state_machines["homes"] = {}
+        if self.home_id not in self.__state_machines["homes"]:
+            self.__state_machines["homes"][self.home_id] = {"users": {}}
+        if "users" not in self.__state_machines["homes"][self.home_id]:
+            self.__state_machines["homes"][self.home_id]["users"] = {}
+        if user_id not in self.__state_machines["homes"][self.home_id]["users"]:
+            self.__state_machines["homes"][self.home_id]["users"][user_id] = {"state_machines": []}
         
-        # Append the new state machine to the session's list
-        self.__state_machines[session_id]["state_machines"].append(state_machine_entry)
-        self.save_state_machines()  # Save back to the JSON file
-        state_machine_logger.info("State machine %s saved successfully.", state_machine_id)
+        # Append the new state machine to the user's list
+        self.__state_machines["homes"][self.home_id]["users"][user_id]["state_machines"].append(state_machine_entry)
+        self.save_state_machines()
+        state_machine_logger.info("State machine %s saved successfully for home %s, user %s", 
+                                state_machine_id, self.home_id, user_id)
 
-        print("inside save_state_machine_to_json")
         # Schedule time-based state machine activation if applicable
         time_details = conversation_summary.get("content", {}).get("time", {}).get("exact_time", {})
         recurrence = conversation_summary.get("content", {}).get("recurrence", {}).get("type", "once")
         date = conversation_summary.get("content", {}).get("date") or "today"
         occurrence = conversation_summary.get("content", {}).get("recurrence", {}).get("details", {}).get("occurrence", "once")
-        print(time_details, recurrence, date, occurrence,"extraction")
+        
         if time_details and recurrence:
-            print("inside time_details")
             self.schedule_time_based_state_machine(state_machine_id, time_details, recurrence, date, occurrence)
 
     def execute_generated_code(self, state_machine: dict, time=None, activity_data=None, sensor_data=None, blackboard=None):
@@ -380,11 +457,10 @@ class StateMachineExecutor:
             state_machines = self.state_machines if isinstance(self.state_machines, dict) else json.loads(self.state_machines)
             modified = False
             
-            for session_id, session_data in state_machines.items():
-                if not isinstance(session_data, dict) or "state_machines" not in session_data:
-                    continue
-                    
-                for state_machine in session_data["state_machines"]:
+            # If home_id and user_id are set, only execute for that user
+            if self.home_id and self.user_id:
+                user_machines = self.get_user_state_machines()
+                for state_machine in user_machines:
                     if not isinstance(state_machine, dict) or "stateMachineId" not in state_machine:
                         continue
                     
@@ -403,7 +479,7 @@ class StateMachineExecutor:
                             time,
                             activity_data,
                             sensor_data,
-                            self.__blackboard.get(state_machine["stateMachineId"], {})
+                            self.get_user_blackboard()
                         )
                         
                         if result is True and not any(exec.get("activity") == activity_data for exec in execution_history):
@@ -417,16 +493,55 @@ class StateMachineExecutor:
                             # Send notification
                             task = state_machine.get("conversation_summary", {}).get("content", {}).get("task", "")
                             time_details = state_machine.get("conversation_summary", {}).get("content", {}).get("time", {}).get("exact_time", {})
-                            user_id = session_data.get("userId", "home123")
                             
                             if task and time_details:
                                 message = f"Now that you've finished your tea, it's a good time to get the laundry done!" # Harcoded for testing
-                                notify_api_client(user_id, message)
+                                notify_api_client(self.user_id, message)
+            else:
+                # Execute for all homes and users
+                for home_id, home_data in state_machines.get("homes", {}).items():
+                    for user_id, user_data in home_data.get("users", {}).items():
+                        for state_machine in user_data.get("state_machines", []):
+                            if not isinstance(state_machine, dict) or "stateMachineId" not in state_machine:
+                                continue
+                            
+                            # Get execution status
+                            execution_history = state_machine.get("execution_history", [])
+                            occurrence_frequency = state_machine.get("conversation_summary", {}).get("content", {}).get("recurrence", {}).get("details", {}).get("occurrence_frequency")
+                            
+                            # Skip if already executed for one-time tasks
+                            if occurrence_frequency == "once" and execution_history:
+                                state_machine_logger.debug(f"Skipping already executed state machine: {state_machine['stateMachineId']}")
+                                continue
+                            
+                            if self.check_partial_match(state_machine, sensor_data, activity_data):
+                                result = self.execute_generated_code(
+                                    state_machine,
+                                    time,
+                                    activity_data,
+                                    sensor_data,
+                                    self.__blackboard.get("homes", {}).get(home_id, {}).get("users", {}).get(user_id, {})
+                                )
+                                
+                                if result is True and not any(exec.get("activity") == activity_data for exec in execution_history):
+                                    # Record execution
+                                    state_machine.setdefault("execution_history", []).append({
+                                        "timestamp": datetime.now().isoformat(),
+                                        "activity": activity_data
+                                    })
+                                    modified = True
+                                    
+                                    # Send notification
+                                    task = state_machine.get("conversation_summary", {}).get("content", {}).get("task", "")
+                                    time_details = state_machine.get("conversation_summary", {}).get("content", {}).get("time", {}).get("exact_time", {})
+                                    
+                                    if task and time_details:
+                                        message = f"Now that you've finished your tea, it's a good time to get the laundry done!" # Harcoded for testing
+                                        notify_api_client(user_id, message)
             
             # Save changes
             if modified:
-                with open(STATE_MACHINE_FILE, 'w') as f:
-                    json.dump(state_machines, f, indent=2)
+                self.save_state_machines()
                 state_machine_logger.info("State machines updated with execution history")
                 
         except Exception as e:
@@ -446,11 +561,16 @@ class StateMachineExecutor:
 
     def clean_generated_code(self, code: str) -> str:
         """
-        Clean the generated code by removing unnecessary characters.
+        Clean the generated code by removing unnecessary characters and formatting properly.
         """
         # Remove triple backticks and language identifier
         cleaned_code = code.strip("```python\n").strip("\n```")
-        return cleaned_code
+        
+        # Split into lines and remove empty lines at start/end
+        lines = [line for line in cleaned_code.split('\n') if line.strip()]
+        
+        # Join with actual newlines
+        return '\n'.join(lines)
 
     def rename_function_in_code(self, code: str, new_function_name: str) -> str:
         """

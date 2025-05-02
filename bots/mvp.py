@@ -17,7 +17,6 @@ def main():
     state_machine_helper.create_state_machine(conversation)
     conversation = "Remind me to go to yoga at 12AM"
     state_machine_helper.create_state_machine(conversation)
-    
     try:
         # (1) Subscribe to sensor updates
         if args.test:
@@ -29,6 +28,7 @@ def main():
         
         # (2) Execute state machines in an infinite loop
         state_machine_helper.execute_state_machines(sensor_update_queue)
+
     except KeyboardInterrupt:
         print("\nReminder system stopped by user")
         sys.exit(0)
@@ -37,6 +37,7 @@ def main():
         import traceback
         traceback.print_exc()
         sys.exit(1)
+
     # (3) Observe sticky note creation in iOS app
 
 if __name__ == "__main__":

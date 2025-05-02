@@ -9,6 +9,10 @@ from code_analyser import analyse_code
 sys.path.append('../bots/mvp/mqtt_client')
 from subscribe import sensor_update_queue
 import openai
+# Import config to load environment variables
+
+sys.path.append('/home/ubuntu/code/reminder-system/bots')
+import config
 
 # Configure OpenAI
 openai_api_key = os.environ.get("OPENAI_API_KEY")
@@ -20,7 +24,7 @@ def create_state_machine(conversation):
     # generate state machine code AKA reminder code
     code_output = client.responses.create(
         model="gpt-4o-2024-11-20",
-        instructions=open('system_prompt.txt', 'r').read(), # system_prompt.txt is in project root, this will probably break
+        instructions=open('/home/ubuntu/code/reminder-system/bots/system_prompt.txt', 'r').read(), # system_prompt.txt is in project root, this will probably break
         input=conversation,
     ).output_text
 
