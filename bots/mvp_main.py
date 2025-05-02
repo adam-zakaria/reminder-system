@@ -15,18 +15,20 @@ def main():
     args = parser.parse_args()
 
     # (0) Create the state machines
-    # (a) manually
-    state_machines = []
-    conversations = [
-        "Remind me to water the plants when I'm in the kitchen",
-        "Remind me to go to yoga at 12AM",
-    ]
-    for conversation in conversations:
-        state_machines.append(state_machine_helper.create_state_machine(conversation))
-    # (b) from a file
+    # (a) from a file
     if args.state_machines:
         state_machines = utils.jl(args.state_machines)
+    # (b) manually
+    else:
+        state_machines = []
+        conversations = [
+            "Remind me to water the plants when I'm in the kitchen",
+            "Remind me to go to yoga at 12AM",
+        ]
+        for conversation in conversations:
+            state_machines.append(state_machine_helper.create_state_machine(conversation))
 
+    breakpoint()
     try:
         # (1) Subscribe to sensor updates
         if args.test:
