@@ -1,0 +1,22 @@
+[
+  {
+    "stateMachineId": "b392dc47-8b23-45ca-b4d0-c331b62af3d4",
+    "sessionId": "test-session",
+    "generated_code": "def mvp_function(sensor_data=None):\n    from datetime import datetime, time\n    if datetime.now().time() >= time(8, 0):\n        return True\n    return False",
+    "analysed_data": {
+      "sensors": [],
+      "activities": []
+    },
+    "conversation": "At 8:00 AM, remind me to take my morning medication"
+  },
+  {
+    "stateMachineId": "dae2d793-3ff7-4d74-bdae-993ce731cdad",
+    "sessionId": "test-session",
+    "generated_code": "def mvp_function(sensor_data=None):\n    from datetime import datetime, time\n    if datetime.now().time() >= time(12, 30):\n        return True\n    return False",
+    "analysed_data": {
+      "sensors": [],
+      "activities": []
+    },
+    "conversation": "At 12:30 PM, remind me to take my lunch break"
+  }
+]

@@ -31,7 +31,6 @@ def main():
         for conversation in conversations:
             state_machines.append(state_machine_helper.create_state_machine(conversation))
 
-    breakpoint()
     try:
         # (1) Subscribe to sensor updates
         if args.test:
