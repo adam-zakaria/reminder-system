@@ -18,6 +18,9 @@ def main():
     # (a) from a file
     if args.state_machines:
         state_machines = utils.jl(args.state_machines)
+        """
+        the problem with just this is the research needs to select from a menu and then generate the state machines...so...import researcher create_state_machines_from_menu
+        """
     # (b) manually
     else:
         state_machines = []

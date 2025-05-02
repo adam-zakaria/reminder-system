@@ -1,0 +1,213 @@
+[
+  {
+    "stateMachineId": "b392dc47-8b23-45ca-b4d0-c331b62af3d4",
+    "sessionId": "test-session",
+    "generated_code": "def mvp_function(sensor_data=None):\n    from datetime import datetime, time\n    if datetime.now().time() >= time(8, 0):\n        return True\n    return False",
+    "analysed_data": {
+      "sensors": [],
+      "activities": []
+    },
+    "conversation": "At 8:00 AM, remind me to take my morning medication"
+  },
+  {
+    "stateMachineId": "dae2d793-3ff7-4d74-bdae-993ce731cdad",
+    "sessionId": "test-session",
+    "generated_code": "def mvp_function(sensor_data=None):\n    from datetime import datetime, time\n    if datetime.now().time() >= time(12, 30):\n        return True\n    return False",
+    "analysed_data": {
+      "sensors": [],
+      "activities": []
+    },
+    "conversation": "At 12:30 PM, remind me to take my lunch break"
+  },
+  {
+    "stateMachineId": "b6413794-6f65-4ec8-aaf2-d3e920d33fe3",
+    "sessionId": "test-session",
+    "generated_code": "def mvp_function(sensor_data=None):\n    from datetime import datetime, time\n    if datetime.now().time() >= time(15, 0):\n        return True\n    return False",
+    "analysed_data": {
+      "sensors": [],
+      "activities": []
+    },
+    "conversation": "At 3:00 PM, remind me to take my afternoon medication"
+  },
+  {
+    "stateMachineId": "4af3797b-a8bf-4239-b9b8-08cbda82a560",
+    "sessionId": "test-session",
+    "generated_code": "def mvp_function(sensor_data=None):\n    from datetime import datetime, time\n    if datetime.now().time() >= time(20, 0):  # 8:00 PM\n        return True\n    return False",
+    "analysed_data": {
+      "sensors": [],
+      "activities": []
+    },
+    "conversation": "At 8:00 PM, remind me to take my evening medication"
+  },
+  {
+    "stateMachineId": "cd353f84-0b5a-4797-9c14-e2724c96310f",
+    "sessionId": "test-session",
+    "generated_code": "def mvp_function(sensor_data=None):\n    from datetime import datetime, time\n    if datetime.now().time() >= time(22, 0):\n        return True\n    return False",
+    "analysed_data": {
+      "sensors": [],
+      "activities": []
+    },
+    "conversation": "At 10:00 PM, remind me to take my bedtime medication"
+  },
+  {
+    "stateMachineId": "9128881c-c1aa-4664-a656-f2b0a5f610f1",
+    "sessionId": "test-session",
+    "generated_code": "def mvp_function(sensor_data=None):\n    from datetime import datetime, time\n    if datetime.now().time() >= time(7, 0):\n        return True\n    return False",
+    "analysed_data": {
+      "sensors": [],
+      "activities": []
+    },
+    "conversation": "At 7:00 AM, remind me to do my morning exercise"
+  },
+  {
+    "stateMachineId": "2caab334-12b0-485c-a0a3-018ce9d08a76",
+    "sessionId": "test-session",
+    "generated_code": "def mvp_function(sensor_data=None):\n    from datetime import datetime, time\n    if datetime.now().time() >= time(9, 0):\n        return True\n    return False",
+    "analysed_data": {
+      "sensors": [],
+      "activities": []
+    },
+    "conversation": "At 9:00 AM, remind me to check my blood pressure"
+  },
+  {
+    "stateMachineId": "0d725bcf-13ac-4727-960d-9e25a3ca1ff7",
+    "sessionId": "test-session",
+    "generated_code": "def mvp_function(sensor_data=None):\n    from datetime import datetime, time\n    if datetime.now().time() >= time(16, 0):\n        return True\n    return False",
+    "analysed_data": {
+      "sensors": [],
+      "activities": []
+    },
+    "conversation": "At 4:00 PM, remind me to go for my afternoon walk"
+  },
+  {
+    "stateMachineId": "64c39826-d172-4072-a507-e7a52e74ef43",
+    "sessionId": "test-session",
+    "generated_code": "def mvp_function(sensor_data=None):\n    from datetime import datetime, time\n    if datetime.now().time() >= time(19, 0):\n        return True\n    return False",
+    "analysed_data": {
+      "sensors": [],
+      "activities": []
+    },
+    "conversation": "At 7:00 PM, remind me to go for my evening walk"
+  },
+  {
+    "stateMachineId": "9774476a-f639-4d2e-b4ba-3ab8e8b87e37",
+    "sessionId": "test-session",
+    "generated_code": "def mvp_function(sensor_data=None):\n    from datetime import datetime, time\n    if datetime.now().time() >= time(21, 30):  # 9:30 PM\n        return True\n    return False",
+    "analysed_data": {
+      "sensors": [],
+      "activities": []
+    },
+    "conversation": "At 9:30 PM, remind me to prepare for bed"
+  },
+  {
+    "stateMachineId": "1cd0b180-9da7-46a2-a74a-d4838a580a39",
+    "sessionId": "test-session",
+    "generated_code": "def mvp_function(sensor_data=None):\n    if sensor_data and sensor_data.get('kitchen_motion_sensor', {}).get('motion') == True:\n        return True\n    return False",
+    "analysed_data": {
+      "sensors": [
+        "kitchen_motion_sensor"
+      ],
+      "activities": []
+    },
+    "conversation": "When I enter the kitchen, remind me to water the plants"
+  },
+  {
+    "stateMachineId": "b2115c4d-8537-4386-a007-a2bb26023de1",
+    "sessionId": "test-session",
+    "generated_code": "def mvp_function(sensor_data=None):\n    if sensor_data and sensor_data.get('bathroom_motion_sensor', {}).get('motion') == True:\n        return True\n    return False",
+    "analysed_data": {
+      "sensors": [],
+      "activities": []
+    },
+    "conversation": "When I enter the bathroom, remind me to take my vitamins"
+  },
+  {
+    "stateMachineId": "eb8e433c-bc1e-4db5-86cd-9aa7f96d277f",
+    "sessionId": "test-session",
+    "generated_code": "def mvp_function(sensor_data=None):\n    from datetime import datetime, time\n    current_time = datetime.now().time()\n    if sensor_data and sensor_data.get('master_bedroom_motion_sensor', {}).get('motion') == True and current_time >= time(20, 0):\n        if sensor_data.get('living_room_motion_sensor', {}).get('motion') == False:\n            return True\n    return False",
+    "analysed_data": {
+      "sensors": [
+        "living_room_motion_sensor",
+        "master_bedroom_motion_sensor"
+      ],
+      "activities": []
+    },
+    "conversation": "When I enter the bedroom at night, remind me to turn off the living room lights"
+  },
+  {
+    "stateMachineId": "eec6a2f7-2962-4d47-930d-b746be9e4f33",
+    "sessionId": "test-session",
+    "generated_code": "def mvp_function(sensor_data=None):\n    if sensor_data and sensor_data.get('main_door_entry_sensor', {}).get('status') == True:\n        windows = ['living_room_entry_sensor', 'master_bedroom_entry_sensor', 'dining_room_entry_sensor', 'kitchen_entry_sensor']\n        for window in windows:\n            if sensor_data.get(window, {}).get('status') == True:\n                return True\n    return False",
+    "analysed_data": {
+      "sensors": [
+        "main_door_entry_sensor"
+      ],
+      "activities": []
+    },
+    "conversation": "When I leave the house, remind me to check if all the windows are closed"
+  },
+  {
+    "stateMachineId": "d72d458b-9507-40da-ba52-1a601f1bcb62",
+    "sessionId": "test-session",
+    "generated_code": "def mvp_function(sensor_data=None):\n    from datetime import datetime, time\n    current_time = datetime.now().time()\n    morning_time = current_time >= time(6, 0) and current_time <= time(12, 0)\n    in_living_room = sensor_data and sensor_data.get('living_room_motion_sensor', {}).get('motion') == True\n    if morning_time and in_living_room:\n        return True\n    return False",
+    "analysed_data": {
+      "sensors": [
+        "living_room_motion_sensor"
+      ],
+      "activities": []
+    },
+    "conversation": "When I enter the living room in the morning, remind me to open the curtains"
+  },
+  {
+    "stateMachineId": "d2863668-7ee1-4473-88dd-8bf53d16c080",
+    "sessionId": "test-session",
+    "generated_code": "def mvp_function(sensor_data=None):\n    if sensor_data and sensor_data.get('bedroom_temp_humidity_sensor', {}).get('temp') > 75:\n        return True\n    return False",
+    "analysed_data": {
+      "sensors": [],
+      "activities": []
+    },
+    "conversation": "When the temperature in my bedroom is above 75\u00b0F, remind me to turn on the fan"
+  },
+  {
+    "stateMachineId": "0b7a0033-962a-42a4-951c-885c48053946",
+    "sessionId": "test-session",
+    "generated_code": "def mvp_function(sensor_data=None):\n    if sensor_data and sensor_data.get('office_motion_sensor', {}).get('motion') == True:\n        return True\n    return False",
+    "analysed_data": {
+      "sensors": [],
+      "activities": []
+    },
+    "conversation": "When I enter the office, remind me to check my calendar"
+  },
+  {
+    "stateMachineId": "7dcbec19-a569-4077-9b9f-55812e13967d",
+    "sessionId": "test-session",
+    "generated_code": "def mvp_function(sensor_data=None):\n    if sensor_data and sensor_data.get('garage_motion_sensor', {}).get('motion') == True:\n        return True\n    return False",
+    "analysed_data": {
+      "sensors": [],
+      "activities": []
+    },
+    "conversation": "When I enter the garage, remind me to check if the car is locked"
+  },
+  {
+    "stateMachineId": "f909709d-6d3d-40d7-9e95-037c88a3d90b",
+    "sessionId": "test-session",
+    "generated_code": "def mvp_function(sensor_data=None):\n    if sensor_data and sensor_data.get('bathroom_temp_humidity_sensor', {}).get('humidity') > 70:\n        return True\n    return False",
+    "analysed_data": {
+      "sensors": [],
+      "activities": []
+    },
+    "conversation": "When the humidity in my bathroom is above 70%, remind me to turn on the exhaust fan"
+  },
+  {
+    "stateMachineId": "167b78d2-8c5e-4367-aef7-ce8c46a8be8d",
+    "sessionId": "test-session",
+    "generated_code": "def mvp_function(sensor_data=None):\n    if sensor_data and sensor_data.get('dining_room_motion_sensor', {}).get('motion') == True:\n        return True\n    return False",
+    "analysed_data": {
+      "sensors": [
+        "dining_room_motion_sensor"
+      ],
+      "activities": []
+    },
+    "conversation": "When I enter the dining room, remind me to set the table"
+  }
+]

@@ -1,0 +1,104 @@
+{
+  "reminders": [
+    {
+      "reminder": "At 8:00 AM, remind me to take my morning medication",
+      "sticky_note": "Take morning medication",
+      "enabled": false
+    },
+    {
+      "reminder": "At 12:30 PM, remind me to take my lunch break",
+      "sticky_note": "Lunch break",
+      "enabled": false
+    },
+    {
+      "reminder": "At 3:00 PM, remind me to take my afternoon medication",
+      "sticky_note": "Take afternoon medication",
+      "enabled": false
+    },
+    {
+      "reminder": "At 8:00 PM, remind me to take my evening medication",
+      "sticky_note": "Take evening medication",
+      "enabled": false
+    },
+    {
+      "reminder": "At 10:00 PM, remind me to take my bedtime medication",
+      "sticky_note": "Take bedtime medication",
+      "enabled": false
+    },
+    {
+      "reminder": "At 7:00 AM, remind me to do my morning exercise",
+      "sticky_note": "Morning exercise",
+      "enabled": false
+    },
+    {
+      "reminder": "At 9:00 AM, remind me to check my blood pressure",
+      "sticky_note": "Check blood pressure",
+      "enabled": false
+    },
+    {
+      "reminder": "At 4:00 PM, remind me to go for my afternoon walk",
+      "sticky_note": "Afternoon walk",
+      "enabled": false
+    },
+    {
+      "reminder": "At 7:00 PM, remind me to go for my evening walk",
+      "sticky_note": "Evening walk",
+      "enabled": false
+    },
+    {
+      "reminder": "At 9:30 PM, remind me to prepare for bed",
+      "sticky_note": "Prepare for bed",
+      "enabled": false
+    },
+    {
+      "reminder": "When I enter the kitchen, remind me to water the plants",
+      "sticky_note": "Water plants",
+      "enabled": false
+    },
+    {
+      "reminder": "When I enter the bathroom, remind me to take my vitamins",
+      "sticky_note": "Take vitamins",
+      "enabled": false
+    },
+    {
+      "reminder": "When I enter the bedroom at night, remind me to turn off the living room lights",
+      "sticky_note": "Turn off living room lights",
+      "enabled": false
+    },
+    {
+      "reminder": "When I leave the house, remind me to check if all the windows are closed",
+      "sticky_note": "Check windows",
+      "enabled": false
+    },
+    {
+      "reminder": "When I enter the living room in the morning, remind me to open the curtains",
+      "sticky_note": "Open curtains",
+      "enabled": false
+    },
+    {
+      "reminder": "When the temperature in my bedroom is above 75°F, remind me to turn on the fan",
+      "sticky_note": "Turn on fan",
+      "enabled": false
+    },
+    {
+      "reminder": "When I enter the office, remind me to check my calendar",
+      "sticky_note": "Check calendar",
+      "enabled": false
+    },
+    {
+      "reminder": "When I enter the garage, remind me to check if the car is locked",
+      "sticky_note": "Check car lock",
+      "enabled": false
+    },
+    {
+      "reminder": "When the humidity in my bathroom is above 70%, remind me to turn on the exhaust fan",
+      "sticky_note": "Turn on exhaust fan",
+      "enabled": false
+    },
+    {
+      "reminder": "When I enter the dining room, remind me to set the table",
+      "sticky_note": "Set table",
+      "enabled": false
+    }
+  ]
+}

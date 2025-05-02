@@ -1,0 +1,29 @@
+[
+  {
+    "messageId": "orcatech:32c11c5e-119e-4c66-98e4-56a6c0694843",
+    "timestamp": "2024-09-15T08:32:30.789Z",
+    "sourceType": "orcatech",
+    "homeId": "aicaring-home-132",
+    "metadata": {
+      "location": "/home/bedroom",
+      "dataSchema": {
+        "name": "com.orcatech.zigbee.attribute.report",
+        "version": "0.0.1"
+      },
+      "type": "attribute_report",
+      "subtype": "temperature",
+      "value": 76.5,
+      "units": "°F"
+    },
+    "senderId": "000D6F000E303F51",
+    "isObservationSource": true,
+    "payload": {
+      "uuid": "125",
+      "stamp": "2024-09-15T08:32:30.789Z",
+      "data": {
+        "zigbeeCoordinatorEUI": "000D6F000ED282B5"
+      },
+      "hubItemID": 132
+    }
+  }
+] 

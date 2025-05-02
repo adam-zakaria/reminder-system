@@ -1,0 +1,31 @@
+[
+  {
+    "messageId": "orcatech:d9311aa4-e82a-4a70-aabf-9826f4c24244",
+    "timestamp": "2024-09-15T15:00:00.000Z",
+    "sourceType": "orcatech",
+    "homeId": "aicaring-home-132",
+    "metadata": {
+      "location": "/home",
+      "dataSchema": {
+        "name": "com.orcatech.system.time",
+        "version": "0.0.1"
+      },
+      "type": "time",
+      "subtype": "hourly",
+      "value": 15,
+      "units": "hour"
+    },
+    "senderId": "system",
+    "isObservationSource": true,
+    "payload": {
+      "uuid": "134",
+      "stamp": "2024-09-15T15:00:00.000Z",
+      "data": {
+        "hour": 15,
+        "minute": 0,
+        "second": 0
+      },
+      "hubItemID": 132
+    }
+  }
+] 

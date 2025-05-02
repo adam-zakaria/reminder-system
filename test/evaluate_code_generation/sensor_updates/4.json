@@ -1,0 +1,42 @@
+[
+  {
+    "messageId": "orcatech:d9311aa4-e82a-4a70-aabf-9826f4c24236",
+    "timestamp": "2024-09-15T10:30:45.123Z",
+    "sourceType": "orcatech",
+    "homeId": "aicaring-home-132",
+    "metadata": {
+      "location": "/home/front_door",
+      "dataSchema": {
+        "name": "com.orcatech.zigbee.zone.status",
+        "version": "0.0.1"
+      },
+      "type": "zone_status",
+      "subtype": "motion",
+      "value": 1,
+      "decoded": [
+        {
+          "movement": true,
+          "contact": true,
+          "tamper": false,
+          "low_battery": false,
+          "supervision_reports": true,
+          "restore_repots": true,
+          "direction": "exit"
+        }
+      ]
+    },
+    "senderId": "000D6F000E303F53",
+    "isObservationSource": true,
+    "payload": {
+      "uuid": "126",
+      "stamp": "2024-09-15T10:30:45.123Z",
+      "data": {
+        "zigbeeCoordinatorEUI": "000D6F000ED282B5",
+        "zigbeePANMember": {
+          "EUI": "000D6F000E303F53"
+        }
+      },
+      "hubItemID": 132
+    }
+  }
+] 

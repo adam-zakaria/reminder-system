@@ -1,0 +1,29 @@
+[
+  {
+    "messageId": "orcatech:d9311aa4-e82a-4a70-aabf-9826f4c24240",
+    "timestamp": "2024-09-15T09:45:45.123Z",
+    "sourceType": "orcatech",
+    "homeId": "aicaring-home-132",
+    "metadata": {
+      "location": "/home/bathroom",
+      "dataSchema": {
+        "name": "com.orcatech.zigbee.attribute.report",
+        "version": "0.0.1"
+      },
+      "type": "attribute_report",
+      "subtype": "humidity",
+      "value": 75,
+      "units": "%"
+    },
+    "senderId": "000D6F000E303F57",
+    "isObservationSource": true,
+    "payload": {
+      "uuid": "130",
+      "stamp": "2024-09-15T09:45:45.123Z",
+      "data": {
+        "zigbeeCoordinatorEUI": "000D6F000ED282B5"
+      },
+      "hubItemID": 132
+    }
+  }
+] 
